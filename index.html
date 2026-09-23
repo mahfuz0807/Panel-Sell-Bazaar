@@ -1,12 +1,623 @@
-<!doctype html>
-<html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Panel Sell Bazaar</title><link rel="stylesheet" href="style.css"></head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Panel Sell Bazaar</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6fb;
+      color: #172033;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 16px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+      padding: 11px 16px;
+      font-weight: bold;
+    }
+
+    .login-btn {
+      background: white;
+      color: #111827;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 55px 20px;
+      background: #e9efff;
+    }
+
+    .hero h1 {
+      font-size: 34px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #596579;
+      font-size: 16px;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: auto;
+      padding: 35px 0;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .section-title h2 {
+      font-size: 27px;
+    }
+
+    .section-title p {
+      margin-top: 7px;
+      color: #687386;
+    }
+
+    .packages {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 18px;
+    }
+
+    .package {
+      background: white;
+      border: 1px solid #e1e6ef;
+      border-radius: 16px;
+      padding: 22px;
+      text-align: center;
+      box-shadow: 0 7px 20px rgba(0,0,0,0.06);
+    }
+
+    .package h3 {
+      font-size: 21px;
+      margin-bottom: 13px;
+    }
+
+    .duration {
+      color: #687386;
+      margin-bottom: 8px;
+    }
+
+    .price {
+      font-size: 27px;
+      font-weight: bold;
+      margin: 10px 0 18px;
+    }
+
+    .order-btn {
+      width: 100%;
+      background: #111827;
+      color: white;
+    }
+
+    .order-btn:hover {
+      background: #263247;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
+      margin-top: 35px;
+    }
+
+    .info-box {
+      background: white;
+      border: 1px solid #e1e6ef;
+      border-radius: 16px;
+      padding: 22px;
+    }
+
+    .info-box h3 {
+      margin-bottom: 10px;
+    }
+
+    .info-box p {
+      color: #687386;
+      line-height: 1.6;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 16px;
+      padding: 25px;
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      right: 15px;
+      top: 12px;
+      background: #eee;
+      padding: 7px 11px;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 18px;
+    }
+
+    .selected-package {
+      background: #f1f4f9;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      margin: 7px 0 12px;
+      border: 1px solid #ccd3df;
+      border-radius: 9px;
+      outline: none;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: #111827;
+      color: white;
+    }
+
+    .notice {
+      background: #fff8df;
+      border: 1px solid #eadb9b;
+      padding: 12px;
+      border-radius: 9px;
+      font-size: 14px;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    footer {
+      background: #111827;
+      color: #cbd5e1;
+      text-align: center;
+      padding: 25px 15px;
+      margin-top: 20px;
+    }
+
+    footer p {
+      margin: 5px 0;
+    }
+
+    @media (max-width: 600px) {
+      .logo {
+        font-size: 18px;
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      header {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
 <body>
-<header><div><h1>Panel Sell Bazaar</h1><small>Premium Digital Store</small></div><button id="balance" onclick="openFund()">🪙 ৳ 0.00</button></header>
-<main>
-<section class="hero"><div><b>ONLINE STORE</b><h2>Premium Panel Store</h2><p>Fast order • Secure payment • Priority support</p></div><span>PSB</span></section>
-<h2 class="title">Premium Products</h2><div id="products"></div>
-</main>
-<nav><button onclick="openFund()">💳<small>Add Fund</small></button><button onclick="orders()">☷<small>All Order</small></button><button onclick="location.href='/'">⌂<small>Store</small></button><button onclick="updates()">☁<small>Update</small></button><button onclick="support()">◉<small>Helpline</small></button><button onclick="profile()">●<small>Profile</small></button></nav>
-<div id="modal" class="modal"><div class="box"><button class="x" onclick="closeModal()">×</button><div id="content"></div></div></div>
-<script src="app.js"></script></body></html>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      Panel Sell Bazaar
+    </div>
+
+    <div class="header-buttons">
+      <button class="login-btn" onclick="buyerLogin()">
+        Buyer Login
+      </button>
+
+      <button class="login-btn" onclick="adminLogin()">
+        Admin Login
+      </button>
+    </div>
+  </header>
+
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Premium Panel Store</h1>
+    <p>
+      Fast Order • Secure Payment • Priority Support
+    </p>
+  </section>
+
+
+  <!-- PACKAGES -->
+  <main class="container">
+
+    <div class="section-title">
+      <h2>AIM Hacker</h2>
+      <p>Choose your package</p>
+    </div>
+
+    <div class="packages">
+
+      <!-- 1 HOUR -->
+      <div class="package">
+        <h3>1 Hour</h3>
+
+        <div class="duration">
+          Duration: 1 Hour
+        </div>
+
+        <div class="price">
+          ৳20
+        </div>
+
+        <button
+          class="order-btn"
+          onclick="openOrder('AIM Hacker', '1 Hour', 20)">
+          Order Now
+        </button>
+      </div>
+
+
+      <!-- 3 HOURS -->
+      <div class="package">
+        <h3>3 Hours</h3>
+
+        <div class="duration">
+          Duration: 3 Hours
+        </div>
+
+        <div class="price">
+          ৳45
+        </div>
+
+        <button
+          class="order-btn"
+          onclick="openOrder('AIM Hacker', '3 Hours', 45)">
+          Order Now
+        </button>
+      </div>
+
+
+      <!-- 6 HOURS -->
+      <div class="package">
+        <h3>6 Hours</h3>
+
+        <div class="duration">
+          Duration: 6 Hours
+        </div>
+
+        <div class="price">
+          ৳90
+        </div>
+
+        <button
+          class="order-btn"
+          onclick="openOrder('AIM Hacker', '6 Hours', 90)">
+          Order Now
+        </button>
+      </div>
+
+
+      <!-- 12 HOURS -->
+      <div class="package">
+        <h3>12 Hours</h3>
+
+        <div class="duration">
+          Duration: 12 Hours
+        </div>
+
+        <div class="price">
+          ৳165
+        </div>
+
+        <button
+          class="order-btn"
+          onclick="openOrder('AIM Hacker', '12 Hours', 165)">
+          Order Now
+        </button>
+      </div>
+
+    </div>
+
+
+    <!-- INFORMATION -->
+    <div class="info-grid">
+
+      <div class="info-box">
+        <h3>💳 Payment</h3>
+        <p>
+          bKash, Nagad and Rocket payment options
+          will be connected to the real payment/order
+          system through the backend.
+        </p>
+      </div>
+
+      <div class="info-box">
+        <h3>🆘 Help Line</h3>
+        <p>
+          Need help with your order?
+          Contact our support team.
+        </p>
+      </div>
+
+      <div class="info-box">
+        <h3>🔐 Buyer Account</h3>
+        <p>
+          Buyer login and order history will be
+          connected to the secure database.
+        </p>
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- ORDER MODAL -->
+  <div class="modal" id="orderModal">
+
+    <div class="modal-content">
+
+      <button class="close" onclick="closeOrder()">
+        ✕
+      </button>
+
+      <h2>Place Order</h2>
+
+      <div class="selected-package">
+        <div>
+          <b>Package:</b>
+          <span id="packageName"></span>
+        </div>
+
+        <div>
+          <b>Duration:</b>
+          <span id="packageDuration"></span>
+        </div>
+
+        <div>
+          <b>Price:</b>
+          ৳<span id="packagePrice"></span>
+        </div>
+      </div>
+
+
+      <div class="notice">
+        Payment verification and order submission will
+        be handled by the secure backend after it is
+        connected.
+      </div>
+
+
+      <label>
+        Buyer Name
+      </label>
+
+      <input
+        type="text"
+        id="buyerName"
+        placeholder="Enter your name"
+      >
+
+
+      <label>
+        Payment Method
+      </label>
+
+      <select id="paymentMethod">
+
+        <option value="">
+          Select Payment Method
+        </option>
+
+        <option value="bKash">
+          bKash
+        </option>
+
+        <option value="Nagad">
+          Nagad
+        </option>
+
+        <option value="Rocket">
+          Rocket
+        </option>
+
+      </select>
+
+
+      <label>
+        Transaction ID
+      </label>
+
+      <input
+        type="text"
+        id="transactionId"
+        placeholder="Enter transaction ID"
+      >
+
+
+      <button
+        class="submit-btn"
+        onclick="submitOrder()">
+        Submit Order
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- FOOTER -->
+  <footer>
+
+    <p>
+      <b>Panel Sell Bazaar</b>
+    </p>
+
+    <p>
+      Premium Digital Store
+    </p>
+
+    <p>
+      © 2026 Panel Sell Bazaar
+    </p>
+
+  </footer>
+
+
+  <script>
+
+    let selectedProduct = "";
+    let selectedDuration = "";
+    let selectedPrice = 0;
+
+
+    function openOrder(product, duration, price) {
+
+      selectedProduct = product;
+      selectedDuration = duration;
+      selectedPrice = price;
+
+      document.getElementById("packageName").textContent =
+        product;
+
+      document.getElementById("packageDuration").textContent =
+        duration;
+
+      document.getElementById("packagePrice").textContent =
+        price;
+
+      document.getElementById("orderModal").style.display =
+        "flex";
+    }
+
+
+    function closeOrder() {
+
+      document.getElementById("orderModal").style.display =
+        "none";
+    }
+
+
+    function submitOrder() {
+
+      const name =
+        document.getElementById("buyerName").value.trim();
+
+      const method =
+        document.getElementById("paymentMethod").value;
+
+      const transaction =
+        document.getElementById("transactionId").value.trim();
+
+
+      if (!name) {
+        alert("Please enter your name.");
+        return;
+      }
+
+
+      if (!method) {
+        alert("Please select a payment method.");
+        return;
+      }
+
+
+      if (!transaction) {
+        alert("Please enter your transaction ID.");
+        return;
+      }
+
+
+      alert(
+        "Your order form is ready.\\n\\n" +
+        "Product: " + selectedProduct + "\\n" +
+        "Duration: " + selectedDuration + "\\n" +
+        "Price: ৳" + selectedPrice + "\\n" +
+        "Payment: " + method + "\\n" +
+        "Transaction ID: " + transaction +
+        "\\n\\n" +
+        "Real order submission will be connected to Supabase next."
+      );
+
+    }
+
+
+    function buyerLogin() {
+
+      alert(
+        "Buyer Login will be connected to Supabase authentication."
+      );
+
+    }
+
+
+    function adminLogin() {
+
+      window.location.href = "admin.html";
+
+    }
+
+
+    window.onclick = function(event) {
+
+      const modal =
+        document.getElementById("orderModal");
+
+      if (event.target === modal) {
+        closeOrder();
+      }
+
+    };
+
+  </script>
+
+</body>
+</html>
