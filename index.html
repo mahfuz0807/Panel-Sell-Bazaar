@@ -504,7 +504,7 @@ async function submitOrder(){
 
   const {error} =
     await supabaseClient
-      .from("orders")
+      .from("Orders")
       .insert([{
 
         user_id:sessionData.session.user.id,
