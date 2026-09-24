@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
 
   <title>Panel Sell Bazaar</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+
     *{
       box-sizing:border-box;
       margin:0;
@@ -77,7 +83,8 @@
 
     .packages{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+      grid-template-columns:
+        repeat(auto-fit,minmax(230px,1fr));
       gap:18px;
       margin-top:25px;
     }
@@ -144,7 +151,8 @@
       color:#dce3f5;
     }
 
-    input,select{
+    input,
+    select{
       width:100%;
       padding:12px;
       border-radius:8px;
@@ -161,6 +169,15 @@
       margin-top:10px;
       color:#7ee2ff;
       font-weight:bold;
+      word-break:break-word;
+    }
+
+    .copy-btn{
+      width:100%;
+      background:#4f8cff;
+      color:white;
+      margin-top:8px;
+      display:none;
     }
 
     .submit-btn{
@@ -184,188 +201,333 @@
       line-height:1.5;
     }
 
-    .login-box{
-      text-align:center;
-      margin-top:25px;
-    }
-
-    .login-box button{
-      margin-top:15px;
-      width:100%;
-      background:#4f8cff;
-      color:white;
-    }
-
     .status{
       text-align:center;
       margin-top:20px;
       color:#aeb8d4;
     }
+
+    .empty{
+      text-align:center;
+      color:#aeb8d4;
+      padding:30px;
+    }
+
   </style>
+
 </head>
+
 
 <body>
 
+
 <header>
-  <div class="logo">Panel Sell Bazaar</div>
+
+  <div class="logo">
+    Panel Sell Bazaar
+  </div>
 
   <div>
-    <button id="loginButton" class="login-btn" onclick="openLogin()">
+
+    <button
+      id="loginButton"
+      class="login-btn"
+      onclick="openLogin()">
       Login
     </button>
 
-    <button id="logoutButton" class="logout-btn" onclick="logout()">
+    <button
+      id="logoutButton"
+      class="logout-btn"
+      onclick="logout()">
       Logout
     </button>
+
   </div>
+
 </header>
+
 
 
 <main class="container">
 
+
   <section class="hero">
-    <h1>Panel Sell Bazaar</h1>
-    <p>Choose your panel package and place your order.</p>
+
+    <h1>
+      Panel Sell Bazaar
+    </h1>
+
+    <p>
+      Choose your panel package and place your order.
+    </p>
+
   </section>
+
 
 
   <section>
-    <h2>Available Packages</h2>
 
-    <div id="packages" class="packages">
+    <h2>
+      Available Packages
+    </h2>
+
+
+    <div
+      id="packages"
+      class="packages">
+
+      <!-- Packages will load from Supabase -->
+
       <div class="card">
-        <h2>Aim Hacker</h2>
-        <div class="price">৳20</div>
-        <div class="duration">1 Hour</div>
+
+        <h2>
+          Aim Hacker
+        </h2>
+
+        <div class="price">
+          ৳20
+        </div>
+
+        <div class="duration">
+          1 Hour
+        </div>
+
         <button
           class="order-btn"
           onclick="openOrder('Aim Hacker','1 Hour',20)">
+
           Order Now
+
         </button>
+
       </div>
+
     </div>
 
-    <div id="packageStatus" class="status"></div>
+
+    <div
+      id="packageStatus"
+      class="status">
+    </div>
+
   </section>
+
 
 </main>
 
 
-<!-- LOGIN MODAL -->
 
-<div id="loginModal" class="modal">
+<!-- =========================
+     LOGIN MODAL
+========================= -->
+
+
+<div
+  id="loginModal"
+  class="modal">
+
 
   <div class="modal-box">
 
-    <h2>Login / Sign Up</h2>
 
-    <label>Email</label>
+    <h2>
+      Login / Sign Up
+    </h2>
+
+
+    <label>
+      Email
+    </label>
+
     <input
       id="loginEmail"
       type="email"
       placeholder="Enter your email">
 
-    <label>Password</label>
+
+    <label>
+      Password
+    </label>
+
     <input
       id="loginPassword"
       type="password"
       placeholder="Enter your password">
 
+
     <button
       class="submit-btn"
       onclick="loginUser()">
+
       Login
+
     </button>
 
-    <button
-      class="close-btn"
-      onclick="closeLogin()">
-      Close
-    </button>
-
-    <p class="info">
-      New buyer? Enter your email and password, then use Sign Up below.
-    </p>
 
     <button
       class="submit-btn"
       onclick="signupUser()">
+
       Sign Up
+
     </button>
+
+
+    <button
+      class="close-btn"
+      onclick="closeLogin()">
+
+      Close
+
+    </button>
+
+
+    <p class="info">
+
+      New buyer?
+      Enter your email and password,
+      then press Sign Up.
+
+    </p>
+
 
   </div>
 
 </div>
 
 
-<!-- ORDER MODAL -->
 
-<div id="orderModal" class="modal">
+<!-- =========================
+     ORDER MODAL
+========================= -->
+
+
+<div
+  id="orderModal"
+  class="modal">
+
 
   <div class="modal-box">
 
-    <h2>Place Order</h2>
 
-    <label>Package</label>
+    <h2>
+      Place Order
+    </h2>
+
+
+    <label>
+      Package
+    </label>
+
     <input
       id="packageTitle"
       type="text"
       readonly>
 
-    <label>Duration</label>
+
+    <label>
+      Duration
+    </label>
+
     <input
       id="packageDuration"
       type="text"
       readonly>
 
-    <label>Price</label>
+
+    <label>
+      Price
+    </label>
+
     <input
       id="packagePrice"
       type="text"
       readonly>
 
 
-    <label>Your Name</label>
+    <label>
+      Your Name
+    </label>
+
     <input
       id="buyerName"
       type="text"
       placeholder="Enter your name">
 
 
-    <label>Phone Number</label>
+    <label>
+      Phone Number
+    </label>
+
     <input
       id="buyerPhone"
       type="text"
       placeholder="Enter your phone number">
 
 
-    <label>Payment Method</label>
+    <label>
+      Payment Method
+    </label>
+
 
     <select
       id="paymentMethod"
       onchange="showPaymentNumber()">
 
-      <option value="">Select Payment Method</option>
-      <option value="bKash">bKash</option>
-      <option value="Nagad">Nagad</option>
-      <option value="Rocket">Rocket</option>
+      <option value="">
+        Select Payment Method
+      </option>
+
+      <option value="bKash">
+        bKash
+      </option>
+
+      <option value="Nagad">
+        Nagad
+      </option>
+
+      <option value="Rocket">
+        Rocket
+      </option>
 
     </select>
+
 
 
     <div
       id="paymentNumber"
       class="payment-number"
       style="display:none">
+
     </div>
 
 
+
+    <button
+      id="copyPaymentNumber"
+      type="button"
+      class="copy-btn"
+      onclick="copyPaymentNumber()">
+
+      Copy Number
+
+    </button>
+
+
+
     <p class="info">
-      প্রথমে উপরের নম্বরে payment করুন। তারপর Transaction ID এখানে দিন।
+
+      প্রথমে উপরের নম্বরে payment করুন।
+      তারপর Transaction ID এখানে দিন।
+
     </p>
 
 
-    <label>Transaction ID</label>
+
+    <label>
+      Transaction ID
+    </label>
 
     <input
       id="transactionId"
@@ -373,456 +535,806 @@
       placeholder="Enter Transaction ID">
 
 
+
     <button
       class="submit-btn"
       onclick="submitOrder()">
+
       Submit Order
+
     </button>
+
+
 
     <button
       class="close-btn"
       onclick="closeOrder()">
+
       Close
+
     </button>
+
 
   </div>
 
 </div>
 
 
+
 <script>
 
-  /* =========================
-     SUPABASE
-  ========================= */
 
-  const SUPABASE_URL =
-    "https://wiztksrtzjmsxzolollf.supabase.co";
+/* =========================
+   SUPABASE
+========================= */
 
-  const SUPABASE_KEY =
-    "sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
 
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
+const SUPABASE_URL =
+  "https://wiztksrtzjmsxzolollf.supabase.co";
+
+
+const SUPABASE_KEY =
+  "sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+
+/* =========================
+   PAYMENT NUMBERS
+========================= */
+
+
+const paymentNumbers = {
+
+  bKash: "01720974862",
+
+  Nagad: "01612652459",
+
+  Rocket: "01720974862"
+
+};
+
+
+
+/* =========================
+   SELECTED PACKAGE
+========================= */
+
+
+let selectedProduct = "";
+
+let selectedDuration = "";
+
+let selectedPrice = 0;
+
+
+
+/* =========================
+   LOGIN MODAL
+========================= */
+
+
+function openLogin(){
+
+  document.getElementById(
+    "loginModal"
+  ).style.display = "flex";
+
+}
+
+
+
+function closeLogin(){
+
+  document.getElementById(
+    "loginModal"
+  ).style.display = "none";
+
+}
+
+
+
+/* =========================
+   SIGN UP
+========================= */
+
+
+async function signupUser(){
+
+  const email =
+    document
+      .getElementById("loginEmail")
+      .value
+      .trim();
+
+
+  const password =
+    document
+      .getElementById("loginPassword")
+      .value;
+
+
+  if(!email || !password){
+
+    alert(
+      "Email and password দিন।"
+    );
+
+    return;
+
+  }
+
+
+  if(password.length < 6){
+
+    alert(
+      "Password কমপক্ষে 6 characters হতে হবে।"
+    );
+
+    return;
+
+  }
+
+
+  const { error } =
+    await supabaseClient.auth.signUp({
+
+      email: email,
+
+      password: password
+
+    });
+
+
+  if(error){
+
+    alert(
+      "Sign Up failed: " +
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  alert(
+    "Sign Up successful. এখন Login করুন।"
+  );
+
+}
+
+
+
+/* =========================
+   LOGIN
+========================= */
+
+
+async function loginUser(){
+
+  const email =
+    document
+      .getElementById("loginEmail")
+      .value
+      .trim();
+
+
+  const password =
+    document
+      .getElementById("loginPassword")
+      .value;
+
+
+  if(!email || !password){
+
+    alert(
+      "Email and password দিন।"
+    );
+
+    return;
+
+  }
+
+
+  const { error } =
+    await supabaseClient.auth.signInWithPassword({
+
+      email: email,
+
+      password: password
+
+    });
+
+
+  if(error){
+
+    alert(
+      "Login failed: " +
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  closeLogin();
+
+  updateLoginButton();
+
+  alert(
+    "Login successful!"
+  );
+
+}
+
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+
+async function logout(){
+
+  await supabaseClient.auth.signOut();
+
+  updateLoginButton();
+
+  alert(
+    "Logged out."
+  );
+
+}
+
+
+
+/* =========================
+   LOGIN BUTTON STATUS
+========================= */
+
+
+async function updateLoginButton(){
+
+  const { data } =
+    await supabaseClient.auth.getSession();
+
+
+  const loggedIn =
+    !!data.session;
+
+
+  document.getElementById(
+    "loginButton"
+  ).style.display =
+    loggedIn
+      ? "none"
+      : "inline-block";
+
+
+  document.getElementById(
+    "logoutButton"
+  ).style.display =
+    loggedIn
+      ? "inline-block"
+      : "none";
+
+}
+
+
+
+/* =========================
+   OPEN ORDER
+========================= */
+
+
+async function openOrder(
+  product,
+  duration,
+  price
+){
+
+  const { data } =
+    await supabaseClient.auth.getSession();
+
+
+  if(!data.session){
+
+    alert(
+      "Please login first."
+    );
+
+    openLogin();
+
+    return;
+
+  }
+
+
+  selectedProduct =
+    product;
+
+
+  selectedDuration =
+    duration;
+
+
+  selectedPrice =
+    price;
+
+
+
+  document.getElementById(
+    "packageTitle"
+  ).value =
+    product;
+
+
+  document.getElementById(
+    "packageDuration"
+  ).value =
+    duration;
+
+
+  document.getElementById(
+    "packagePrice"
+  ).value =
+    "৳" + price;
+
+
+
+  document.getElementById(
+    "orderModal"
+  ).style.display =
+    "flex";
+
+
+
+  /* Load buyer profile */
+
+
+  const profile =
+    await supabaseClient
+      .from("Profiles")
+      .select(
+        '"Name","Phone"'
+      )
+      .eq(
+        "id",
+        data.session.user.id
+      )
+      .maybeSingle();
+
+
+  if(profile.data){
+
+    document.getElementById(
+      "buyerName"
+    ).value =
+      profile.data.Name || "";
+
+
+    document.getElementById(
+      "buyerPhone"
+    ).value =
+      profile.data.Phone || "";
+
+  }
+
+}
+
+
+
+/* =========================
+   CLOSE ORDER
+========================= */
+
+
+function closeOrder(){
+
+  document.getElementById(
+    "orderModal"
+  ).style.display =
+    "none";
+
+
+  document.getElementById(
+    "paymentMethod"
+  ).value =
+    "";
+
+
+  document.getElementById(
+    "paymentNumber"
+  ).style.display =
+    "none";
+
+
+  document.getElementById(
+    "paymentNumber"
+  ).innerHTML =
+    "";
+
+
+  document.getElementById(
+    "copyPaymentNumber"
+  ).style.display =
+    "none";
+
+}
+
+
+
+/* =========================
+   SHOW PAYMENT NUMBER
+========================= */
+
+
+function showPaymentNumber(){
+
+  const method =
+    document.getElementById(
+      "paymentMethod"
+    ).value;
+
+
+  const box =
+    document.getElementById(
+      "paymentNumber"
     );
 
 
-  /* =========================
-     PAYMENT NUMBERS
-  ========================= */
+  const copyBtn =
+    document.getElementById(
+      "copyPaymentNumber"
+    );
 
-  const paymentNumbers = {
 
-    bKash: "01720974862",
+  if(!method){
 
-    Nagad: "01612652459",
-
-    Rocket: "01720974862"
-
-  };
-
-
-  let selectedProduct = "";
-  let selectedDuration = "";
-  let selectedPrice = 0;
-
-
-  /* =========================
-     LOGIN
-  ========================= */
-
-  function openLogin(){
-
-    document.getElementById("loginModal").style.display = "flex";
-
-  }
-
-
-  function closeLogin(){
-
-    document.getElementById("loginModal").style.display = "none";
-
-  }
-
-
-  async function signupUser(){
-
-    const email =
-      document.getElementById("loginEmail").value.trim();
-
-    const password =
-      document.getElementById("loginPassword").value;
-
-    if(!email || !password){
-
-      alert("Email and password দিন।");
-
-      return;
-    }
-
-    if(password.length < 6){
-
-      alert("Password কমপক্ষে 6 characters হতে হবে।");
-
-      return;
-    }
-
-
-    const { data, error } =
-      await supabaseClient.auth.signUp({
-
-        email: email,
-
-        password: password
-
-      });
-
-
-    if(error){
-
-      alert("Sign Up failed: " + error.message);
-
-      return;
-    }
-
-
-    alert("Sign Up successful. এখন Login করুন।");
-
-  }
-
-
-  async function loginUser(){
-
-    const email =
-      document.getElementById("loginEmail").value.trim();
-
-    const password =
-      document.getElementById("loginPassword").value;
-
-
-    if(!email || !password){
-
-      alert("Email and password দিন।");
-
-      return;
-    }
-
-
-    const { data, error } =
-      await supabaseClient.auth.signInWithPassword({
-
-        email: email,
-
-        password: password
-
-      });
-
-
-    if(error){
-
-      alert("Login failed: " + error.message);
-
-      return;
-    }
-
-
-    closeLogin();
-
-    updateLoginButton();
-
-    alert("Login successful!");
-
-  }
-
-
-  async function logout(){
-
-    await supabaseClient.auth.signOut();
-
-    updateLoginButton();
-
-    alert("Logged out.");
-
-  }
-
-
-  async function updateLoginButton(){
-
-    const { data } =
-      await supabaseClient.auth.getSession();
-
-    const loggedIn =
-      !!data.session;
-
-
-    document.getElementById("loginButton").style.display =
-      loggedIn ? "none" : "inline-block";
-
-
-    document.getElementById("logoutButton").style.display =
-      loggedIn ? "inline-block" : "none";
-
-  }
-
-
-  /* =========================
-     ORDER
-  ========================= */
-
-  async function openOrder(product,duration,price){
-
-    const { data } =
-      await supabaseClient.auth.getSession();
-
-
-    if(!data.session){
-
-      alert("Please login first.");
-
-      openLogin();
-
-      return;
-    }
-
-
-    selectedProduct = product;
-
-    selectedDuration = duration;
-
-    selectedPrice = price;
-
-
-    document.getElementById("packageTitle").value =
-      product;
-
-    document.getElementById("packageDuration").value =
-      duration;
-
-    document.getElementById("packagePrice").value =
-      "৳" + price;
-
-
-    document.getElementById("orderModal").style.display =
-      "flex";
-
-
-    /* Load buyer profile */
-
-    const profile =
-      await supabaseClient
-        .from("Profiles")
-        .select('"Name","Phone"')
-        .eq("id",data.session.user.id)
-        .maybeSingle();
-
-
-    if(profile.data){
-
-      document.getElementById("buyerName").value =
-        profile.data.Name || "";
-
-      document.getElementById("buyerPhone").value =
-        profile.data.Phone || "";
-
-    }
-
-  }
-
-
-  function closeOrder(){
-
-    document.getElementById("orderModal").style.display =
+    box.style.display =
       "none";
 
-  }
-
-
-  /* =========================
-     PAYMENT NUMBER
-  ========================= */
-
-  function showPaymentNumber(){
-
-    const method =
-      document.getElementById("paymentMethod").value;
-
-    const box =
-      document.getElementById("paymentNumber");
-
-
-    if(!method){
-
-      box.style.display = "none";
-
-      box.innerHTML = "";
-
-      return;
-    }
-
-
-    box.style.display = "block";
-
     box.innerHTML =
-      method + " Payment Number: " +
-      paymentNumbers[method];
+      "";
+
+    copyBtn.style.display =
+      "none";
+
+    return;
 
   }
 
 
-  /* =========================
-     SUBMIT ORDER
-  ========================= */
-
-  async function submitOrder(){
-
-    const { data: sessionData } =
-      await supabaseClient.auth.getSession();
+  const number =
+    paymentNumbers[method];
 
 
-    if(!sessionData.session){
-
-      alert("Please login first.");
-
-      return;
-    }
+  box.style.display =
+    "block";
 
 
-    const name =
-      document.getElementById("buyerName").value.trim();
+  box.innerHTML =
+    method +
+    " Payment Number: " +
+    number;
 
 
-    const phone =
-      document.getElementById("buyerPhone").value.trim();
+  copyBtn.style.display =
+    "block";
+
+}
 
 
-    const method =
-      document.getElementById("paymentMethod").value;
+
+/* =========================
+   COPY PAYMENT NUMBER
+========================= */
 
 
-    const transaction =
-      document.getElementById("transactionId").value.trim();
+async function copyPaymentNumber(){
+
+  const method =
+    document.getElementById(
+      "paymentMethod"
+    ).value;
 
 
-    if(!name || !phone || !method || !transaction){
+  if(!method){
 
-      alert("Please fill in all required information.");
+    return;
 
-      return;
-    }
-
-
-    const { error } =
-      await supabaseClient
-        .from("Orders")
-        .insert([{
-
-          user_id:
-            sessionData.session.user.id,
-
-          buyer_name:
-            name,
-
-          phone:
-            phone,
-
-          "package title":
-            selectedProduct,
-
-          price:
-            selectedPrice,
-
-          duration:
-            selectedDuration,
-
-          status:
-            "Pending",
-
-          "payment method":
-            method,
-
-          "transaction id":
-            transaction
-
-        }]);
+  }
 
 
-    if(error){
+  const number =
+    paymentNumbers[method];
 
-      alert(
-        "Order failed: " +
-        error.message
-      );
 
-      return;
-    }
+  try{
+
+    await navigator.clipboard.writeText(
+      number
+    );
 
 
     alert(
-      "Order submitted successfully! Your order is now Pending."
+      "Payment number copied!"
     );
 
 
-    document.getElementById("transactionId").value = "";
+  }catch(error){
 
-    document.getElementById("paymentMethod").value = "";
+    alert(
+      "Copy failed. Please copy the number manually."
+    );
 
-    document.getElementById("paymentNumber").style.display =
-      "none";
+  }
+
+}
 
 
-    closeOrder();
+
+/* =========================
+   SUBMIT ORDER
+========================= */
+
+
+async function submitOrder(){
+
+  const { data: sessionData } =
+    await supabaseClient.auth.getSession();
+
+
+  if(!sessionData.session){
+
+    alert(
+      "Please login first."
+    );
+
+    return;
 
   }
 
 
-  /* =========================
-     LOAD PACKAGES
-  ========================= */
 
-  async function loadPackages(){
-
-    const result =
-      await supabaseClient
-        .from("Package")
-        .select("id,title,price,duration")
-        .order("id",{ascending:true});
+  const name =
+    document
+      .getElementById("buyerName")
+      .value
+      .trim();
 
 
-    if(result.error){
 
-      console.log(
-        "Package load error:",
-        result.error.message
+  const phone =
+    document
+      .getElementById("buyerPhone")
+      .value
+      .trim();
+
+
+
+  const method =
+    document
+      .getElementById("paymentMethod")
+      .value;
+
+
+
+  const transaction =
+    document
+      .getElementById("transactionId")
+      .value
+      .trim();
+
+
+
+  if(
+    !name ||
+    !phone ||
+    !method ||
+    !transaction
+  ){
+
+    alert(
+      "Please fill in all required information."
+    );
+
+    return;
+
+  }
+
+
+
+  const { error } =
+    await supabaseClient
+      .from("Orders")
+      .insert([{
+
+        user_id:
+          sessionData.session.user.id,
+
+        buyer_name:
+          name,
+
+        phone:
+          phone,
+
+        "package title":
+          selectedProduct,
+
+        price:
+          selectedPrice,
+
+        duration:
+          selectedDuration,
+
+        status:
+          "Pending",
+
+        "payment method":
+          method,
+
+        "transaction id":
+          transaction
+
+      }]);
+
+
+
+  if(error){
+
+    alert(
+      "Order failed: " +
+      error.message
+    );
+
+    return;
+
+  }
+
+
+
+  alert(
+    "Order submitted successfully! Your order is now Pending."
+  );
+
+
+
+  document.getElementById(
+    "transactionId"
+  ).value =
+    "";
+
+
+
+  document.getElementById(
+    "paymentMethod"
+  ).value =
+    "";
+
+
+
+  document.getElementById(
+    "paymentNumber"
+  ).style.display =
+    "none";
+
+
+
+  document.getElementById(
+    "paymentNumber"
+  ).innerHTML =
+    "";
+
+
+
+  document.getElementById(
+    "copyPaymentNumber"
+  ).style.display =
+    "none";
+
+
+
+  closeOrder();
+
+}
+
+
+
+/* =========================
+   LOAD PACKAGES FROM SUPABASE
+========================= */
+
+
+async function loadPackages(){
+
+  const container =
+    document.getElementById(
+      "packages"
+    );
+
+
+  const status =
+    document.getElementById(
+      "packageStatus"
+    );
+
+
+  status.innerHTML =
+    "Loading packages...";
+
+
+
+  const result =
+    await supabaseClient
+      .from("Package")
+      .select(
+        "id,title,price,duration"
+      )
+      .order(
+        "id",
+        {
+          ascending:true
+        }
       );
 
-      return;
-
-    }
 
 
-    if(!result.data || result.data.length === 0){
+  if(result.error){
 
-      return;
-
-    }
-
-
-    const container =
-      document.getElementById("packages");
+    console.log(
+      "Package load error:",
+      result.error.message
+    );
 
 
-    container.innerHTML = "";
+    status.innerHTML =
+      "";
 
 
-    result.data.forEach(function(p){
+    return;
+
+  }
+
+
+
+  if(
+    !result.data ||
+    result.data.length === 0
+  ){
+
+    status.innerHTML =
+      "No packages available.";
+
+    return;
+
+  }
+
+
+
+  container.innerHTML =
+    "";
+
+
+
+  result.data.forEach(
+    function(p){
 
       container.innerHTML += `
 
         <div class="card">
 
-          <h2>${escapeHtml(p.title)}</h2>
+          <h2>
+            ${escapeHtml(p.title)}
+          </h2>
 
           <div class="price">
             ৳${Number(p.price).toFixed(0)}
@@ -848,32 +1360,70 @@
 
       `;
 
-    });
-
-  }
-
-
-  function escapeHtml(value){
-
-    return String(value)
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-
-  }
+    }
+  );
 
 
-  /* =========================
-     PAGE LOAD
-  ========================= */
 
-  updateLoginButton();
+  status.innerHTML =
+    "";
 
-  loadPackages();
+}
+
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+
+function escapeHtml(value){
+
+  return String(value)
+
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
+}
+
+
+
+/* =========================
+   PAGE LOAD
+========================= */
+
+
+updateLoginButton();
+
+loadPackages();
+
+
 
 </script>
 
+
 </body>
-  </html>
+
+</html>
