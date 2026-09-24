@@ -2,422 +2,142 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Panel Sell Bazaar - Admin</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,sans-serif;
-}
-
 body{
+  font-family:Arial;
   background:#0b1020;
   color:white;
-  min-height:100vh;
+  margin:0;
 }
-
 header{
-  background:#121a30;
   padding:18px;
-  border-bottom:1px solid #29365d;
+  background:#121a30;
   display:flex;
   justify-content:space-between;
-  align-items:center;
 }
-
-.logo{
-  font-size:21px;
-  font-weight:bold;
-}
-
 .container{
-  max-width:1100px;
+  max-width:1000px;
   margin:auto;
-  padding:25px 15px;
+  padding:20px;
 }
-
 .box{
   background:#121a30;
-  border:1px solid #29365d;
-  border-radius:14px;
-  padding:25px;
-  margin-bottom:20px;
+  padding:20px;
+  margin:20px 0;
+  border-radius:12px;
 }
-
-.login-box{
-  max-width:450px;
-  margin:50px auto;
-}
-
-h1{
-  margin-bottom:10px;
-}
-
-h2{
-  margin-bottom:18px;
-}
-
-h3{
-  margin-bottom:10px;
-}
-
-.info{
-  color:#aeb8d4;
-  font-size:14px;
-  line-height:1.5;
-  margin-bottom:15px;
-}
-
-label{
-  display:block;
-  margin-top:13px;
-  margin-bottom:6px;
-}
-
-input,
-select{
+input,select{
   width:100%;
   padding:12px;
-  border-radius:8px;
-  border:1px solid #394a78;
+  margin:7px 0 12px;
+  box-sizing:border-box;
   background:#0b1020;
   color:white;
+  border:1px solid #40527d;
+  border-radius:7px;
 }
-
 button{
-  border:0;
-  border-radius:8px;
   padding:11px 16px;
+  border:0;
+  border-radius:7px;
   cursor:pointer;
   font-weight:bold;
 }
-
-.login-btn,
-.main-btn{
-  background:#4f8cff;
+.login,.save{
+  background:#4285f4;
   color:white;
 }
-
-.main-btn{
-  width:100%;
-  margin-top:18px;
-}
-
-.add-btn{
-  background:#20b86b;
-  color:white;
-  margin-top:18px;
-}
-
-.edit-btn{
-  background:#f39c12;
-  color:white;
-  margin-right:6px;
-}
-
-.delete-btn{
-  background:#e74c3c;
-  color:white;
-}
-
-.logout-btn{
-  background:#e74c3c;
-  color:white;
-}
-
-.hidden{
-  display:none!important;
-}
-
-.message{
-  margin-top:15px;
-  color:#7ee2ff;
-  line-height:1.5;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:
-  repeat(auto-fit,minmax(220px,1fr));
-  gap:15px;
-}
-
-.list{
-  display:grid;
-  gap:15px;
-  margin-top:20px;
-}
-
+.edit{background:#f39c12;color:white}
+.delete{background:#e74c3c;color:white}
+.logout{background:#e74c3c;color:white}
+.hidden{display:none}
 .item{
   background:#0b1020;
+  padding:15px;
+  margin:12px 0;
+  border-radius:10px;
   border:1px solid #29365d;
-  border-radius:12px;
-  padding:18px;
 }
-
-.item p{
-  color:#c5cee4;
-  margin:7px 0;
-  line-height:1.5;
-}
-
-.price{
+.msg{
+  margin-top:12px;
   color:#7ee2ff;
-  font-size:20px;
-  font-weight:bold;
 }
-
-.divider{
-  height:1px;
-  background:#29365d;
-  margin:25px 0;
-}
-
-.status-pending{
-  color:#f1c40f;
-  font-weight:bold;
-}
-
-.status-completed{
-  color:#20b86b;
-  font-weight:bold;
-}
-
-.status-cancelled{
-  color:#e74c3c;
-  font-weight:bold;
-}
-
-.small-btn{
-  margin-top:8px;
-}
-
-.order-select{
-  margin-top:10px;
-}
-
 </style>
 </head>
 
 <body>
 
 <header>
-
-  <div class="logo">
-    Panel Sell Bazaar — Admin
-  </div>
-
-  <button
-    id="logoutButton"
-    class="logout-btn hidden"
-    onclick="logout()">
-
-    Logout
-
-  </button>
-
+  <b>Panel Sell Bazaar — Admin</b>
+  <button id="logout" class="logout hidden" onclick="logout()">Logout</button>
 </header>
 
-
-<!-- LOGIN -->
-
-<div
-  id="loginSection"
-  class="container">
-
-  <div class="box login-box">
-
-    <h1>Admin Login</h1>
-
-    <p class="info">
-      Login with your Supabase Admin account.
-    </p>
+<div id="loginBox" class="container">
+  <div class="box">
+    <h2>Admin Login</h2>
 
     <label>Email</label>
-
-    <input
-      id="email"
-      type="email"
-      placeholder="Admin email">
-
+    <input id="email" type="email">
 
     <label>Password</label>
+    <input id="password" type="password">
 
-    <input
-      id="password"
-      type="password"
-      placeholder="Admin password">
+    <button class="login" onclick="adminLogin()">Login</button>
 
-
-    <button
-      class="main-btn"
-      onclick="adminLogin()">
-
-      Login
-
-    </button>
-
-
-    <div
-      id="loginMessage"
-      class="message">
-    </div>
-
+    <div id="loginMsg" class="msg"></div>
   </div>
-
 </div>
 
 
-
-<!-- ADMIN -->
-
-<div
-  id="adminSection"
-  class="container hidden">
-
-
-  <!-- PACKAGE -->
+<div id="adminBox" class="container hidden">
 
   <div class="box">
+    <h2>Package Management</h2>
 
-    <h1>Package Management</h1>
+    <label>Package Title</label>
+    <input id="title" placeholder="Aim Hacker">
 
-    <p class="info">
-      এখান থেকে Package Add, Edit এবং Delete করতে পারবেন।
-    </p>
+    <label>Price</label>
+    <input id="price" type="number" placeholder="20">
 
+    <label>Duration</label>
+    <input id="duration" placeholder="1 Hour">
 
-    <div class="grid">
-
-      <div>
-
-        <label>Package Title</label>
-
-        <input
-          id="packageTitle"
-          type="text"
-          placeholder="Aim Hacker">
-
-      </div>
-
-
-      <div>
-
-        <label>Price</label>
-
-        <input
-          id="packagePrice"
-          type="number"
-          min="0"
-          placeholder="20">
-
-      </div>
-
-
-      <div>
-
-        <label>Duration</label>
-
-        <input
-          id="packageDuration"
-          type="text"
-          placeholder="1 Hour">
-
-      </div>
-
-    </div>
-
-
-    <button
-      id="savePackageButton"
-      class="add-btn"
-      onclick="savePackage()">
-
+    <button id="saveBtn" class="save" onclick="savePackage()">
       Add Package
-
     </button>
 
-
-    <button
-      id="cancelEditButton"
-      class="delete-btn hidden"
-      onclick="cancelEdit()">
-
-      Cancel Edit
-
+    <button id="cancelBtn" class="delete hidden" onclick="cancelEdit()">
+      Cancel
     </button>
 
+    <div id="packageMsg" class="msg"></div>
 
-    <div
-      id="packageMessage"
-      class="message">
-    </div>
-
-
-    <div class="divider"></div>
-
-
-    <h2>Existing Packages</h2>
-
-
-    <div
-      id="packageList"
-      class="list">
-    </div>
-
+    <h3>Existing Packages</h3>
+    <div id="packages"></div>
   </div>
 
-
-
-  <!-- ORDERS -->
 
   <div class="box">
+    <h2>Customer Orders</h2>
 
-    <h1>Customer Orders</h1>
-
-    <p class="info">
-      Buyer-এর order এবং payment information এখানে দেখা যাবে।
-    </p>
-
-
-    <button
-      class="main-btn"
-      onclick="loadOrders()">
-
+    <button class="login" onclick="loadOrders()">
       Refresh Orders
-
     </button>
 
-
-    <div
-      id="orderMessage"
-      class="message">
-    </div>
-
-
-    <div
-      id="orderList"
-      class="list">
-    </div>
-
+    <div id="orderMsg" class="msg"></div>
+    <div id="orders"></div>
   </div>
 
-
 </div>
-
 
 
 <script>
-
-/* =========================
-   SUPABASE
-========================= */
 
 const SUPABASE_URL =
 "https://wiztksrtzjmsxzolollf.supabase.co";
@@ -425,774 +145,349 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
 
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-let supabaseClient;
+let editId = null;
 
 
-/* =========================
-   START SUPABASE
-========================= */
+/* LOGIN */
 
-try{
+async function adminLogin(){
 
-  if(!window.supabase){
+  const msg = document.getElementById("loginMsg");
 
-    throw new Error(
-      "Supabase library load হয়নি। Internet connection check করুন।"
-    );
+  const email =
+    document.getElementById("email").value.trim();
 
+  const password =
+    document.getElementById("password").value;
+
+  if(!email || !password){
+    msg.innerText = "Email এবং Password দিন।";
+    return;
   }
 
+  msg.innerText = "Login হচ্ছে...";
 
-  supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
+  const {data,error} =
+    await db.auth.signInWithPassword({
+      email:email,
+      password:password
+    });
+
+  if(error){
+    msg.innerText =
+      "Login failed: " + error.message;
+    return;
+  }
+
+  const profile =
+    await db.from("Profiles")
+    .select('"Role"')
+    .eq("id",data.user.id)
+    .maybeSingle();
+
+  if(profile.error){
+    msg.innerText =
+      "Profile error: " + profile.error.message;
+    await db.auth.signOut();
+    return;
+  }
+
+  if(
+    !profile.data ||
+    String(profile.data.Role).toLowerCase() !== "admin"
+  ){
+    msg.innerText =
+      "এই account-এর Admin access নেই।";
+    await db.auth.signOut();
+    return;
+  }
+
+  document.getElementById("loginBox")
+    .classList.add("hidden");
+
+  document.getElementById("adminBox")
+    .classList.remove("hidden");
+
+  document.getElementById("logout")
+    .classList.remove("hidden");
+
+  await loadPackages();
+  await loadOrders();
+}
 
 
-}catch(error){
+/* LOGOUT */
 
-  document.getElementById(
-    "loginMessage"
-  ).innerText =
-    "Supabase error: " +
-    error.message;
+async function logout(){
+
+  await db.auth.signOut();
+
+  location.reload();
 
 }
 
 
+/* PACKAGES */
 
-/* =========================
-   HTML ESCAPE
-========================= */
+async function loadPackages(){
+
+  const box =
+    document.getElementById("packages");
+
+  const result =
+    await db.from("Package")
+    .select("id,title,price,duration")
+    .order("id",{ascending:true});
+
+  if(result.error){
+    document.getElementById("packageMsg").innerText =
+      "Package load failed: " +
+      result.error.message;
+    return;
+  }
+
+  box.innerHTML = "";
+
+  if(!result.data.length){
+    box.innerHTML = "<p>No packages found.</p>";
+    return;
+  }
+
+  result.data.forEach(p => {
+
+    box.innerHTML += `
+      <div class="item">
+
+        <h3>${escapeHtml(p.title)}</h3>
+
+        <p>Price: ৳${Number(p.price)}</p>
+
+        <p>Duration: ${escapeHtml(p.duration)}</p>
+
+        <button class="edit"
+          onclick="editPackage(
+            ${p.id},
+            ${JSON.stringify(p.title)},
+            ${Number(p.price)},
+            ${JSON.stringify(p.duration)}
+          )">
+          Edit
+        </button>
+
+        <button class="delete"
+          onclick="deletePackage(${p.id})">
+          Delete
+        </button>
+
+      </div>
+    `;
+  });
+}
+
+
+/* ADD / UPDATE */
+
+async function savePackage(){
+
+  const title =
+    document.getElementById("title").value.trim();
+
+  const price =
+    Number(document.getElementById("price").value);
+
+  const duration =
+    document.getElementById("duration").value.trim();
+
+  const msg =
+    document.getElementById("packageMsg");
+
+  if(!title || !duration || Number.isNaN(price)){
+    msg.innerText =
+      "Title, Price এবং Duration ঠিকভাবে দিন।";
+    return;
+  }
+
+  msg.innerText = "Saving...";
+
+  let result;
+
+  if(editId !== null){
+
+    result =
+      await db.from("Package")
+      .update({
+        title:title,
+        price:price,
+        duration:duration
+      })
+      .eq("id",editId);
+
+  }else{
+
+    result =
+      await db.from("Package")
+      .insert([{
+        title:title,
+        price:price,
+        duration:duration
+      }]);
+
+  }
+
+  if(result.error){
+    msg.innerText =
+      "Save failed: " + result.error.message;
+    return;
+  }
+
+  msg.innerText =
+    editId !== null
+    ? "Package updated."
+    : "Package added.";
+
+  cancelEdit();
+  await loadPackages();
+}
+
+
+/* EDIT */
+
+function editPackage(id,title,price,duration){
+
+  editId = id;
+
+  document.getElementById("title").value = title;
+  document.getElementById("price").value = price;
+  document.getElementById("duration").value = duration;
+
+  document.getElementById("saveBtn").innerText =
+    "Update Package";
+
+  document.getElementById("cancelBtn")
+    .classList.remove("hidden");
+}
+
+
+/* CANCEL */
+
+function cancelEdit(){
+
+  editId = null;
+
+  document.getElementById("title").value = "";
+  document.getElementById("price").value = "";
+  document.getElementById("duration").value = "";
+
+  document.getElementById("saveBtn").innerText =
+    "Add Package";
+
+  document.getElementById("cancelBtn")
+    .classList.add("hidden");
+}
+
+
+/* DELETE */
+
+async function deletePackage(id){
+
+  if(!confirm("এই package delete করবেন?"))
+    return;
+
+  const result =
+    await db.from("Package")
+    .delete()
+    .eq("id",id);
+
+  if(result.error){
+    document.getElementById("packageMsg").innerText =
+      "Delete failed: " + result.error.message;
+    return;
+  }
+
+  await loadPackages();
+}
+
+
+/* ORDERS */
+
+async function loadOrders(){
+
+  const box =
+    document.getElementById("orders");
+
+  const msg =
+    document.getElementById("orderMsg");
+
+  msg.innerText = "Orders loading...";
+
+  const result =
+    await db.from("Orders")
+    .select(
+      'user_id,buyer_name,phone,"package title",price,duration,status,"payment method","transaction id"'
+    );
+
+  if(result.error){
+    msg.innerText =
+      "Order load failed: " +
+      result.error.message;
+    return;
+  }
+
+  box.innerHTML = "";
+
+  if(!result.data.length){
+    box.innerHTML = "<p>No orders found.</p>";
+    msg.innerText = "";
+    return;
+  }
+
+  result.data.forEach((o,i)=>{
+
+    box.innerHTML += `
+      <div class="item">
+
+        <h3>Order #${i+1}</h3>
+
+        <p>Buyer: ${escapeHtml(o.buyer_name)}</p>
+        <p>Phone: ${escapeHtml(o.phone)}</p>
+        <p>Package: ${escapeHtml(o["package title"])}</p>
+        <p>Price: ৳${Number(o.price || 0)}</p>
+        <p>Duration: ${escapeHtml(o.duration)}</p>
+        <p>Payment: ${escapeHtml(o["payment method"])}</p>
+        <p>Transaction ID:
+          ${escapeHtml(o["transaction id"])}
+        </p>
+
+        <p>Status:
+          <b>${escapeHtml(o.status || "Pending")}</b>
+        </p>
+
+      </div>
+    `;
+  });
+
+  msg.innerText = "";
+}
+
+
+/* SECURITY */
 
 function escapeHtml(value){
 
   return String(value ?? "")
-
     .replaceAll("&","&amp;")
     .replaceAll("<","&lt;")
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
-
 }
 
+</script>
 
-
-/* =========================
-   ADMIN LOGIN
-========================= */
-
-async function adminLogin(){
-
-  const message =
-    document.getElementById(
-      "loginMessage"
-    );
-
-
-  const email =
-    document.getElementById(
-      "email"
-    ).value.trim();
-
-
-  const password =
-    document.getElementById(
-      "password"
-    ).value;
-
-
-  if(!email || !password){
-
-    message.innerText =
-      "Email এবং password দিন।";
-
-    return;
-
-  }
-
-
-  message.innerText =
-    "Login হচ্ছে...";
-
-
-  try{
-
-    const result =
-      await supabaseClient.auth
-        .signInWithPassword({
-
-          email:email,
-
-          password:password
-
-        });
-
-
-    if(result.error){
-
-      message.innerText =
-        "Login failed: " +
-        result.error.message;
-
-      return;
-
-    }
-
-
-    if(!result.data.user){
-
-      message.innerText =
-        "User পাওয়া যায়নি।";
-
-      return;
-
-    }
-
-
-    /* CHECK PROFILE */
-
-    const profile =
-      await supabaseClient
-        .from("Profiles")
-        .select('"Role"')
-        .eq(
-          "id",
-          result.data.user.id
-        )
-        .maybeSingle();
-
-
-    if(profile.error){
-
-      await supabaseClient.auth.signOut();
-
-      message.innerText =
-        "Profile check failed: " +
-        profile.error.message;
-
-      return;
-
-    }
-
-
-    if(
-      !profile.data ||
-      String(profile.data.Role)
-        .toLowerCase() !== "admin"
-    ){
-
-      await supabaseClient.auth.signOut();
-
-      message.innerText =
-        "এই account-এর Admin access নেই।";
-
-      return;
-
-    }
-
-
-    /* SHOW ADMIN */
-
-    document
-      .getElementById("loginSection")
-      .classList
-      .add("hidden");
-
-
-    document
-      .getElementById("adminSection")
-      .classList
-      .remove("hidden");
-
-
-    document
-      .getElementById("logoutButton")
-      .classList
-      .remove("hidden");
-
-
-    message.innerText =
-      "";
-
-
-    await loadPackages();
-
-    await loadOrders();
-
-
-  }catch(error){
-
-    message.innerText =
-      "Error: " +
-      error.message;
-
-  }
-
-}
-
-
-
-/* =========================
-   SESSION CHECK
-========================= */
-
-async function checkSession(){
-
-  if(!supabaseClient){
-
-    return;
-
-  }
-
-
-  try{
-
-    const result =
-      await supabaseClient.auth
-        .getSession();
-
-
-    if(!result.data.session){
-
-      return;
-
-    }
-
-
-    const user =
-      result.data.session.user;
-
-
-    const profile =
-      await supabaseClient
-        .from("Profiles")
-        .select('"Role"')
-        .eq(
-          "id",
-          user.id
-        )
-        .maybeSingle();
-
-
-    if(
-      profile.data &&
-      String(profile.data.Role)
-        .toLowerCase() === "admin"
-    ){
-
-      document
-        .getElementById("loginSection")
-        .classList
-        .add("hidden");
-
-
-      document
-        .getElementById("adminSection")
-        .classList
-        .remove("hidden");
-
-
-      document
-        .getElementById("logoutButton")
-        .classList
-        .remove("hidden");
-
-
-      await loadPackages();
-
-      await loadOrders();
-
-    }
-
-  }catch(error){
-
-    console.log(
-      "Session check:",
-      error.message
-    );
-
-  }
-
-}
-
-
-
-/* =========================
-   LOGOUT
-========================= */
-
-async function logout(){
-
-  await supabaseClient.auth.signOut();
-
-
-  document
-    .getElementById("adminSection")
-    .classList
-    .add("hidden");
-
-
-  document
-    .getElementById("loginSection")
-    .classList
-    .remove("hidden");
-
-
-  document
-    .getElementById("logoutButton")
-    .classList
-    .add("hidden");
-
-}
-
-
-
-/* =========================
-   LOAD PACKAGES
-========================= */
-
-async function loadPackages(){
-
-  const list =
-    document.getElementById(
-      "packageList"
-    );
-
-
-  const message =
-    document.getElementById(
-      "packageMessage"
-    );
-
-
-  message.innerText =
-    "Packages loading...";
-
-
-  const result =
-    await supabaseClient
-      .from("Package")
-      .select(
-        "id,title,price,duration"
-      )
-      .order(
-        "id",
-        {
-          ascending:true
-        }
-      );
-
-
-  if(result.error){
-
-    message.innerText =
-      "Package load failed: " +
-      result.error.message;
-
-    return;
-
-  }
-
-
-  if(
-    !result.data ||
-    result.data.length === 0
-  ){
-
-    list.innerHTML =
-      "<p class='info'>No packages found.</p>";
-
-    message.innerText =
-      "";
-
-    return;
-
-  }
-
-
-  list.innerHTML =
-    "";
-
-
-  result.data.forEach(
-    function(pkg){
-
-      list.innerHTML += `
-
-        <div class="item">
-
-          <h3>
-            ${escapeHtml(pkg.title)}
-          </h3>
-
-          <p class="price">
-            ৳${Number(pkg.price).toFixed(0)}
-          </p>
-
-          <p>
-            Duration:
-            ${escapeHtml(pkg.duration)}
-          </p>
-
-          <p>
-            ID:
-            ${escapeHtml(pkg.id)}
-          </p>
-
-
-          <button
-            class="edit-btn small-btn"
-            onclick='editPackage(
-              ${pkg.id},
-              ${JSON.stringify(pkg.title)},
-              ${Number(pkg.price)},
-              ${JSON.stringify(pkg.duration)}
-            )'>
-
-            Edit
-
-          </button>
-
-
-          <button
-            class="delete-btn small-btn"
-            onclick="deletePackage(${pkg.id})">
-
-            Delete
-
-          </button>
-
-        </div>
-
-      `;
-
-    }
-  );
-
-
-  message.innerText =
-    "";
-
-}
-
-
-
-/* =========================
-   SAVE PACKAGE
-========================= */
-
-async function savePackage(){
-
-  const title =
-    document.getElementById(
-      "packageTitle"
-    ).value.trim();
-
-
-  const price =
-    Number(
-      document.getElementById(
-        "packagePrice"
-      ).value
-    );
-
-
-  const duration =
-    document.getElementById(
-      "packageDuration"
-    ).value.trim();
-
-
-  const message =
-    document.getElementById(
-      "packageMessage"
-    );
-
-
-  if(!title){
-
-    message.innerText =
-      "Package title দিন।";
-
-    return;
-
-  }
-
-
-  if(
-    Number.isNaN(price) ||
-    price < 0
-  ){
-
-    message.innerText =
-      "সঠিক price দিন।";
-
-    return;
-
-  }
-
-
-  if(!duration){
-
-    message.innerText =
-      "Duration দিন।";
-
-    return;
-
-  }
-
-
-  message.innerText =
-    "Saving...";
-
-
-  let result;
-
-
-  if(editingPackageId !== null){
-
-    result =
-      await supabaseClient
-        .from("Package")
-        .update({
-
-          title:title,
-
-          price:price,
-
-          duration:duration
-
-        })
-        .eq(
-          "id",
-          editingPackageId
-        );
-
-
-  }else{
-
-    result =
-      await supabaseClient
-        .from("Package")
-        .insert([{
-
-          title:title,
-
-          price:price,
-
-          duration:duration
-
-        }]);
-
-  }
-
-
-  if(result.error){
-
-    message.innerText =
-      "Save failed: " +
-      result.error.message;
-
-    return;
-
-  }
-
-
-  message.innerText =
-    editingPackageId !== null
-      ? "Package updated successfully."
-      : "Package added successfully.";
-
-
-  clearPackageForm();
-
-  await loadPackages();
-
-}
-
-
-
-/* =========================
-   EDIT PACKAGE
-========================= */
-
-function editPackage(
-  id,
-  title,
-  price,
-  duration
-){
-
-  editingPackageId =
-    id;
-
-
-  document.getElementById(
-    "packageTitle"
-  ).value =
-    title;
-
-
-  document.getElementById(
-    "packagePrice"
-  ).value =
-    price;
-
-
-  document.getElementById(
-    "packageDuration"
-  ).value =
-    duration;
-
-
-  document.getElementById(
-    "savePackageButton"
-  ).innerText =
-    "Update Package";
-
-
-  document.getElementById(
-    "cancelEditButton"
-  ).classList
-  .remove("hidden");
-
-
-  document.getElementById(
-    "packageMessage"
-  ).innerText =
-    "Editing Package ID: " +
-    id;
-
-}
-
-
-
-/* =========================
-   EDIT ID
-========================= */
-
-let editingPackageId =
-  null;
-
-
-
-/* =========================
-   CANCEL EDIT
-========================= */
-
-function cancelEdit(){
-
-  clearPackageForm();
-
-}
-
-
-
-/* =========================
-   CLEAR PACKAGE FORM
-========================= */
-
-function clearPackageForm(){
-
-  editingPackageId =
-    null;
-
-
-  document.getElementById(
-    "packageTitle"
-  ).value =
-    "";
-
-
-  document.getElementById(
-    "packagePrice"
-  ).value =
-    "";
-
-
-  document.getElementById(
-    "packageDuration"
-  ).value =
-    "";
-
-
-  document.getElementById(
-    "savePackageButton"
-  ).innerText =
-    "Add Package";
-
-
-  document.getElementById(
-    "cancelEditButton"
-  ).classList
-  .add("hidden");
-
-}
-
-
-
-/* =========================
-   DELETE PACKAGE
-========================= */
-
-async function deletePackage(id){
-
-  if(
-    !confirm(
-      "এই package delete করতে চান?"
-    )
-  ){
-
-    return;
-
-  }
-
-
-  const message =
-    document.getElementById(
-      "packageMessage"
-    );
-
-
-  message.innerText =
-    "Deleting...";
-
-
-  const result =
-    await supabaseClient
-      .from("Package")
-      .delete()
-      .eq(
-        "id",
-        id
-      );
-
-
-  if(result.error){
-
-    message.innerText =
-      "Delete failed: " +
-      result.error.message;
-
-    return;
-
-  }
-
-
-  message.innerText =
-    "Package deleted successfully.";
-
-
-  await loadPackages();
-
-}
-
-
-
-/* =========================
-   LOAD ORDERS
-========================= */
+</body>
+</html>
