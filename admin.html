@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+  <title>Panel Sell Bazaar - Admin</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+      font-family:Arial,sans-serif;
+    }
+
+    body{
+      background:#0b1020;
+      color:white;
+      min-height:100vh;
+    }
+
+    header{
+      background:#121a30;
+      padding:18px;
+      border-bottom:1px solid #29365d;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:15px;
+    }
+
+    .logo{
+      font-size:21px;
+      font-weight:bold;
+    }
+
+    button{
+      border:0;
+      border-radius:8px;
+      padding:10px 16px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    .login-btn{
+      background:#4f8cff;
+      color:white;
+    }
+
+    .logout-btn{
+      background:#e74c3c;
+      color:white;
+    }
+
+    .container{
+      max-width:1100px;
+      margin:auto;
+      padding:25px 15px;
+    }
+
+    .login-box,
+    .admin-box{
+      background:#121a30;
+      border:1px solid #29365d;
+      border-radius:14px;
+      padding:25px;
+      margin-bottom:20px;
+    }
+
+    .login-box{
+      max-width:450px;
+      margin:50px auto;
+    }
+
+    h1{
+      margin-bottom:10px;
+    }
+
+    h2{
+      margin-bottom:18px;
+    }
+
+    h3{
+      margin-bottom:10px;
+    }
+
+    label{
+      display:block;
+      margin-top:13px;
+      margin-bottom:6px;
+      color:#dce3f5;
+    }
+
+    input,
+    select{
+      width:100%;
+      padding:12px;
+      border-radius:8px;
+      border:1px solid #394a78;
+      background:#0b1020;
+      color:white;
+      outline:none;
+    }
+
+    .main-btn{
+      width:100%;
+      background:#4f8cff;
+      color:white;
+      margin-top:18px;
+    }
+
+    .add-btn{
+      background:#20b86b;
+      color:white;
+      margin-top:15px;
+    }
+
+    .edit-btn{
+      background:#f39c12;
+      color:white;
+      margin-right:6px;
+    }
+
+    .delete-btn{
+      background:#e74c3c;
+      color:white;
+    }
+
+    .status-btn{
+      background:#4f8cff;
+      color:white;
+      margin-top:8px;
+    }
+
+    .top-info{
+      color:#aeb8d4;
+      font-size:14px;
+      margin-bottom:20px;
+    }
+
+    .message{
+      text-align:center;
+      color:#aeb8d4;
+      margin-top:15px;
+    }
+
+    .package-list,
+    .order-list{
+      display:grid;
+      gap:15px;
+    }
+
+    .package-item,
+    .order-item{
+      background:#0b1020;
+      border:1px solid #29365d;
+      border-radius:12px;
+      padding:18px;
+    }
+
+    .package-item p,
+    .order-item p{
+      color:#c5cee4;
+      margin:7px 0;
+      line-height:1.5;
+    }
+
+    .price-text{
+      color:#7ee2ff;
+      font-size:20px;
+      font-weight:bold;
+    }
+
+    .pending{
+      color:#f1c40f;
+      font-weight:bold;
+    }
+
+    .completed{
+      color:#20b86b;
+      font-weight:bold;
+    }
+
+    .cancelled{
+      color:#e74c3c;
+      font-weight:bold;
+    }
+
+    .hidden{
+      display:none;
+    }
+
+    .divider{
+      height:1px;
+      background:#29365d;
+      margin:25px 0;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:
+        repeat(auto-fit,minmax(220px,1fr));
+      gap:15px;
+    }
+
+    .small-btn{
+      padding:9px 13px;
+      margin-top:8px;
+    }
+
+    .order-number{
+      color:#7ee2ff;
+      font-weight:bold;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+  <div class="logo">
+    Panel Sell Bazaar — Admin
+  </div>
+
+  <button
+    id="logoutButton"
+    class="logout-btn hidden"
+    onclick="logout()">
+
+    Logout
+
+  </button>
+
+</header>
+
+
+
+<!-- =========================
+     ADMIN LOGIN
+========================= -->
+
+
+<div
+  id="loginSection"
+  class="container">
+
+
+  <div class="login-box">
+
+    <h1>
+      Admin Login
+    </h1>
+
+    <p class="top-info">
+      Only an account with Role = admin
+      can access this panel.
+    </p>
+
+
+    <label>
+      Email
+    </label>
+
+    <input
+      id="email"
+      type="email"
+      placeholder="Admin email">
+
+
+    <label>
+      Password
+    </label>
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Admin password">
+
+
+    <button
+      class="main-btn"
+      onclick="adminLogin()">
+
+      Login
+
+    </button>
+
+
+    <div
+      id="loginMessage"
+      class="message">
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- =========================
+     ADMIN PANEL
+========================= -->
+
+
+<div
+  id="adminSection"
+  class="container hidden">
+
+
+  <!-- PACKAGE MANAGEMENT -->
+
+
+  <div class="admin-box">
+
+    <h1>
+      Package Management
+    </h1>
+
+    <p class="top-info">
+      Add, edit or delete packages.
+      Changes are saved in Supabase.
+    </p>
+
+
+
+    <div class="grid">
+
+
+      <div>
+
+        <label>
+          Package Title
+        </label>
+
+        <input
+          id="packageTitle"
+          type="text"
+          placeholder="Example: Aim Hacker">
+
+      </div>
+
+
+      <div>
+
+        <label>
+          Price
+        </label>
+
+        <input
+          id="packagePrice"
+          type="number"
+          min="0"
+          placeholder="20">
+
+      </div>
+
+
+      <div>
+
+        <label>
+          Duration
+        </label>
+
+        <input
+          id="packageDuration"
+          type="text"
+          placeholder="1 Hour">
+
+      </div>
+
+
+    </div>
+
+
+
+    <button
+      id="savePackageButton"
+      class="add-btn"
+      onclick="savePackage()">
+
+      Add Package
+
+    </button>
+
+
+    <button
+      id="cancelEditButton"
+      class="delete-btn hidden"
+      onclick="cancelEdit()">
+
+      Cancel Edit
+
+    </button>
+
+
+
+    <div
+      id="packageMessage"
+      class="message">
+    </div>
+
+
+    <div class="divider"></div>
+
+
+    <h2>
+      Existing Packages
+    </h2>
+
+
+    <div
+      id="packageList"
+      class="package-list">
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- ORDERS -->
+
+
+  <div class="admin-box">
+
+    <h1>
+      Customer Orders
+    </h1>
+
+    <p class="top-info">
+      এখানে buyer-এর order,
+      payment method এবং Transaction ID দেখতে পারবেন।
+    </p>
+
+
+    <button
+      class="main-btn"
+      onclick="loadOrders()">
+
+      Refresh Orders
+
+    </button>
+
+
+    <div
+      id="orderMessage"
+      class="message">
+    </div>
+
+
+    <div class="divider"></div>
+
+
+    <div
+      id="orderList"
+      class="order-list">
+
+    </div>
+
+
+  </div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =========================
+   SUPABASE
+========================= */
+
+
+const SUPABASE_URL =
+  "https://wiztksrtzjmsxzolollf.supabase.co";
+
+
+const SUPABASE_KEY =
+  "sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+
+/* =========================
+   VARIABLES
+========================= */
+
+
+let editingPackageId = null;
+
+
+
+/* =========================
+   HELPER
+========================= */
+
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
+}
+
+
+
+/* =========================
+   ADMIN LOGIN
+========================= */
+
+
+async function adminLogin(){
+
+  const email =
+    document
+      .getElementById("email")
+      .value
+      .trim();
+
+
+  const password =
+    document
+      .getElementById("password")
+      .value;
+
+
+  const message =
+    document.getElementById(
+      "loginMessage"
+    );
+
+
+  if(!email || !password){
+
+    message.innerHTML =
+      "Email and password দিন।";
+
+    return;
+
+  }
+
+
+  message.innerHTML =
+    "Logging in...";
+
+
+  const { data, error } =
+    await supabaseClient.auth.signInWithPassword({
+
+      email:email,
+
+      password:password
+
+    });
+
+
+  if(error){
+
+    message.innerHTML =
+      "Login failed: " +
+      escapeHtml(error.message);
+
+    return;
+
+  }
+
+
+  const user =
+    data.user;
+
+
+  if(!user){
+
+    message.innerHTML =
+      "User পাওয়া যায়নি।";
+
+    return;
+
+  }
+
+
+
+  /* =========================
+     CHECK ADMIN ROLE
+  ========================= */
+
+
+  const profile =
+    await supabaseClient
+      .from("Profiles")
+      .select('"Role"')
+      .eq(
+        "id",
+        user.id
+      )
+      .maybeSingle();
+
+
+  if(profile.error){
+
+    await supabaseClient.auth.signOut();
+
+    message.innerHTML =
+      "Profile check failed: " +
+      escapeHtml(
+        profile.error.message
+      );
+
+    return;
+
+  }
+
+
+  if(
+    !profile.data ||
+    String(profile.data.Role).toLowerCase()
+      !== "admin"
+  ){
+
+    await supabaseClient.auth.signOut();
+
+    message.innerHTML =
+      "এই account-এর Admin access নেই.";
+
+    return;
+
+  }
+
+
+
+  /* SHOW ADMIN PANEL */
+
+
+  document
+    .getElementById("loginSection")
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById("adminSection")
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById("logoutButton")
+    .classList
+    .remove("hidden");
+
+
+  await loadPackages();
+
+  await loadOrders();
+
+}
+
+
+
+/* =========================
+   CHECK EXISTING SESSION
+========================= */
+
+
+async function checkSession(){
+
+  const { data } =
+    await supabaseClient.auth.getSession();
+
+
+  if(!data.session){
+
+    return;
+
+  }
+
+
+  const user =
+    data.session.user;
+
+
+  const profile =
+    await supabaseClient
+      .from("Profiles")
+      .select('"Role"')
+      .eq(
+        "id",
+        user.id
+      )
+      .maybeSingle();
+
+
+  if(
+    profile.data &&
+    String(profile.data.Role).toLowerCase()
+      === "admin"
+  ){
+
+    document
+      .getElementById("loginSection")
+      .classList
+      .add("hidden");
+
+
+    document
+      .getElementById("adminSection")
+      .classList
+      .remove("hidden");
+
+
+    document
+      .getElementById("logoutButton")
+      .classList
+      .remove("hidden");
+
+
+    await loadPackages();
+
+    await loadOrders();
+
+  }
+
+}
+
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+
+async function logout(){
+
+  await supabaseClient.auth.signOut();
+
+
+  document
+    .getElementById("adminSection")
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById("loginSection")
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById("logoutButton")
+    .classList
+    .add("hidden");
+
+}
+
+
+
+/* =========================
+   LOAD PACKAGES
+========================= */
+
+
+async function loadPackages(){
+
+  const list =
+    document.getElementById(
+      "packageList"
+    );
+
+
+  const message =
+    document.getElementById(
+      "packageMessage"
+    );
+
+
+  message.innerHTML =
+    "Loading packages...";
+
+
+  const result =
+    await supabaseClient
+      .from("Package")
+      .select(
+        "id,title,price,duration"
+      )
+      .order(
+        "id",
+        {
+          ascending:true
+        }
+      );
+
+
+  if(result.error){
+
+    message.innerHTML =
+      "Package load failed: " +
+      escapeHtml(
+        result.error.message
+      );
+
+    return;
+
+  }
+
+
+  if(
+    !result.data ||
+    result.data.length === 0
+  ){
+
+    list.innerHTML =
+      '<div class="message">No packages found.</div>';
+
+    message.innerHTML =
+      "";
+
+    return;
+
+  }
+
+
+  list.innerHTML =
+    "";
+
+
+  result.data.forEach(
+    function(pkg){
+
+      list.innerHTML += `
+
+        <div class="package-item">
+
+          <h3>
+            ${escapeHtml(pkg.title)}
+          </h3>
+
+          <p class="price-text">
+            ৳${Number(pkg.price).toFixed(0)}
+          </p>
+
+          <p>
+            Duration:
+            ${escapeHtml(pkg.duration)}
+          </p>
+
+          <p>
+            Package ID:
+            ${escapeHtml(pkg.id)}
+          </p>
+
+          <button
+            class="edit-btn small-btn"
+            onclick="editPackage(
+              ${pkg.id},
+              ${JSON.stringify(pkg.title)},
+              ${Number(pkg.price)},
+              ${JSON.stringify(pkg.duration)}
+            )">
+
+            Edit
+
+          </button>
+
+
+          <button
+            class="delete-btn small-btn"
+            onclick="deletePackage(${pkg.id})">
+
+            Delete
+
+          </button>
+
+        </div>
+
+      `;
+
+    }
+  );
+
+
+  message.innerHTML =
+    "";
+
+}
+
+
+
+/* =========================
+   ADD / UPDATE PACKAGE
+========================= */
+
+
+async function savePackage(){
+
+  const title =
+    document
+      .getElementById("packageTitle")
+      .value
+      .trim();
+
+
+  const price =
+    Number(
+      document
+        .getElementById("packagePrice")
+        .value
+    );
+
+
+  const duration =
+    document
+      .getElementById("packageDuration")
+      .value
+      .trim();
+
+
+  const message =
+    document.getElementById(
+      "packageMessage"
+    );
+
+
+  if(!title || !duration){
+
+    message.innerHTML =
+      "Package title এবং duration দিন।";
+
+    return;
+
+  }
+
+
+  if(
+    Number.isNaN(price) ||
+    price < 0
+  ){
+
+    message.innerHTML =
+      "সঠিক price দিন।";
+
+    return;
+
+  }
+
+
+  message.innerHTML =
+    "Saving...";
+
+
+
+  /* UPDATE */
+
+
+  if(editingPackageId !== null){
+
+    const { error } =
+      await supabaseClient
+        .from("Package")
+        .update({
+
+          title:title,
+
+          price:price,
+
+          duration:duration
+
+        })
+        .eq(
+          "id",
+          editingPackageId
+        );
+
+
+    if(error){
+
+      message.innerHTML =
+        "Update failed: " +
+        escapeHtml(
+          error.message
+        );
+
+      return;
+
+    }
+
+
+    message.innerHTML =
+      "Package updated successfully.";
+
+  }
+
+
+  /* ADD */
+
+
+  else{
+
+    const { error } =
+      await supabaseClient
+        .from("Package")
+        .insert([{
+
+          title:title,
+
+          price:price,
+
+          duration:duration
+
+        }]);
+
+
+    if(error){
+
+      message.innerHTML =
+        "Add failed: " +
+        escapeHtml(
+          error.message
+        );
+
+      return;
+
+    }
+
+
+    message.innerHTML =
+      "Package added successfully.";
+
+  }
+
+
+
+  clearPackageForm();
+
+  await loadPackages();
+
+}
+
+
+
+/* =========================
+   EDIT PACKAGE
+========================= */
+
+
+function editPackage(
+  id,
+  title,
+  price,
+  duration
+){
+
+  editingPackageId =
+    id;
+
+
+  document.getElementById(
+    "packageTitle"
+  ).value =
+    title;
+
+
+  document.getElementById(
+    "packagePrice"
+  ).value =
+    price;
+
+
+  document.getElementById(
+    "packageDuration"
+  ).value =
+    duration;
+
+
+  document.getElementById(
+    "savePackageButton"
+  ).innerText =
+    "Update Package";
+
+
+  document.getElementById(
+    "cancelEditButton"
+  ).classList
+   .remove("hidden");
+
+
+  document.getElementById(
+    "packageMessage"
+  ).innerHTML =
+    "Editing Package ID: " +
+    id;
+
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+
+/* =========================
+   CANCEL EDIT
+========================= */
+
+
+function cancelEdit(){
+
+  clearPackageForm();
+
+}
+
+
+
+/* =========================
+   CLEAR FORM
+========================= */
+
+
+function clearPackageForm(){
+
+  editingPackageId =
+    null;
+
+
+  document.getElementById(
+    "packageTitle"
+  ).value =
+    "";
+
+
+  document.getElementById(
+    "packagePrice"
+  ).value =
+    "";
+
+
+  document.getElementById(
+    "packageDuration"
+  ).value =
+    "";
+
+
+  document.getElementById(
+    "savePackageButton"
+  ).innerText =
+    "Add Package";
+
+
+  document.getElementById(
+    "cancelEditButton"
+  ).classList
+   .add("hidden");
+
+}
+
+
+
+/* =========================
+   DELETE PACKAGE
+========================= */
+
+
+async function deletePackage(id){
+
+  const ok =
+    confirm(
+      "এই package delete করতে চান?"
+    );
+
+
+  if(!ok){
+
+    return;
+
+  }
+
+
+  const message =
+    document.getElementById(
+      "packageMessage"
+    );
+
+
+  message.innerHTML =
+    "Deleting...";
+
+
+  const { error } =
+    await supabaseClient
+      .from("Package")
+      .delete()
+      .eq(
+        "id",
+        id
+      );
+
+
+  if(error){
+
+    message.innerHTML =
+      "Delete failed: " +
+      escapeHtml(
+        error.message
+      );
+
+    return;
+
+  }
+
+
+  message.innerHTML =
+    "Package deleted successfully.";
+
+
+  await loadPackages();
+
+}
+
+
+
+/* =========================
+   LOAD ORDERS
+========================= */
+
+
+async function loadOrders(){
+
+  const list =
+    document.getElementById(
+      "orderList"
+    );
+
+
+  const message =
+    document.getElementById(
+      "orderMessage"
+    );
+
+
+  message.innerHTML =
+    "Loading orders...";
+
+
+  const result =
+    await supabaseClient
+      .from("Orders")
+      .select(
+        "user_id,buyer_name,phone,\"package title\",price,duration,status,\"payment method\",\"transaction id\""
+      );
+
+
+  if(result.error){
+
+    message.innerHTML =
+      "Order load failed: " +
+      escapeHtml(
+        result.error.message
+      );
+
+    return;
+
+  }
+
+
+  if(
+    !result.data ||
+    result.data.length === 0
+  ){
+
+    list.innerHTML =
+      '<div class="message">No orders found.</div>';
+
+    message.innerHTML =
+      "";
+
+    return;
+
+  }
+
+
+  list.innerHTML =
+    "";
+
+
+  result.data.forEach(
+    function(order,index){
+
+      const status =
+        String(
+          order.status || "Pending"
+        );
+
+
+      const statusClass =
+        status.toLowerCase()
+          .includes("complete")
+          ? "completed"
+          : status.toLowerCase()
+              .includes("cancel")
+            ? "cancelled"
+            : "pending";
+
+
+      list.innerHTML += `
+
+        <div class="order-item">
+
+          <h3>
+            Order #${index + 1}
+          </h3>
+
+          <p>
+            <b>Buyer:</b>
+            ${escapeHtml(order.buyer_name)}
+          </p>
+
+          <p>
+            <b>Phone:</b>
+            ${escapeHtml(order.phone)}
+          </p>
+
+          <p>
+            <b>Package:</b>
+            ${escapeHtml(order["package title"])}
+          </p>
+
+          <p>
+            <b>Price:</b>
+            ৳${Number(order.price || 0).toFixed(0)}
+          </p>
+
+          <p>
+            <b>Duration:</b>
+            ${escapeHtml(order.duration)}
+          </p>
+
+          <p>
+            <b>Payment Method:</b>
+            ${escapeHtml(order["payment method"])}
+          </p>
+
+          <p>
+            <b>Transaction ID:</b>
+            <span class="order-number">
+              ${escapeHtml(order["transaction id"])}
+            </span>
+          </p>
+
+          <p>
+            <b>User ID:</b>
+            ${escapeHtml(order.user_id)}
+          </p>
+
+          <p>
+            <b>Status:</b>
+            <span class="${statusClass}">
+              ${escapeHtml(status)}
+            </span>
+          </p>
+
+
+          <select
+            id="status-${index}">
+
+            <option
+              value="Pending"
+              ${status === "Pending" ? "selected" : ""}>
+              Pending
+            </option>
+
+            <option
+              value="Completed"
+              ${status === "Completed" ? "selected" : ""}>
+              Completed
+            </option>
+
+            <option
+              value="Cancelled"
+              ${status === "Cancelled" ? "selected" : ""}>
+              Cancelled
+            </option>
+
+          </select>
+
+
+          <button
+            class="status-btn small-btn"
+            onclick='updateOrderStatus(
+              ${JSON.stringify(order.user_id)},
+              ${JSON.stringify(order["transaction id"])},
+              ${JSON.stringify(index)}
+            )'>
+
+            Update Status
+
+          </button>
+
+        </div>
+
+      `;
+
+    }
+  );
+
+
+  message.innerHTML =
+    "";
+
+}
+
+
+
+/* =========================
+   UPDATE ORDER STATUS
+========================= */
+
+
+async function updateOrderStatus(
+  userId,
+  transactionId,
+  index
+){
+
+  const select =
+    document.getElementById(
+      "status-" + index
+    );
+
+
+  const newStatus =
+    select.value;
+
+
+  const message =
+    document.getElementById(
+      "orderMessage"
+    );
+
+
+  message.innerHTML =
+    "Updating order...";
+
+
+  const { error } =
+    await supabaseClient
+      .from("Orders")
+      .update({
+
+        status:newStatus
+
+      })
+      .eq(
+        "user_id",
+        userId
+      )
+      .eq(
+        "transaction id",
+        transactio
