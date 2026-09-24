@@ -1,234 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta charset="UTF-8">
+<title>Panel Sell Bazaar - Admin</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <title>Panel Sell Bazaar - Admin</title>
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+body{
+  background:#0b1020;
+  color:white;
+  min-height:100vh;
+}
 
-  <style>
+header{
+  background:#121a30;
+  padding:18px;
+  border-bottom:1px solid #29365d;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    *{
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
-      font-family:Arial,sans-serif;
-    }
+.logo{
+  font-size:21px;
+  font-weight:bold;
+}
 
-    body{
-      background:#0b1020;
-      color:white;
-      min-height:100vh;
-    }
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:25px 15px;
+}
 
-    header{
-      background:#121a30;
-      padding:18px;
-      border-bottom:1px solid #29365d;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:15px;
-    }
+.box{
+  background:#121a30;
+  border:1px solid #29365d;
+  border-radius:14px;
+  padding:25px;
+  margin-bottom:20px;
+}
 
-    .logo{
-      font-size:21px;
-      font-weight:bold;
-    }
+.login-box{
+  max-width:450px;
+  margin:50px auto;
+}
 
-    button{
-      border:0;
-      border-radius:8px;
-      padding:10px 16px;
-      cursor:pointer;
-      font-weight:bold;
-    }
+h1{
+  margin-bottom:10px;
+}
 
-    .login-btn{
-      background:#4f8cff;
-      color:white;
-    }
+h2{
+  margin-bottom:18px;
+}
 
-    .logout-btn{
-      background:#e74c3c;
-      color:white;
-    }
+h3{
+  margin-bottom:10px;
+}
 
-    .container{
-      max-width:1100px;
-      margin:auto;
-      padding:25px 15px;
-    }
+.info{
+  color:#aeb8d4;
+  font-size:14px;
+  line-height:1.5;
+  margin-bottom:15px;
+}
 
-    .login-box,
-    .admin-box{
-      background:#121a30;
-      border:1px solid #29365d;
-      border-radius:14px;
-      padding:25px;
-      margin-bottom:20px;
-    }
+label{
+  display:block;
+  margin-top:13px;
+  margin-bottom:6px;
+}
 
-    .login-box{
-      max-width:450px;
-      margin:50px auto;
-    }
+input,
+select{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:1px solid #394a78;
+  background:#0b1020;
+  color:white;
+}
 
-    h1{
-      margin-bottom:10px;
-    }
+button{
+  border:0;
+  border-radius:8px;
+  padding:11px 16px;
+  cursor:pointer;
+  font-weight:bold;
+}
 
-    h2{
-      margin-bottom:18px;
-    }
+.login-btn,
+.main-btn{
+  background:#4f8cff;
+  color:white;
+}
 
-    h3{
-      margin-bottom:10px;
-    }
+.main-btn{
+  width:100%;
+  margin-top:18px;
+}
 
-    label{
-      display:block;
-      margin-top:13px;
-      margin-bottom:6px;
-      color:#dce3f5;
-    }
+.add-btn{
+  background:#20b86b;
+  color:white;
+  margin-top:18px;
+}
 
-    input,
-    select{
-      width:100%;
-      padding:12px;
-      border-radius:8px;
-      border:1px solid #394a78;
-      background:#0b1020;
-      color:white;
-      outline:none;
-    }
+.edit-btn{
+  background:#f39c12;
+  color:white;
+  margin-right:6px;
+}
 
-    .main-btn{
-      width:100%;
-      background:#4f8cff;
-      color:white;
-      margin-top:18px;
-    }
+.delete-btn{
+  background:#e74c3c;
+  color:white;
+}
 
-    .add-btn{
-      background:#20b86b;
-      color:white;
-      margin-top:15px;
-    }
+.logout-btn{
+  background:#e74c3c;
+  color:white;
+}
 
-    .edit-btn{
-      background:#f39c12;
-      color:white;
-      margin-right:6px;
-    }
+.hidden{
+  display:none!important;
+}
 
-    .delete-btn{
-      background:#e74c3c;
-      color:white;
-    }
+.message{
+  margin-top:15px;
+  color:#7ee2ff;
+  line-height:1.5;
+}
 
-    .status-btn{
-      background:#4f8cff;
-      color:white;
-      margin-top:8px;
-    }
+.grid{
+  display:grid;
+  grid-template-columns:
+  repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
 
-    .top-info{
-      color:#aeb8d4;
-      font-size:14px;
-      margin-bottom:20px;
-    }
+.list{
+  display:grid;
+  gap:15px;
+  margin-top:20px;
+}
 
-    .message{
-      text-align:center;
-      color:#aeb8d4;
-      margin-top:15px;
-    }
+.item{
+  background:#0b1020;
+  border:1px solid #29365d;
+  border-radius:12px;
+  padding:18px;
+}
 
-    .package-list,
-    .order-list{
-      display:grid;
-      gap:15px;
-    }
+.item p{
+  color:#c5cee4;
+  margin:7px 0;
+  line-height:1.5;
+}
 
-    .package-item,
-    .order-item{
-      background:#0b1020;
-      border:1px solid #29365d;
-      border-radius:12px;
-      padding:18px;
-    }
+.price{
+  color:#7ee2ff;
+  font-size:20px;
+  font-weight:bold;
+}
 
-    .package-item p,
-    .order-item p{
-      color:#c5cee4;
-      margin:7px 0;
-      line-height:1.5;
-    }
+.divider{
+  height:1px;
+  background:#29365d;
+  margin:25px 0;
+}
 
-    .price-text{
-      color:#7ee2ff;
-      font-size:20px;
-      font-weight:bold;
-    }
+.status-pending{
+  color:#f1c40f;
+  font-weight:bold;
+}
 
-    .pending{
-      color:#f1c40f;
-      font-weight:bold;
-    }
+.status-completed{
+  color:#20b86b;
+  font-weight:bold;
+}
 
-    .completed{
-      color:#20b86b;
-      font-weight:bold;
-    }
+.status-cancelled{
+  color:#e74c3c;
+  font-weight:bold;
+}
 
-    .cancelled{
-      color:#e74c3c;
-      font-weight:bold;
-    }
+.small-btn{
+  margin-top:8px;
+}
 
-    .hidden{
-      display:none;
-    }
+.order-select{
+  margin-top:10px;
+}
 
-    .divider{
-      height:1px;
-      background:#29365d;
-      margin:25px 0;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:
-        repeat(auto-fit,minmax(220px,1fr));
-      gap:15px;
-    }
-
-    .small-btn{
-      padding:9px 13px;
-      margin-top:8px;
-    }
-
-    .order-number{
-      color:#7ee2ff;
-      font-weight:bold;
-    }
-
-  </style>
-
+</style>
 </head>
 
-
 <body>
-
 
 <header>
 
@@ -248,32 +225,21 @@
 </header>
 
 
-
-<!-- =========================
-     ADMIN LOGIN
-========================= -->
-
+<!-- LOGIN -->
 
 <div
   id="loginSection"
   class="container">
 
+  <div class="box login-box">
 
-  <div class="login-box">
+    <h1>Admin Login</h1>
 
-    <h1>
-      Admin Login
-    </h1>
-
-    <p class="top-info">
-      Only an account with Role = admin
-      can access this panel.
+    <p class="info">
+      Login with your Supabase Admin account.
     </p>
 
-
-    <label>
-      Email
-    </label>
+    <label>Email</label>
 
     <input
       id="email"
@@ -281,9 +247,7 @@
       placeholder="Admin email">
 
 
-    <label>
-      Password
-    </label>
+    <label>Password</label>
 
     <input
       id="password"
@@ -311,54 +275,41 @@
 
 
 
-<!-- =========================
-     ADMIN PANEL
-========================= -->
-
+<!-- ADMIN -->
 
 <div
   id="adminSection"
   class="container hidden">
 
 
-  <!-- PACKAGE MANAGEMENT -->
+  <!-- PACKAGE -->
 
+  <div class="box">
 
-  <div class="admin-box">
+    <h1>Package Management</h1>
 
-    <h1>
-      Package Management
-    </h1>
-
-    <p class="top-info">
-      Add, edit or delete packages.
-      Changes are saved in Supabase.
+    <p class="info">
+      এখান থেকে Package Add, Edit এবং Delete করতে পারবেন।
     </p>
-
 
 
     <div class="grid">
 
-
       <div>
 
-        <label>
-          Package Title
-        </label>
+        <label>Package Title</label>
 
         <input
           id="packageTitle"
           type="text"
-          placeholder="Example: Aim Hacker">
+          placeholder="Aim Hacker">
 
       </div>
 
 
       <div>
 
-        <label>
-          Price
-        </label>
+        <label>Price</label>
 
         <input
           id="packagePrice"
@@ -371,9 +322,7 @@
 
       <div>
 
-        <label>
-          Duration
-        </label>
+        <label>Duration</label>
 
         <input
           id="packageDuration"
@@ -382,9 +331,7 @@
 
       </div>
 
-
     </div>
-
 
 
     <button
@@ -407,7 +354,6 @@
     </button>
 
 
-
     <div
       id="packageMessage"
       class="message">
@@ -417,17 +363,13 @@
     <div class="divider"></div>
 
 
-    <h2>
-      Existing Packages
-    </h2>
+    <h2>Existing Packages</h2>
 
 
     <div
       id="packageList"
-      class="package-list">
-
+      class="list">
     </div>
-
 
   </div>
 
@@ -435,16 +377,12 @@
 
   <!-- ORDERS -->
 
+  <div class="box">
 
-  <div class="admin-box">
+    <h1>Customer Orders</h1>
 
-    <h1>
-      Customer Orders
-    </h1>
-
-    <p class="top-info">
-      এখানে buyer-এর order,
-      payment method এবং Transaction ID দেখতে পারবেন।
+    <p class="info">
+      Buyer-এর order এবং payment information এখানে দেখা যাবে।
     </p>
 
 
@@ -463,15 +401,10 @@
     </div>
 
 
-    <div class="divider"></div>
-
-
     <div
       id="orderList"
-      class="order-list">
-
+      class="list">
     </div>
-
 
   </div>
 
@@ -482,70 +415,67 @@
 
 <script>
 
-
 /* =========================
    SUPABASE
 ========================= */
 
-
 const SUPABASE_URL =
-  "https://wiztksrtzjmsxzolollf.supabase.co";
-
+"https://wiztksrtzjmsxzolollf.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
+"sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
 
 
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+let supabaseClient;
+
+
+/* =========================
+   START SUPABASE
+========================= */
+
+try{
+
+  if(!window.supabase){
+
+    throw new Error(
+      "Supabase library load হয়নি। Internet connection check করুন।"
+    );
+
+  }
+
+
+  supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+}catch(error){
+
+  document.getElementById(
+    "loginMessage"
+  ).innerText =
+    "Supabase error: " +
+    error.message;
+
+}
 
 
 
 /* =========================
-   VARIABLES
+   HTML ESCAPE
 ========================= */
-
-
-let editingPackageId = null;
-
-
-
-/* =========================
-   HELPER
-========================= */
-
 
 function escapeHtml(value){
 
   return String(value ?? "")
 
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
 
@@ -555,21 +485,7 @@ function escapeHtml(value){
    ADMIN LOGIN
 ========================= */
 
-
 async function adminLogin(){
-
-  const email =
-    document
-      .getElementById("email")
-      .value
-      .trim();
-
-
-  const password =
-    document
-      .getElementById("password")
-      .value;
-
 
   const message =
     document.getElementById(
@@ -577,171 +493,109 @@ async function adminLogin(){
     );
 
 
+  const email =
+    document.getElementById(
+      "email"
+    ).value.trim();
+
+
+  const password =
+    document.getElementById(
+      "password"
+    ).value;
+
+
   if(!email || !password){
 
-    message.innerHTML =
-      "Email and password দিন।";
+    message.innerText =
+      "Email এবং password দিন।";
 
     return;
 
   }
 
 
-  message.innerHTML =
-    "Logging in...";
+  message.innerText =
+    "Login হচ্ছে...";
 
 
-  const { data, error } =
-    await supabaseClient.auth.signInWithPassword({
+  try{
 
-      email:email,
+    const result =
+      await supabaseClient.auth
+        .signInWithPassword({
 
-      password:password
+          email:email,
 
-    });
+          password:password
 
-
-  if(error){
-
-    message.innerHTML =
-      "Login failed: " +
-      escapeHtml(error.message);
-
-    return;
-
-  }
+        });
 
 
-  const user =
-    data.user;
+    if(result.error){
+
+      message.innerText =
+        "Login failed: " +
+        result.error.message;
+
+      return;
+
+    }
 
 
-  if(!user){
+    if(!result.data.user){
 
-    message.innerHTML =
-      "User পাওয়া যায়নি।";
+      message.innerText =
+        "User পাওয়া যায়নি।";
 
-    return;
+      return;
 
-  }
-
-
-
-  /* =========================
-     CHECK ADMIN ROLE
-  ========================= */
+    }
 
 
-  const profile =
-    await supabaseClient
-      .from("Profiles")
-      .select('"Role"')
-      .eq(
-        "id",
-        user.id
-      )
-      .maybeSingle();
+    /* CHECK PROFILE */
+
+    const profile =
+      await supabaseClient
+        .from("Profiles")
+        .select('"Role"')
+        .eq(
+          "id",
+          result.data.user.id
+        )
+        .maybeSingle();
 
 
-  if(profile.error){
+    if(profile.error){
 
-    await supabaseClient.auth.signOut();
+      await supabaseClient.auth.signOut();
 
-    message.innerHTML =
-      "Profile check failed: " +
-      escapeHtml(
-        profile.error.message
-      );
+      message.innerText =
+        "Profile check failed: " +
+        profile.error.message;
 
-    return;
+      return;
 
-  }
+    }
 
 
-  if(
-    !profile.data ||
-    String(profile.data.Role).toLowerCase()
-      !== "admin"
-  ){
+    if(
+      !profile.data ||
+      String(profile.data.Role)
+        .toLowerCase() !== "admin"
+    ){
 
-    await supabaseClient.auth.signOut();
+      await supabaseClient.auth.signOut();
 
-    message.innerHTML =
-      "এই account-এর Admin access নেই.";
+      message.innerText =
+        "এই account-এর Admin access নেই।";
 
-    return;
+      return;
 
-  }
-
-
-
-  /* SHOW ADMIN PANEL */
+    }
 
 
-  document
-    .getElementById("loginSection")
-    .classList
-    .add("hidden");
-
-
-  document
-    .getElementById("adminSection")
-    .classList
-    .remove("hidden");
-
-
-  document
-    .getElementById("logoutButton")
-    .classList
-    .remove("hidden");
-
-
-  await loadPackages();
-
-  await loadOrders();
-
-}
-
-
-
-/* =========================
-   CHECK EXISTING SESSION
-========================= */
-
-
-async function checkSession(){
-
-  const { data } =
-    await supabaseClient.auth.getSession();
-
-
-  if(!data.session){
-
-    return;
-
-  }
-
-
-  const user =
-    data.session.user;
-
-
-  const profile =
-    await supabaseClient
-      .from("Profiles")
-      .select('"Role"')
-      .eq(
-        "id",
-        user.id
-      )
-      .maybeSingle();
-
-
-  if(
-    profile.data &&
-    String(profile.data.Role).toLowerCase()
-      === "admin"
-  ){
+    /* SHOW ADMIN */
 
     document
       .getElementById("loginSection")
@@ -761,9 +615,105 @@ async function checkSession(){
       .remove("hidden");
 
 
+    message.innerText =
+      "";
+
+
     await loadPackages();
 
     await loadOrders();
+
+
+  }catch(error){
+
+    message.innerText =
+      "Error: " +
+      error.message;
+
+  }
+
+}
+
+
+
+/* =========================
+   SESSION CHECK
+========================= */
+
+async function checkSession(){
+
+  if(!supabaseClient){
+
+    return;
+
+  }
+
+
+  try{
+
+    const result =
+      await supabaseClient.auth
+        .getSession();
+
+
+    if(!result.data.session){
+
+      return;
+
+    }
+
+
+    const user =
+      result.data.session.user;
+
+
+    const profile =
+      await supabaseClient
+        .from("Profiles")
+        .select('"Role"')
+        .eq(
+          "id",
+          user.id
+        )
+        .maybeSingle();
+
+
+    if(
+      profile.data &&
+      String(profile.data.Role)
+        .toLowerCase() === "admin"
+    ){
+
+      document
+        .getElementById("loginSection")
+        .classList
+        .add("hidden");
+
+
+      document
+        .getElementById("adminSection")
+        .classList
+        .remove("hidden");
+
+
+      document
+        .getElementById("logoutButton")
+        .classList
+        .remove("hidden");
+
+
+      await loadPackages();
+
+      await loadOrders();
+
+    }
+
+  }catch(error){
+
+    console.log(
+      "Session check:",
+      error.message
+    );
 
   }
 
@@ -774,7 +724,6 @@ async function checkSession(){
 /* =========================
    LOGOUT
 ========================= */
-
 
 async function logout(){
 
@@ -806,7 +755,6 @@ async function logout(){
    LOAD PACKAGES
 ========================= */
 
-
 async function loadPackages(){
 
   const list =
@@ -821,8 +769,8 @@ async function loadPackages(){
     );
 
 
-  message.innerHTML =
-    "Loading packages...";
+  message.innerText =
+    "Packages loading...";
 
 
   const result =
@@ -841,11 +789,9 @@ async function loadPackages(){
 
   if(result.error){
 
-    message.innerHTML =
+    message.innerText =
       "Package load failed: " +
-      escapeHtml(
-        result.error.message
-      );
+      result.error.message;
 
     return;
 
@@ -858,9 +804,9 @@ async function loadPackages(){
   ){
 
     list.innerHTML =
-      '<div class="message">No packages found.</div>';
+      "<p class='info'>No packages found.</p>";
 
-    message.innerHTML =
+    message.innerText =
       "";
 
     return;
@@ -877,13 +823,13 @@ async function loadPackages(){
 
       list.innerHTML += `
 
-        <div class="package-item">
+        <div class="item">
 
           <h3>
             ${escapeHtml(pkg.title)}
           </h3>
 
-          <p class="price-text">
+          <p class="price">
             ৳${Number(pkg.price).toFixed(0)}
           </p>
 
@@ -893,18 +839,19 @@ async function loadPackages(){
           </p>
 
           <p>
-            Package ID:
+            ID:
             ${escapeHtml(pkg.id)}
           </p>
 
+
           <button
             class="edit-btn small-btn"
-            onclick="editPackage(
+            onclick='editPackage(
               ${pkg.id},
               ${JSON.stringify(pkg.title)},
               ${Number(pkg.price)},
               ${JSON.stringify(pkg.duration)}
-            )">
+            )'>
 
             Edit
 
@@ -927,7 +874,7 @@ async function loadPackages(){
   );
 
 
-  message.innerHTML =
+  message.innerText =
     "";
 
 }
@@ -935,32 +882,29 @@ async function loadPackages(){
 
 
 /* =========================
-   ADD / UPDATE PACKAGE
+   SAVE PACKAGE
 ========================= */
-
 
 async function savePackage(){
 
   const title =
-    document
-      .getElementById("packageTitle")
-      .value
-      .trim();
+    document.getElementById(
+      "packageTitle"
+    ).value.trim();
 
 
   const price =
     Number(
-      document
-        .getElementById("packagePrice")
-        .value
+      document.getElementById(
+        "packagePrice"
+      ).value
     );
 
 
   const duration =
-    document
-      .getElementById("packageDuration")
-      .value
-      .trim();
+    document.getElementById(
+      "packageDuration"
+    ).value.trim();
 
 
   const message =
@@ -969,10 +913,10 @@ async function savePackage(){
     );
 
 
-  if(!title || !duration){
+  if(!title){
 
-    message.innerHTML =
-      "Package title এবং duration দিন।";
+    message.innerText =
+      "Package title দিন।";
 
     return;
 
@@ -984,7 +928,7 @@ async function savePackage(){
     price < 0
   ){
 
-    message.innerHTML =
+    message.innerText =
       "সঠিক price দিন।";
 
     return;
@@ -992,17 +936,26 @@ async function savePackage(){
   }
 
 
-  message.innerHTML =
+  if(!duration){
+
+    message.innerText =
+      "Duration দিন।";
+
+    return;
+
+  }
+
+
+  message.innerText =
     "Saving...";
 
 
-
-  /* UPDATE */
+  let result;
 
 
   if(editingPackageId !== null){
 
-    const { error } =
+    result =
       await supabaseClient
         .from("Package")
         .update({
@@ -1020,31 +973,9 @@ async function savePackage(){
         );
 
 
-    if(error){
+  }else{
 
-      message.innerHTML =
-        "Update failed: " +
-        escapeHtml(
-          error.message
-        );
-
-      return;
-
-    }
-
-
-    message.innerHTML =
-      "Package updated successfully.";
-
-  }
-
-
-  /* ADD */
-
-
-  else{
-
-    const { error } =
+    result =
       await supabaseClient
         .from("Package")
         .insert([{
@@ -1057,25 +988,24 @@ async function savePackage(){
 
         }]);
 
-
-    if(error){
-
-      message.innerHTML =
-        "Add failed: " +
-        escapeHtml(
-          error.message
-        );
-
-      return;
-
-    }
+  }
 
 
-    message.innerHTML =
-      "Package added successfully.";
+  if(result.error){
+
+    message.innerText =
+      "Save failed: " +
+      result.error.message;
+
+    return;
 
   }
 
+
+  message.innerText =
+    editingPackageId !== null
+      ? "Package updated successfully."
+      : "Package added successfully.";
 
 
   clearPackageForm();
@@ -1089,7 +1019,6 @@ async function savePackage(){
 /* =========================
    EDIT PACKAGE
 ========================= */
-
 
 function editPackage(
   id,
@@ -1129,30 +1058,31 @@ function editPackage(
   document.getElementById(
     "cancelEditButton"
   ).classList
-   .remove("hidden");
+  .remove("hidden");
 
 
   document.getElementById(
     "packageMessage"
-  ).innerHTML =
+  ).innerText =
     "Editing Package ID: " +
     id;
-
-
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
 
 }
 
 
 
 /* =========================
-   CANCEL EDIT
+   EDIT ID
 ========================= */
 
+let editingPackageId =
+  null;
+
+
+
+/* =========================
+   CANCEL EDIT
+========================= */
 
 function cancelEdit(){
 
@@ -1163,9 +1093,8 @@ function cancelEdit(){
 
 
 /* =========================
-   CLEAR FORM
+   CLEAR PACKAGE FORM
 ========================= */
-
 
 function clearPackageForm(){
 
@@ -1200,7 +1129,7 @@ function clearPackageForm(){
   document.getElementById(
     "cancelEditButton"
   ).classList
-   .add("hidden");
+  .add("hidden");
 
 }
 
@@ -1210,16 +1139,13 @@ function clearPackageForm(){
    DELETE PACKAGE
 ========================= */
 
-
 async function deletePackage(id){
 
-  const ok =
-    confirm(
+  if(
+    !confirm(
       "এই package delete করতে চান?"
-    );
-
-
-  if(!ok){
+    )
+  ){
 
     return;
 
@@ -1232,11 +1158,11 @@ async function deletePackage(id){
     );
 
 
-  message.innerHTML =
+  message.innerText =
     "Deleting...";
 
 
-  const { error } =
+  const result =
     await supabaseClient
       .from("Package")
       .delete()
@@ -1246,20 +1172,18 @@ async function deletePackage(id){
       );
 
 
-  if(error){
+  if(result.error){
 
-    message.innerHTML =
+    message.innerText =
       "Delete failed: " +
-      escapeHtml(
-        error.message
-      );
+      result.error.message;
 
     return;
 
   }
 
 
-  message.innerHTML =
+  message.innerText =
     "Package deleted successfully.";
 
 
@@ -1272,238 +1196,3 @@ async function deletePackage(id){
 /* =========================
    LOAD ORDERS
 ========================= */
-
-
-async function loadOrders(){
-
-  const list =
-    document.getElementById(
-      "orderList"
-    );
-
-
-  const message =
-    document.getElementById(
-      "orderMessage"
-    );
-
-
-  message.innerHTML =
-    "Loading orders...";
-
-
-  const result =
-    await supabaseClient
-      .from("Orders")
-      .select(
-        "user_id,buyer_name,phone,\"package title\",price,duration,status,\"payment method\",\"transaction id\""
-      );
-
-
-  if(result.error){
-
-    message.innerHTML =
-      "Order load failed: " +
-      escapeHtml(
-        result.error.message
-      );
-
-    return;
-
-  }
-
-
-  if(
-    !result.data ||
-    result.data.length === 0
-  ){
-
-    list.innerHTML =
-      '<div class="message">No orders found.</div>';
-
-    message.innerHTML =
-      "";
-
-    return;
-
-  }
-
-
-  list.innerHTML =
-    "";
-
-
-  result.data.forEach(
-    function(order,index){
-
-      const status =
-        String(
-          order.status || "Pending"
-        );
-
-
-      const statusClass =
-        status.toLowerCase()
-          .includes("complete")
-          ? "completed"
-          : status.toLowerCase()
-              .includes("cancel")
-            ? "cancelled"
-            : "pending";
-
-
-      list.innerHTML += `
-
-        <div class="order-item">
-
-          <h3>
-            Order #${index + 1}
-          </h3>
-
-          <p>
-            <b>Buyer:</b>
-            ${escapeHtml(order.buyer_name)}
-          </p>
-
-          <p>
-            <b>Phone:</b>
-            ${escapeHtml(order.phone)}
-          </p>
-
-          <p>
-            <b>Package:</b>
-            ${escapeHtml(order["package title"])}
-          </p>
-
-          <p>
-            <b>Price:</b>
-            ৳${Number(order.price || 0).toFixed(0)}
-          </p>
-
-          <p>
-            <b>Duration:</b>
-            ${escapeHtml(order.duration)}
-          </p>
-
-          <p>
-            <b>Payment Method:</b>
-            ${escapeHtml(order["payment method"])}
-          </p>
-
-          <p>
-            <b>Transaction ID:</b>
-            <span class="order-number">
-              ${escapeHtml(order["transaction id"])}
-            </span>
-          </p>
-
-          <p>
-            <b>User ID:</b>
-            ${escapeHtml(order.user_id)}
-          </p>
-
-          <p>
-            <b>Status:</b>
-            <span class="${statusClass}">
-              ${escapeHtml(status)}
-            </span>
-          </p>
-
-
-          <select
-            id="status-${index}">
-
-            <option
-              value="Pending"
-              ${status === "Pending" ? "selected" : ""}>
-              Pending
-            </option>
-
-            <option
-              value="Completed"
-              ${status === "Completed" ? "selected" : ""}>
-              Completed
-            </option>
-
-            <option
-              value="Cancelled"
-              ${status === "Cancelled" ? "selected" : ""}>
-              Cancelled
-            </option>
-
-          </select>
-
-
-          <button
-            class="status-btn small-btn"
-            onclick='updateOrderStatus(
-              ${JSON.stringify(order.user_id)},
-              ${JSON.stringify(order["transaction id"])},
-              ${JSON.stringify(index)}
-            )'>
-
-            Update Status
-
-          </button>
-
-        </div>
-
-      `;
-
-    }
-  );
-
-
-  message.innerHTML =
-    "";
-
-}
-
-
-
-/* =========================
-   UPDATE ORDER STATUS
-========================= */
-
-
-async function updateOrderStatus(
-  userId,
-  transactionId,
-  index
-){
-
-  const select =
-    document.getElementById(
-      "status-" + index
-    );
-
-
-  const newStatus =
-    select.value;
-
-
-  const message =
-    document.getElementById(
-      "orderMessage"
-    );
-
-
-  message.innerHTML =
-    "Updating order...";
-
-
-  const { error } =
-    await supabaseClient
-      .from("Orders")
-      .update({
-
-        status:newStatus
-
-      })
-      .eq(
-        "user_id",
-        userId
-      )
-      .eq(
-        "transaction id",
-        transactio
