@@ -3,621 +3,552 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Panel Sell Bazaar</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:#0b1020;
+      color:white;
     }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6fb;
-      color: #172033;
+    header{
+      padding:18px 20px;
+      background:#111936;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
     }
-
-    header {
-      background: #111827;
-      color: white;
-      padding: 16px 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
+    header h2{margin:0}
+    button{
+      border:0;
+      border-radius:8px;
+      padding:10px 15px;
+      cursor:pointer;
+      font-weight:bold;
     }
-
-    .logo {
-      font-size: 22px;
-      font-weight: bold;
+    .login-btn{background:#2563eb;color:white}
+    .logout-btn{background:#dc2626;color:white}
+    .hero{
+      text-align:center;
+      padding:45px 20px;
     }
-
-    .header-buttons {
-      display: flex;
-      gap: 8px;
+    .hero h1{font-size:38px;margin-bottom:10px}
+    .hero p{color:#b8c0d9}
+    .packages{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:18px;
+      padding:20px;
+      max-width:1000px;
+      margin:auto;
     }
-
-    button {
-      border: none;
-      cursor: pointer;
-      border-radius: 10px;
-      padding: 11px 16px;
-      font-weight: bold;
+    .card{
+      background:#151d3b;
+      border:1px solid #29345d;
+      border-radius:14px;
+      padding:22px;
+      text-align:center;
     }
-
-    .login-btn {
-      background: white;
-      color: #111827;
+    .card h3{margin-top:0}
+    .price{font-size:25px;font-weight:bold;margin:15px}
+    .order-btn{
+      background:#22c55e;
+      color:white;
+      width:100%;
     }
-
-    .hero {
-      text-align: center;
-      padding: 55px 20px;
-      background: #e9efff;
+    .modal{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.75);
+      align-items:center;
+      justify-content:center;
+      padding:15px;
     }
-
-    .hero h1 {
-      font-size: 34px;
-      margin-bottom: 10px;
+    .box{
+      background:#151d3b;
+      width:100%;
+      max-width:430px;
+      padding:25px;
+      border-radius:15px;
     }
-
-    .hero p {
-      color: #596579;
-      font-size: 16px;
+    input,select{
+      width:100%;
+      padding:12px;
+      margin:7px 0 12px;
+      border-radius:7px;
+      border:1px solid #44517c;
+      background:#0d142b;
+      color:white;
     }
-
-    .container {
-      width: 90%;
-      max-width: 1000px;
-      margin: auto;
-      padding: 35px 0;
+    .submit{
+      width:100%;
+      background:#2563eb;
+      color:white;
+      margin-top:8px;
     }
-
-    .section-title {
-      text-align: center;
-      margin-bottom: 22px;
+    .close{
+      float:right;
+      background:#374151;
+      color:white;
     }
-
-    .section-title h2 {
-      font-size: 27px;
+    footer{
+      text-align:center;
+      padding:30px;
+      color:#8d96b5;
     }
-
-    .section-title p {
-      margin-top: 7px;
-      color: #687386;
-    }
-
-    .packages {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 18px;
-    }
-
-    .package {
-      background: white;
-      border: 1px solid #e1e6ef;
-      border-radius: 16px;
-      padding: 22px;
-      text-align: center;
-      box-shadow: 0 7px 20px rgba(0,0,0,0.06);
-    }
-
-    .package h3 {
-      font-size: 21px;
-      margin-bottom: 13px;
-    }
-
-    .duration {
-      color: #687386;
-      margin-bottom: 8px;
-    }
-
-    .price {
-      font-size: 27px;
-      font-weight: bold;
-      margin: 10px 0 18px;
-    }
-
-    .order-btn {
-      width: 100%;
-      background: #111827;
-      color: white;
-    }
-
-    .order-btn:hover {
-      background: #263247;
-    }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 18px;
-      margin-top: 35px;
-    }
-
-    .info-box {
-      background: white;
-      border: 1px solid #e1e6ef;
-      border-radius: 16px;
-      padding: 22px;
-    }
-
-    .info-box h3 {
-      margin-bottom: 10px;
-    }
-
-    .info-box p {
-      color: #687386;
-      line-height: 1.6;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 1000;
-    }
-
-    .modal-content {
-      background: white;
-      width: 100%;
-      max-width: 420px;
-      border-radius: 16px;
-      padding: 25px;
-      position: relative;
-    }
-
-    .close {
-      position: absolute;
-      right: 15px;
-      top: 12px;
-      background: #eee;
-      padding: 7px 11px;
-    }
-
-    .modal-content h2 {
-      margin-bottom: 18px;
-    }
-
-    .selected-package {
-      background: #f1f4f9;
-      padding: 14px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 12px;
-      margin: 7px 0 12px;
-      border: 1px solid #ccd3df;
-      border-radius: 9px;
-      outline: none;
-    }
-
-    .submit-btn {
-      width: 100%;
-      background: #111827;
-      color: white;
-    }
-
-    .notice {
-      background: #fff8df;
-      border: 1px solid #eadb9b;
-      padding: 12px;
-      border-radius: 9px;
-      font-size: 14px;
-      margin-bottom: 15px;
-      line-height: 1.5;
-    }
-
-    footer {
-      background: #111827;
-      color: #cbd5e1;
-      text-align: center;
-      padding: 25px 15px;
-      margin-top: 20px;
-    }
-
-    footer p {
-      margin: 5px 0;
-    }
-
-    @media (max-width: 600px) {
-      .logo {
-        font-size: 18px;
-      }
-
-      .hero h1 {
-        font-size: 28px;
-      }
-
-      header {
-        flex-direction: column;
-      }
+    .switch{
+      color:#60a5fa;
+      cursor:pointer;
+      text-align:center;
+      margin-top:15px;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo">
-      Panel Sell Bazaar
-    </div>
+<header>
+  <h2>Panel Sell Bazaar</h2>
 
-    <div class="header-buttons">
-      <button class="login-btn" onclick="buyerLogin()">
-        Buyer Login
-      </button>
+  <div>
+    <button class="login-btn" id="loginButton" onclick="openLogin()">Buyer Login</button>
+    <button class="logout-btn" id="logoutButton" onclick="logout()" style="display:none">Logout</button>
+  </div>
+</header>
 
-      <button class="login-btn" onclick="adminLogin()">
-        Admin Login
-      </button>
-    </div>
-  </header>
+<section class="hero">
+  <h1>Premium Panel Store</h1>
+  <p>Choose your package and place your order.</p>
+</section>
 
+<section class="packages">
 
-  <!-- HERO -->
-  <section class="hero">
-    <h1>Premium Panel Store</h1>
-    <p>
-      Fast Order • Secure Payment • Priority Support
-    </p>
-  </section>
+  <div class="card">
+    <h3>AIM Hacker</h3>
+    <p>1 Hour</p>
+    <div class="price">৳20</div>
+    <button class="order-btn"
+      onclick="openOrder('AIM Hacker','1 Hour',20)">
+      Order Now
+    </button>
+  </div>
 
+  <div class="card">
+    <h3>AIM Hacker</h3>
+    <p>3 Hours</p>
+    <div class="price">৳45</div>
+    <button class="order-btn"
+      onclick="openOrder('AIM Hacker','3 Hours',45)">
+      Order Now
+    </button>
+  </div>
 
-  <!-- PACKAGES -->
-  <main class="container">
+  <div class="card">
+    <h3>AIM Hacker</h3>
+    <p>6 Hours</p>
+    <div class="price">৳90</div>
+    <button class="order-btn"
+      onclick="openOrder('AIM Hacker','6 Hours',90)">
+      Order Now
+    </button>
+  </div>
 
-    <div class="section-title">
-      <h2>AIM Hacker</h2>
-      <p>Choose your package</p>
-    </div>
+  <div class="card">
+    <h3>AIM Hacker</h3>
+    <p>12 Hours</p>
+    <div class="price">৳165</div>
+    <button class="order-btn"
+      onclick="openOrder('AIM Hacker','12 Hours',165)">
+      Order Now
+    </button>
+  </div>
 
-    <div class="packages">
+</section>
 
-      <!-- 1 HOUR -->
-      <div class="package">
-        <h3>1 Hour</h3>
-
-        <div class="duration">
-          Duration: 1 Hour
-        </div>
-
-        <div class="price">
-          ৳20
-        </div>
-
-        <button
-          class="order-btn"
-          onclick="openOrder('AIM Hacker', '1 Hour', 20)">
-          Order Now
-        </button>
-      </div>
-
-
-      <!-- 3 HOURS -->
-      <div class="package">
-        <h3>3 Hours</h3>
-
-        <div class="duration">
-          Duration: 3 Hours
-        </div>
-
-        <div class="price">
-          ৳45
-        </div>
-
-        <button
-          class="order-btn"
-          onclick="openOrder('AIM Hacker', '3 Hours', 45)">
-          Order Now
-        </button>
-      </div>
+<footer>
+  <h3>Panel Sell Bazaar</h3>
+  <p>Premium Digital Store</p>
+  <p>© 2026 Panel Sell Bazaar</p>
+</footer>
 
 
-      <!-- 6 HOURS -->
-      <div class="package">
-        <h3>6 Hours</h3>
+<!-- LOGIN MODAL -->
+<div class="modal" id="loginModal">
+  <div class="box">
 
-        <div class="duration">
-          Duration: 6 Hours
-        </div>
+    <button class="close" onclick="closeLogin()">Close</button>
 
-        <div class="price">
-          ৳90
-        </div>
+    <h2 id="loginTitle">Buyer Login</h2>
 
-        <button
-          class="order-btn"
-          onclick="openOrder('AIM Hacker', '6 Hours', 90)">
-          Order Now
-        </button>
-      </div>
+    <div id="signupFields" style="display:none">
 
+      <label>Name</label>
+      <input id="signupName" type="text" placeholder="Your name">
 
-      <!-- 12 HOURS -->
-      <div class="package">
-        <h3>12 Hours</h3>
-
-        <div class="duration">
-          Duration: 12 Hours
-        </div>
-
-        <div class="price">
-          ৳165
-        </div>
-
-        <button
-          class="order-btn"
-          onclick="openOrder('AIM Hacker', '12 Hours', 165)">
-          Order Now
-        </button>
-      </div>
+      <label>Phone</label>
+      <input id="signupPhone" type="text" placeholder="01XXXXXXXXX">
 
     </div>
 
+    <label>Email</label>
+    <input id="loginEmail" type="email" placeholder="Email">
 
-    <!-- INFORMATION -->
-    <div class="info-grid">
+    <label>Password</label>
+    <input id="loginPassword" type="password" placeholder="Password">
 
-      <div class="info-box">
-        <h3>💳 Payment</h3>
-        <p>
-          bKash, Nagad and Rocket payment options
-          will be connected to the real payment/order
-          system through the backend.
-        </p>
-      </div>
+    <button class="submit" onclick="handleAuth()" id="authButton">
+      Login
+    </button>
 
-      <div class="info-box">
-        <h3>🆘 Help Line</h3>
-        <p>
-          Need help with your order?
-          Contact our support team.
-        </p>
-      </div>
-
-      <div class="info-box">
-        <h3>🔐 Buyer Account</h3>
-        <p>
-          Buyer login and order history will be
-          connected to the secure database.
-        </p>
-      </div>
-
-    </div>
-
-  </main>
-
-
-  <!-- ORDER MODAL -->
-  <div class="modal" id="orderModal">
-
-    <div class="modal-content">
-
-      <button class="close" onclick="closeOrder()">
-        ✕
-      </button>
-
-      <h2>Place Order</h2>
-
-      <div class="selected-package">
-        <div>
-          <b>Package:</b>
-          <span id="packageName"></span>
-        </div>
-
-        <div>
-          <b>Duration:</b>
-          <span id="packageDuration"></span>
-        </div>
-
-        <div>
-          <b>Price:</b>
-          ৳<span id="packagePrice"></span>
-        </div>
-      </div>
-
-
-      <div class="notice">
-        Payment verification and order submission will
-        be handled by the secure backend after it is
-        connected.
-      </div>
-
-
-      <label>
-        Buyer Name
-      </label>
-
-      <input
-        type="text"
-        id="buyerName"
-        placeholder="Enter your name"
-      >
-
-
-      <label>
-        Payment Method
-      </label>
-
-      <select id="paymentMethod">
-
-        <option value="">
-          Select Payment Method
-        </option>
-
-        <option value="bKash">
-          bKash
-        </option>
-
-        <option value="Nagad">
-          Nagad
-        </option>
-
-        <option value="Rocket">
-          Rocket
-        </option>
-
-      </select>
-
-
-      <label>
-        Transaction ID
-      </label>
-
-      <input
-        type="text"
-        id="transactionId"
-        placeholder="Enter transaction ID"
-      >
-
-
-      <button
-        class="submit-btn"
-        onclick="submitOrder()">
-        Submit Order
-      </button>
-
+    <div class="switch" onclick="toggleSignup()" id="switchText">
+      Create a new account
     </div>
 
   </div>
+</div>
 
 
-  <!-- FOOTER -->
-  <footer>
+<!-- ORDER MODAL -->
+<div class="modal" id="orderModal">
+  <div class="box">
 
-    <p>
-      <b>Panel Sell Bazaar</b>
-    </p>
+    <button class="close" onclick="closeOrder()">Close</button>
 
-    <p>
-      Premium Digital Store
-    </p>
+    <h2>Place Order</h2>
 
-    <p>
-      © 2026 Panel Sell Bazaar
-    </p>
+    <label>Buyer Name</label>
+    <input id="buyerName" type="text" placeholder="Your name">
 
-  </footer>
+    <label>Phone</label>
+    <input id="buyerPhone" type="text" placeholder="01XXXXXXXXX">
+
+    <label>Package</label>
+    <input id="packageTitle" type="text" readonly>
+
+    <label>Duration</label>
+    <input id="packageDuration" type="text" readonly>
+
+    <label>Price</label>
+    <input id="packagePrice" type="text" readonly>
+
+    <label>Payment Method</label>
+    <select id="paymentMethod">
+      <option value="">Select payment method</option>
+      <option value="bKash">bKash</option>
+      <option value="Nagad">Nagad</option>
+      <option value="Rocket">Rocket</option>
+    </select>
+
+    <label>Transaction ID</label>
+    <input id="transactionId" type="text" placeholder="Enter transaction ID">
+
+    <button class="submit" onclick="submitOrder()">
+      Submit Order
+    </button>
+
+  </div>
+</div>
 
 
-  <script>
+<script>
 
-    let selectedProduct = "";
-    let selectedDuration = "";
-    let selectedPrice = 0;
+const SUPABASE_URL =
+"https://wiztksrtzjmsxzolollf.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
+
+const supabaseClient =
+supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 
-    function openOrder(product, duration, price) {
+let signupMode = false;
+let selectedProduct = "";
+let selectedDuration = "";
+let selectedPrice = 0;
 
-      selectedProduct = product;
-      selectedDuration = duration;
-      selectedPrice = price;
 
-      document.getElementById("packageName").textContent =
-        product;
+// LOGIN MODAL
+function openLogin(){
+  document.getElementById("loginModal").style.display="flex";
+}
 
-      document.getElementById("packageDuration").textContent =
-        duration;
+function closeLogin(){
+  document.getElementById("loginModal").style.display="none";
+}
 
-      document.getElementById("packagePrice").textContent =
-        price;
+function toggleSignup(){
 
-      document.getElementById("orderModal").style.display =
-        "flex";
+  signupMode = !signupMode;
+
+  document.getElementById("signupFields").style.display =
+    signupMode ? "block" : "none";
+
+  document.getElementById("loginTitle").innerText =
+    signupMode ? "Create Buyer Account" : "Buyer Login";
+
+  document.getElementById("authButton").innerText =
+    signupMode ? "Create Account" : "Login";
+
+  document.getElementById("switchText").innerText =
+    signupMode ? "Already have an account? Login" : "Create a new account";
+}
+
+
+// AUTH
+async function handleAuth(){
+
+  const email =
+    document.getElementById("loginEmail").value.trim();
+
+  const password =
+    document.getElementById("loginPassword").value;
+
+  if(!email || !password){
+    alert("Please enter email and password.");
+    return;
+  }
+
+  if(signupMode){
+
+    const name =
+      document.getElementById("signupName").value.trim();
+
+    const phone =
+      document.getElementById("signupPhone").value.trim();
+
+    if(!name || !phone){
+      alert("Please enter name and phone.");
+      return;
     }
 
+    const {data,error} =
+      await supabaseClient.auth.signUp({
+        email:email,
+        password:password,
+        options:{
+          data:{
+            name:name,
+            phone:phone
+          }
+        }
+      });
 
-    function closeOrder() {
-
-      document.getElementById("orderModal").style.display =
-        "none";
+    if(error){
+      alert(error.message);
+      return;
     }
 
+    if(data.user){
 
-    function submitOrder() {
+      if(data.session){
 
-      const name =
-        document.getElementById("buyerName").value.trim();
+        await supabaseClient
+          .from("profiles")
+          .upsert({
+            id:data.user.id,
+            name:name,
+            phone:phone,
+            role:"buyer"
+          });
 
-      const method =
-        document.getElementById("paymentMethod").value;
-
-      const transaction =
-        document.getElementById("transactionId").value.trim();
-
-
-      if (!name) {
-        alert("Please enter your name.");
-        return;
       }
-
-
-      if (!method) {
-        alert("Please select a payment method.");
-        return;
-      }
-
-
-      if (!transaction) {
-        alert("Please enter your transaction ID.");
-        return;
-      }
-
 
       alert(
-        "Your order form is ready.\\n\\n" +
-        "Product: " + selectedProduct + "\\n" +
-        "Duration: " + selectedDuration + "\\n" +
-        "Price: ৳" + selectedPrice + "\\n" +
-        "Payment: " + method + "\\n" +
-        "Transaction ID: " + transaction +
-        "\\n\\n" +
-        "Real order submission will be connected to Supabase next."
+        data.session
+        ? "Account created successfully!"
+        : "Account created. Please check your email for verification."
       );
 
+      signupMode=false;
+      closeLogin();
+      updateLoginButton();
     }
 
+  }else{
 
-    function buyerLogin() {
+    const {data,error} =
+      await supabaseClient.auth.signInWithPassword({
+        email:email,
+        password:password
+      });
 
-      alert(
-        "Buyer Login will be connected to Supabase authentication."
-      );
-
+    if(error){
+      alert(error.message);
+      return;
     }
 
+    alert("Login successful!");
 
-    function adminLogin() {
+    closeLogin();
+    updateLoginButton();
+  }
+}
 
-      window.location.href = "admin.html";
 
-    }
+// LOGOUT
+async function logout(){
+
+  await supabaseClient.auth.signOut();
+
+  updateLoginButton();
+
+  alert("Logged out.");
+}
 
 
-    window.onclick = function(event) {
+// LOGIN BUTTON
+async function updateLoginButton(){
 
-      const modal =
-        document.getElementById("orderModal");
+  const {data} =
+    await supabaseClient.auth.getSession();
 
-      if (event.target === modal) {
-        closeOrder();
-      }
+  const loggedIn = !!data.session;
 
-    };
+  document.getElementById("loginButton").style.display =
+    loggedIn ? "none" : "inline-block";
 
-  </script>
+  document.getElementById("logoutButton").style.display =
+    loggedIn ? "inline-block" : "none";
+}
+
+
+// ORDER
+async function openOrder(product,duration,price){
+
+  const {data} =
+    await supabaseClient.auth.getSession();
+
+  if(!data.session){
+
+    alert("Please login first.");
+
+    openLogin();
+
+    return;
+  }
+
+  selectedProduct = product;
+  selectedDuration = duration;
+  selectedPrice = price;
+
+  document.getElementById("packageTitle").value = product;
+  document.getElementById("packageDuration").value = duration;
+  document.getElementById("packagePrice").value = "৳" + price;
+
+  document.getElementById("orderModal").style.display="flex";
+
+
+  const profile =
+    await supabaseClient
+      .from("profiles")
+      .select("name,phone")
+      .eq("id",data.session.user.id)
+      .maybeSingle();
+
+  if(profile.data){
+
+    document.getElementById("buyerName").value =
+      profile.data.name || "";
+
+    document.getElementById("buyerPhone").value =
+      profile.data.phone || "";
+  }
+}
+
+
+function closeOrder(){
+
+  document.getElementById("orderModal").style.display="none";
+}
+
+
+// SUBMIT ORDER
+async function submitOrder(){
+
+  const {data:sessionData} =
+    await supabaseClient.auth.getSession();
+
+  if(!sessionData.session){
+
+    alert("Please login first.");
+    return;
+  }
+
+  const name =
+    document.getElementById("buyerName").value.trim();
+
+  const phone =
+    document.getElementById("buyerPhone").value.trim();
+
+  const method =
+    document.getElementById("paymentMethod").value;
+
+  const transaction =
+    document.getElementById("transactionId").value.trim();
+
+
+  if(!name || !phone || !method || !transaction){
+
+    alert("Please fill in all required information.");
+    return;
+  }
+
+
+  const {error} =
+    await supabaseClient
+      .from("orders")
+      .insert([{
+
+        user_id:sessionData.session.user.id,
+
+        buyer_name:name,
+
+        phone:phone,
+
+        package_title:selectedProduct,
+
+        price:selectedPrice,
+
+        duration:selectedDuration,
+
+        payment_method:method,
+
+        transaction_id:transaction,
+
+        status:"Pending"
+
+      }]);
+
+
+  if(error){
+
+    alert("Order failed: " + error.message);
+
+    return;
+  }
+
+
+  alert(
+    "Order submitted successfully! Your order is now Pending."
+  );
+
+  closeOrder();
+
+}
+
+
+// CHECK LOGIN WHEN PAGE LOADS
+updateLoginButton();
+
+</script>
 
 </body>
-</html>
+  </html>
