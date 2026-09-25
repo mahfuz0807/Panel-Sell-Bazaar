@@ -48,11 +48,51 @@ button{
 }
 button.danger{background:#d93025}
 button.green{background:#16803c}
+button.orange{background:#d97706}
 .card{
   border:1px solid #eee;
   padding:12px;
   border-radius:12px;
   margin:10px 0;
+}
+.pending-card{
+  border-left:5px solid #d97706;
+  background:#fffaf0;
+}
+.confirmed-card{
+  border-left:5px solid #16803c;
+  background:#f3fff7;
+}
+.cancelled-card{
+  border-left:5px solid #d93025;
+  background:#fff5f5;
+}
+.status{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+.status.pending{
+  background:#fff0c2;
+  color:#8a5700;
+}
+.status.confirmed{
+  background:#d9f7e5;
+  color:#087334;
+}
+.status.cancelled{
+  background:#ffdcdc;
+  color:#a40000;
+}
+.request-actions{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+.request-actions button{
+  flex:1;
 }
 nav{
   position:fixed;
@@ -78,6 +118,11 @@ nav button.active{
 .hidden{display:none}
 .small{font-size:13px;color:#666}
 .price{font-weight:bold;font-size:18px}
+hr{
+  border:0;
+  border-top:1px solid #eee;
+  margin:12px 0;
+}
 </style>
 </head>
 
@@ -85,7 +130,7 @@ nav button.active{
 
 <header>
   <h2>Panel Sell Bazaar</h2>
-  <div class="small">Admin Panel</div>
+  <div class="small">Admin Panel — Private</div>
 </header>
 
 <div class="container">
@@ -98,7 +143,14 @@ nav button.active{
     <p>Total Orders: <b id="orderCount">0</b></p>
     <p>Total Buyers: <b id="buyerCount">0</b></p>
   </div>
+
+  <!-- QUICK PENDING -->
+  <div class="section">
+    <h3>Pending Balance Requests</h3>
+    <div id="homePendingRequests">Loading...</div>
+  </div>
 </div>
+
 
 <!-- PACKAGES -->
 <div id="packages" class="page hidden">
@@ -122,6 +174,7 @@ nav button.active{
 
 </div>
 
+
 <!-- ORDERS -->
 <div id="orders" class="page hidden">
 
@@ -132,15 +185,33 @@ nav button.active{
 
 </div>
 
+
 <!-- BALANCE -->
 <div id="balance" class="page hidden">
 
+  <!-- BALANCE REQUESTS -->
+  <div class="section">
+    <h3>Balance Requests</h3>
+
+    <p class="small">
+      Buyer balance request এখানে আসবে। Transaction ID মিলিয়ে দেখে
+      Approve অথবা Reject করুন।
+    </p>
+
+    <div id="balanceRequests">
+      Loading...
+    </div>
+  </div>
+
+
+  <!-- BUYER BALANCES -->
   <div class="section">
     <h3>Buyer Balances</h3>
     <div id="balanceList">Loading...</div>
   </div>
 
 </div>
+
 
 <!-- ACCESS -->
 <div id="access" class="page hidden">
@@ -151,6 +222,7 @@ nav button.active{
   </div>
 
 </div>
+
 
 <!-- PROFILE -->
 <div id="profile" class="page hidden">
@@ -166,6 +238,7 @@ nav button.active{
 
 </div>
 
+
 <nav>
   <button class="active" onclick="showPage('home',this)">Home</button>
   <button onclick="showPage('packages',this)">Packages</button>
@@ -174,6 +247,7 @@ nav button.active{
   <button onclick="showPage('access',this)">Access</button>
   <button onclick="showPage('profile',this)">Profile</button>
 </nav>
+
 
 <script>
 
@@ -203,8 +277,14 @@ function showPage(page,btn){
   btn.classList.add("active");
 
   if(page==="packages") loadPackages();
+
   if(page==="orders") loadOrders();
-  if(page==="balance") loadBalances();
+
+  if(page==="balance"){
+    loadBalances();
+    loadBalanceRequests();
+  }
+
   if(page==="access") loadAccess();
 }
 
@@ -229,8 +309,11 @@ async function checkAdmin(){
       .single();
 
   if(error || !data || data.Role !== "admin"){
+
     alert("Admin access denied");
+
     location.href="index.html";
+
     return;
   }
 
@@ -241,6 +324,8 @@ async function checkAdmin(){
     "Phone: " + (data.Phone || "");
 
   loadDashboard();
+
+  loadBalanceRequests();
 }
 
 
@@ -264,9 +349,14 @@ async function loadDashboard(){
       .select("*",{count:"exact",head:true})
       .eq("Role","buyer");
 
-  document.getElementById("packageCount").innerText = pc || 0;
-  document.getElementById("orderCount").innerText = oc || 0;
-  document.getElementById("buyerCount").innerText = bc || 0;
+  document.getElementById("packageCount").innerText =
+    pc || 0;
+
+  document.getElementById("orderCount").innerText =
+    oc || 0;
+
+  document.getElementById("buyerCount").innerText =
+    bc || 0;
 }
 
 
@@ -290,7 +380,9 @@ async function addPackage(){
     document.getElementById("packageLink").value.trim();
 
   if(!title || !price || !duration){
+
     alert("Title, price and duration are required");
+
     return;
   }
 
@@ -306,7 +398,9 @@ async function addPackage(){
       }]);
 
   if(error){
+
     alert(error.message);
+
     return;
   }
 
@@ -339,12 +433,16 @@ async function loadPackages(){
       .order("id",{ascending:false});
 
   if(error){
+
     box.innerHTML="Error: "+error.message;
+
     return;
   }
 
   if(!data || data.length===0){
+
     box.innerHTML="No packages found";
+
     return;
   }
 
@@ -353,29 +451,62 @@ async function loadPackages(){
   data.forEach(p=>{
 
     const div=document.createElement("div");
+
     div.className="card";
 
     div.innerHTML=`
-      <b>${escapeHtml(p.title)}</b>
-      <p class="price">৳${p.price}</p>
-      <p>Duration: ${escapeHtml(p.duration)}</p>
 
-      <input id="title_${p.id}" value="${escapeAttr(p.title)}">
-      <input id="price_${p.id}" type="number" value="${p.price}">
-      <input id="duration_${p.id}" value="${escapeAttr(p.duration)}">
-      <input id="image_${p.id}" value="${escapeAttr(p.image_url || "")}" placeholder="Image URL">
-      <input id="link_${p.id}" value="${escapeAttr(p.panel_link || "")}" placeholder="Panel Link">
+      <b>${escapeHtml(p.title)}</b>
+
+      <p class="price">
+        ৳${p.price}
+      </p>
+
+      <p>
+        Duration: ${escapeHtml(p.duration)}
+      </p>
+
+      <input
+        id="title_${p.id}"
+        value="${escapeAttr(p.title)}"
+      >
+
+      <input
+        id="price_${p.id}"
+        type="number"
+        value="${p.price}"
+      >
+
+      <input
+        id="duration_${p.id}"
+        value="${escapeAttr(p.duration)}"
+      >
+
+      <input
+        id="image_${p.id}"
+        value="${escapeAttr(p.image_url || "")}"
+        placeholder="Image URL"
+      >
+
+      <input
+        id="link_${p.id}"
+        value="${escapeAttr(p.panel_link || "")}"
+        placeholder="Panel Link"
+      >
 
       <button onclick="updatePackage(${p.id})">
         Update
       </button>
 
-      <button class="danger" onclick="deletePackage(${p.id})">
+      <button
+        class="danger"
+        onclick="deletePackage(${p.id})">
         Delete
       </button>
     `;
 
     box.appendChild(div);
+
   });
 }
 
@@ -412,11 +543,14 @@ async function updatePackage(id){
       .eq("id",id);
 
   if(error){
+
     alert(error.message);
+
     return;
   }
 
   alert("Package updated");
+
   loadPackages();
 }
 
@@ -425,7 +559,8 @@ async function updatePackage(id){
 
 async function deletePackage(id){
 
-  if(!confirm("Delete this package?")) return;
+  if(!confirm("Delete this package?"))
+    return;
 
   const {error} =
     await supabaseClient
@@ -434,11 +569,14 @@ async function deletePackage(id){
       .eq("id",id);
 
   if(error){
+
     alert(error.message);
+
     return;
   }
 
   alert("Package deleted");
+
   loadPackages();
   loadDashboard();
 }
@@ -460,12 +598,16 @@ async function loadOrders(){
       .order("id",{ascending:false});
 
   if(error){
+
     box.innerHTML="Error: "+error.message;
+
     return;
   }
 
   if(!data || data.length===0){
+
     box.innerHTML="No orders found";
+
     return;
   }
 
@@ -474,35 +616,51 @@ async function loadOrders(){
   data.forEach(o=>{
 
     const div=document.createElement("div");
+
     div.className="card";
 
     div.innerHTML=`
+
       <b>${escapeHtml(o.buyer_name || "")}</b>
 
       <p>
-      Package: ${escapeHtml(o.package_title || "")}
+        Package:
+        ${escapeHtml(o.package_title || "")}
       </p>
 
       <p>
-      Price: ৳${o.price || 0}
+        Price: ৳${o.price || 0}
       </p>
 
       <p>
-      Duration: ${escapeHtml(o.duration || "")}
+        Duration:
+        ${escapeHtml(o.duration || "")}
       </p>
 
       <p>
-      Payment: ${escapeHtml(o.payment_method || "")}
+        Payment:
+        ${escapeHtml(o.payment_method || "")}
       </p>
 
       <p>
-      Transaction ID:
-      <b>${escapeHtml(o.transaction_id || "")}</b>
+        Transaction ID:
+        <b>${escapeHtml(o.transaction_id || "")}</b>
       </p>
 
+      ${
+        o.sender_number
+        ?
+        `<p>
+          Sender Number:
+          <b>${escapeHtml(o.sender_number)}</b>
+        </p>`
+        :
+        ""
+      }
+
       <p>
-      Status:
-      <b>${escapeHtml(o.status || "")}</b>
+        Status:
+        <b>${escapeHtml(o.status || "")}</b>
       </p>
 
       <input
@@ -512,26 +670,37 @@ async function loadOrders(){
       >
 
       <select id="status_${o.id}">
-        <option value="Pending" ${o.status==="Pending"?"selected":""}>
+
+        <option
+          value="Pending"
+          ${o.status==="Pending"?"selected":""}>
           Pending
         </option>
 
-        <option value="Confirmed" ${o.status==="Confirmed"?"selected":""}>
+        <option
+          value="Confirmed"
+          ${o.status==="Confirmed"?"selected":""}>
           Confirmed
         </option>
 
-        <option value="Cancelled" ${o.status==="Cancelled"?"selected":""}>
+        <option
+          value="Cancelled"
+          ${o.status==="Cancelled"?"selected":""}>
           Cancelled
         </option>
+
       </select>
 
-      <button class="green"
+      <button
+        class="green"
         onclick="updateOrder(${o.id})">
         Save Order
       </button>
+
     `;
 
     box.appendChild(div);
+
   });
 }
 
@@ -554,65 +723,132 @@ async function updateOrder(id){
       .single();
 
   if(oldError){
+
     alert(oldError.message);
+
     return;
   }
 
-  // Balance Top Up
+
+  // ==============================
+  // BALANCE TOP UP APPROVAL
+  // ==============================
+
   if(
     oldOrder.package_title === "Balance Top Up" &&
     oldOrder.status !== "Confirmed" &&
     status === "Confirmed"
   ){
 
-    const {data:profile,error:profileError} =
+    // Check whether this order was already credited
+    const {data:alreadyCredited,error:creditCheckError} =
       await supabaseClient
-        .from("Profiles")
-        .select("balance")
-        .eq("id",oldOrder.user_id)
-        .single();
+        .from("BalanceTransactions")
+        .select("id")
+        .eq("user_id",oldOrder.user_id)
+        .eq("type","credit")
+        .eq(
+          "note",
+          "Balance Top Up Order #"+oldOrder.id
+        )
+        .limit(1);
 
-    if(profileError){
-      alert(profileError.message);
+    if(creditCheckError){
+
+      alert(creditCheckError.message);
+
       return;
     }
 
-    const newBalance =
-      Number(profile.balance || 0) +
-      Number(oldOrder.price || 0);
+    // Only add balance if credit does not already exist
+    if(!alreadyCredited || alreadyCredited.length===0){
 
-    const {error:updateBalanceError} =
-      await supabaseClient
-        .from("Profiles")
-        .update({balance:newBalance})
-        .eq("id",oldOrder.user_id);
+      const {data:profile,error:profileError} =
+        await supabaseClient
+          .from("Profiles")
+          .select("balance")
+          .eq("id",oldOrder.user_id)
+          .single();
 
-    if(updateBalanceError){
-      alert(updateBalanceError.message);
-      return;
+      if(profileError){
+
+        alert(profileError.message);
+
+        return;
+      }
+
+      const newBalance =
+        Number(profile.balance || 0) +
+        Number(oldOrder.price || 0);
+
+      const {error:updateBalanceError} =
+        await supabaseClient
+          .from("Profiles")
+          .update({
+            balance:newBalance
+          })
+          .eq("id",oldOrder.user_id);
+
+      if(updateBalanceError){
+
+        alert(updateBalanceError.message);
+
+        return;
+      }
+
+
+      // Balance history
+      const {error:transactionError} =
+        await supabaseClient
+          .from("BalanceTransactions")
+          .insert([{
+
+            user_id:oldOrder.user_id,
+
+            amount:Number(oldOrder.price || 0),
+
+            type:"credit",
+
+            note:
+              "Balance Top Up Order #"+oldOrder.id
+
+          }]);
+
+      if(transactionError){
+
+        alert(
+          "Balance updated but transaction history failed: "
+          + transactionError.message
+        );
+
+        return;
+      }
+
     }
 
-    await supabaseClient
-      .from("BalanceTransactions")
-      .insert([{
-        user_id:oldOrder.user_id,
-        amount:Number(oldOrder.price || 0),
-        type:"credit",
-        note:"Balance Top Up"
-      }]);
   }
+
+
+  // ==============================
+  // UPDATE ORDER
+  // ==============================
 
   const {error} =
     await supabaseClient
       .from("Orders")
       .update({
+
         status:status,
+
         access_key:access_key
+
       })
       .eq("id",id);
 
   if(error){
+
     alert(error.message);
+
     return;
   }
 
@@ -620,179 +856,241 @@ async function updateOrder(id){
 
   loadOrders();
   loadBalances();
+  loadBalanceRequests();
+  loadDashboard();
 }
 
 
-// ---------------- BALANCES ----------------
+// ---------------- BALANCE REQUESTS ----------------
 
-async function loadBalances(){
+async function loadBalanceRequests(){
 
   const box =
-    document.getElementById("balanceList");
+    document.getElementById("balanceRequests");
 
-  box.innerHTML="Loading...";
+  const homeBox =
+    document.getElementById("homePendingRequests");
 
-  const {data,error} =
-    await supabaseClient
-      .from("Profiles")
-      .select("*")
-      .eq("Role","buyer")
-      .order("Name");
+  if(box)
+    box.innerHTML="Loading...";
 
-  if(error){
-    box.innerHTML="Error: "+error.message;
-    return;
-  }
+  if(homeBox)
+    homeBox.innerHTML="Loading...";
 
-  box.innerHTML="";
-
-  if(!data || data.length===0){
-    box.innerHTML="No buyers found";
-    return;
-  }
-
-  data.forEach(p=>{
-
-    const div=document.createElement("div");
-    div.className="card";
-
-    div.innerHTML=`
-      <b>${escapeHtml(p.Name || "Buyer")}</b>
-      <p>${escapeHtml(p.Phone || "")}</p>
-      <p>Current Balance: <b>৳${p.balance || 0}</b></p>
-
-      <input
-        id="balance_${p.id}"
-        type="number"
-        placeholder="New balance"
-        value="${p.balance || 0}"
-      >
-
-      <button onclick="changeBalance('${p.id}')">
-        Update Balance
-      </button>
-    `;
-
-    box.appendChild(div);
-  });
-}
-
-
-// ---------------- CHANGE BALANCE ----------------
-
-async function changeBalance(id){
-
-  const value =
-    document.getElementById("balance_"+id).value;
-
-  const amount=Number(value);
-
-  if(amount < 0){
-    alert("Balance cannot be negative");
-    return;
-  }
-
-  const {error} =
-    await supabaseClient
-      .from("Profiles")
-      .update({balance:amount})
-      .eq("id",id);
-
-  if(error){
-    alert(error.message);
-    return;
-  }
-
-  alert("Balance updated");
-  loadBalances();
-}
-
-
-// ---------------- ACCESS ----------------
-
-async function loadAccess(){
-
-  const box =
-    document.getElementById("accessList");
-
-  box.innerHTML="Loading...";
 
   const {data,error} =
     await supabaseClient
       .from("Orders")
       .select("*")
-      .eq("status","Confirmed")
-      .neq("package_title","Balance Top Up")
+      .eq("package_title","Balance Top Up")
       .order("id",{ascending:false});
 
+
   if(error){
-    box.innerHTML="Error: "+error.message;
+
+    const msg =
+      "Error: "+error.message;
+
+    if(box) box.innerHTML=msg;
+
+    if(homeBox) homeBox.innerHTML=msg;
+
     return;
   }
 
-  box.innerHTML="";
 
   if(!data || data.length===0){
-    box.innerHTML="No confirmed access found";
+
+    if(box)
+      box.innerHTML=
+        '<p class="small">No balance requests found.</p>';
+
+    if(homeBox)
+      homeBox.innerHTML=
+        '<p class="small">No balance requests.</p>';
+
     return;
   }
 
-  data.forEach(o=>{
 
-    const div=document.createElement("div");
-    div.className="card";
+  // ==============================
+  // FULL BALANCE REQUEST LIST
+  // ==============================
 
-    div.innerHTML=`
-      <b>${escapeHtml(o.buyer_name || "")}</b>
+  if(box){
 
-      <p>
-      Package:
-      ${escapeHtml(o.package_title || "")}
-      </p>
+    box.innerHTML="";
 
-      <p>
-      Key:
-      <b>${escapeHtml(o.access_key || "Not set")}</b>
-      </p>
-    `;
+    data.forEach(o=>{
 
-    box.appendChild(div);
-  });
-}
+      const statusClass =
+        o.status==="Confirmed"
+        ?
+        "confirmed"
+        :
+        o.status==="Cancelled"
+        ?
+        "cancelled"
+        :
+        "pending";
 
-
-// ---------------- LOGOUT ----------------
-
-async function logout(){
-
-  await supabaseClient.auth.signOut();
-
-  location.href="index.html";
-}
-
-
-// ---------------- SECURITY HELPERS ----------------
-
-function escapeHtml(value){
-
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-function escapeAttr(value){
-  return escapeHtml(value);
-}
+      const cardClass =
+        o.status==="Confirmed"
+        ?
+        "confirmed-card"
+        :
+        o.status==="Cancelled"
+        ?
+        "cancelled-card"
+        :
+        "pending-card";
 
 
-// START
+      const div=document.createElement("div");
 
-checkAdmin();
+      div.className="card "+cardClass;
 
-</script>
+      div.innerHTML=`
 
-</body>
-</html>
+        <b>
+          ${escapeHtml(o.buyer_name || "Buyer")}
+        </b>
+
+        <p>
+          Phone:
+          <b>${escapeHtml(o.phone || "Not provided")}</b>
+        </p>
+
+        <p>
+          Amount:
+          <span class="price">
+            ৳${Number(o.price || 0).toFixed(2)}
+          </span>
+        </p>
+
+        <p>
+          Payment Method:
+          <b>${escapeHtml(o.payment_method || "Not provided")}</b>
+        </p>
+
+        ${
+          o.sender_number
+          ?
+          `
+          <p>
+            Sender Number:
+            <b>${escapeHtml(o.sender_number)}</b>
+          </p>
+          `
+          :
+          `
+          <p class="small">
+            Sender Number: Not provided
+          </p>
+          `
+        }
+
+        <p>
+          Transaction ID:
+          <b>${escapeHtml(o.transaction_id || "Not provided")}</b>
+        </p>
+
+        <p>
+          Status:
+          <span class="status ${statusClass}">
+            ${escapeHtml(o.status || "Pending")}
+          </span>
+        </p>
+
+        <hr>
+
+        ${
+          o.status==="Pending"
+          ?
+          `
+          <div class="request-actions">
+
+            <button
+              class="green"
+              onclick="approveBalanceRequest(${o.id})">
+              ✓ Approve
+            </button>
+
+            <button
+              class="danger"
+              onclick="rejectBalanceRequest(${o.id})">
+              ✕ Reject
+            </button>
+
+          </div>
+          `
+          :
+          `
+          <p class="small">
+            This request has already been reviewed.
+          </p>
+          `
+        }
+
+      `;
+
+      box.appendChild(div);
+
+    });
+
+  }
+
+
+  // ==============================
+  // HOME PENDING ONLY
+  // ==============================
+
+  if(homeBox){
+
+    const pending =
+      data.filter(x=>x.status==="Pending");
+
+    if(!pending.length){
+
+      homeBox.innerHTML=
+        '<p class="small">No pending balance requests.</p>';
+
+    }
+    else{
+
+      homeBox.innerHTML="";
+
+      pending.forEach(o=>{
+
+        const div=document.createElement("div");
+
+        div.className="card pending-card";
+
+        div.innerHTML=`
+
+          <b>
+            ${escapeHtml(o.buyer_name || "Buyer")}
+          </b>
+
+          <p>
+            Amount:
+            <span class="price">
+              ৳${Number(o.price || 0).toFixed(2)}
+            </span>
+          </p>
+
+          <p>
+            Method:
+            ${escapeHtml(o.payment_method || "")}
+          </p>
+
+          <p>
+            TXID:
+            <b>${escapeHtml(o.transaction_id || "")}</b>
+          </p>
+
+          <button
+            class="green"
+            onclick="approveBalanceRequest(${o.id})">
+            ✓ Approve
+          </butto
