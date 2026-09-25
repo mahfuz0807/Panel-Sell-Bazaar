@@ -1,87 +1,287 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Panel Sell Bazaar</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#f7fbff,#eef8ff);color:#182033}button,input,select{font:inherit}button{cursor:pointer}.head{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #ddd;padding:12px 15px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800}.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#1677ff,#9b27ff);color:#fff;display:grid;place-items:center}.top{border:0;background:#1677ff;color:#fff;border-radius:12px;padding:11px 18px;font-weight:700}.wrap{max-width:1050px;margin:auto;padding:16px 14px 90px}.sec{background:#fff;border:1px solid #e5e9ef;border-radius:20px;padding:18px;margin-bottom:16px;box-shadow:0 5px 20px #0000000b}.hero{text-align:center;padding:42px 18px}.hero h1{font-size:40px;margin:0 0 12px}.muted{color:#6b7280}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.pkg{border:1px solid #e2e6ed;border-radius:18px;overflow:hidden;background:#fff}.pkg img{width:100%;height:210px;object-fit:cover;background:#eef1f5}.pb{padding:14px}.pt{font-weight:800;font-size:18px}.price{font-size:24px;font-weight:900;color:#159957;margin:8px 0}.btn{width:100%;border:0;border-radius:12px;padding:13px;margin-top:9px;font-weight:800}.blue{background:linear-gradient(90deg,#2463ff,#7226df);color:#fff}.pink{background:linear-gradient(90deg,#ff0b61,#ff186d);color:#fff}.gray{background:#eef3ff;color:#1457c9}.red{background:#d93025;color:#fff}.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;z-index:30}.nav button{flex:1;border:0;background:#fff;padding:10px 3px;color:#667085;font-size:12px}.nav button.active{color:#1677ff;font-weight:800}.hidden{display:none!important}.modal{position:fixed;inset:0;background:#0008;z-index:100;display:flex;align-items:center;justify-content:center;padding:15px}.modalbox{width:min(520px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:20px;padding:20px}.close{float:right;border:0;background:#eee;border-radius:50%;width:35px;height:35px}.row{display:flex;gap:8px;align-items:center}.row>*:first-child{flex:1}input,select{width:100%;padding:13px;border:1px solid #d5dbe5;border-radius:11px;margin:5px 0 9px}label{font-weight:700;display:block;margin-top:8px}.msg{padding:10px;border-radius:10px;background:#eef6ff;color:#1558a8;margin:8px 0}.err{background:#fff0f0;color:#b42318}.ok{background:#edfff3;color:#147a3d}.card{border:1px solid #e3e7ed;border-radius:14px;padding:13px;margin:9px 0}.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#fff0c2;color:#805700;font-size:12px;font-weight:800}.badge.ok{background:#def8e8;color:#087334}.pay{background:#f7f9fc;border:1px solid #e2e7ee;border-radius:14px;padding:12px;margin:8px 0}.num{background:#fff;border:1px solid #ddd;padding:10px;border-radius:9px;font-weight:800;word-break:break-all}.copy{width:auto;border:0;background:#1677ff;color:#fff;border-radius:9px;padding:10px 12px;font-weight:700}.empty{text-align:center;color:#777;padding:20px}.help{display:flex;gap:10px}.help a{flex:1;text-align:center;text-decoration:none;background:#1677ff;color:#fff;border-radius:12px;padding:12px;font-weight:700}@media(max-width:650px){.grid{grid-template-columns:1fr 1fr}.hero h1{font-size:31px}.pkg img{height:175px}}@media(max-width:450px){.grid{grid-template-columns:1fr}.pkg img{height:220px}.brand{font-size:17px}}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#111}.hidden{display:none!important}.topbar{background:#111827;color:white;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px;position:sticky;top:0;z-index:10}.brand{font-size:20px;font-weight:bold}.top{background:#2563eb;color:white;border:0;border-radius:8px;padding:10px 16px;cursor:pointer}.container{max-width:1100px;margin:auto;padding:20px}.hero{background:linear-gradient(135deg,#2563eb,#7c3aed);color:white;padding:35px 20px;border-radius:15px;margin-bottom:20px}.hero h1{margin:0 0 10px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}.card{background:white;border-radius:12px;padding:16px;box-shadow:0 3px 15px #0001}.card img{width:100%;max-height:180px;object-fit:contain;border-radius:8px;margin-bottom:10px}.price{font-size:20px;font-weight:bold;color:#2563eb}.btn{border:0;border-radius:8px;padding:10px 14px;cursor:pointer;background:#2563eb;color:white;margin:4px 2px}.btn.secondary{background:#374151}.btn.green{background:#16a34a}.modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:15px;z-index:100}.box{background:white;width:100%;max-width:430px;border-radius:14px;padding:22px;position:relative;max-height:90vh;overflow:auto}.close{position:absolute;right:15px;top:10px;border:0;background:none;font-size:25px;cursor:pointer}.box h2{margin-top:0}.box label{display:block;margin:10px 0 5px;font-weight:bold}.box input,.box select,.box textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:8px}.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.msg{margin:10px 0;padding:9px;border-radius:7px;background:#eef2ff}.error{background:#fee2e2;color:#991b1b}.nav{display:flex;gap:8px;overflow:auto;margin-bottom:18px}.nav button{white-space:nowrap}.empty{text-align:center;padding:25px;color:#666}.payment{background:#f3f4f6;border-radius:9px;padding:12px;margin:10px 0}.success{color:#15803d;font-weight:bold}
 </style>
 </head>
 <body>
-<header class="head"><div class="brand"><div class="logo">PS</div>Panel Sell Bazaar</div><button id="topBtn" class="top" onclick="document.getElementById('auth').classList.remove('hidden')">Login</button></header>
-<main class="wrap">
-<section id="public" class="page"><div class="sec hero"><h1>Welcome to Panel Sell Bazaar</h1><p class="muted">Packages দেখুন। Buy Now চাপলে তবেই Login/Create Account আসবে।</p><button class="btn blue" onclick="document.getElementById('publicPkgs').scrollIntoView({behavior:'smooth'})">View Packages</button></div><div class="sec"><h2>Available Packages</h2><div id="publicPkgs" class="grid"><div class="empty">Loading...</div></div></div><div class="sec"><h2>Help & Contact</h2><p class="muted">Payment বা Order নিয়ে সমস্যা হলে যোগাযোগ করুন।</p><div class="help"><a id="call" href="#">☎ Call</a><a id="wa" href="#" target="_blank">💬 WhatsApp</a></div></div></section>
-<section id="home" class="page hidden"><div class="sec"><h2>Welcome, <span id="welcome">Buyer</span></h2><p class="muted">আপনার account থেকে সবকিছু manage করুন।</p></div><div class="sec"><h2>Recent Confirmed Orders</h2><div id="recent"><div class="empty">Loading...</div></div></div></section>
-<section id="packages" class="page hidden"><div class="sec"><h2>Packages</h2><div id="appPkgs" class="grid"></div></div></section>
-<section id="orders" class="page hidden"><div class="sec"><h2>My Orders</h2><div id="myOrders"><div class="empty">Loading...</div></div></div></section>
-<section id="balance" class="page hidden"><div class="sec"><h2>My Balance</h2><div class="price">৳<span id="bal">0</span></div><hr><h3>Add Fund</h3><input id="amount" type="number" min="1" placeholder="Amount"><select id="method"><option value="">Payment method</option><option>bKash</option><option>Nagad</option><option>Rocket</option></select><div id="topPay" class="pay hidden"></div><input id="sender" placeholder="Sender Number (optional)"><input id="txid" placeholder="Transaction ID"><button class="btn pink" onclick="topup()">Submit Balance Request</button><div id="topMsg"></div></div></section>
-<section id="access" class="page hidden"><div class="sec"><h2>My Access</h2><div id="keys"><div class="empty">Loading...</div></div></div></section>
-<section id="profile" class="page hidden"><div class="sec"><h2>My Profile</h2><div id="profileInfo"></div><button class="btn red" onclick="logout()">Logout</button></div></section>
+
+<header class="topbar">
+<div class="brand">Panel Sell Bazaar</div>
+<button class="top" id="topBtn" onclick="openAuth('login')">Login</button>
+</header>
+
+<main class="container">
+<section class="hero">
+<h1>Panel Sell Bazaar</h1>
+<p>Buy panels easily and securely.</p>
+</section>
+
+<div class="nav">
+<button class="btn" onclick="showPage('home')">Home</button>
+<button class="btn" onclick="showPage('packages')">Packages</button>
+<button class="btn" onclick="showPage('orders')">Orders</button>
+<button class="btn" onclick="showPage('balance')">Balance</button>
+<button class="btn" onclick="showPage('access')">Access</button>
+<button class="btn" onclick="showPage('profile')">Profile</button>
+</div>
+
+<section id="homePage">
+<h2>Available Packages</h2>
+<div id="publicPkgs" class="grid"><div class="empty">Loading...</div></div>
+</section>
+
+<section id="packagesPage" class="hidden">
+<h2>All Packages</h2>
+<div id="packagesList" class="grid"></div>
+</section>
+
+<section id="ordersPage" class="hidden">
+<h2>My Orders</h2>
+<div id="ordersList"></div>
+</section>
+
+<section id="balancePage" class="hidden">
+<h2>My Balance</h2>
+<div class="card"><h3 id="myBalance">0 Tk</h3><button class="btn green" onclick="openTopup()">Balance Top Up</button></div>
+</section>
+
+<section id="accessPage" class="hidden">
+<h2>Panel Access</h2>
+<div id="accessList"></div>
+</section>
+
+<section id="profilePage" class="hidden">
+<h2>My Profile</h2>
+<div class="card" id="profileInfo">Login required.</div>
+</section>
 </main>
-<nav id="nav" class="nav hidden"><button data-p="home" onclick="page('home',this)">⌂<br>Home</button><button data-p="packages" onclick="page('packages',this)">▦<br>Packages</button><button data-p="orders" onclick="page('orders',this)">▤<br>Orders</button><button data-p="balance" onclick="page('balance',this)">৳<br>Balance</button><button data-p="access" onclick="page('access',this)">🔑<br>My Access</button><button data-p="profile" onclick="page('profile',this)">◉<br>Profile</button></nav>
-<div class="row"><button type="button" class="btn gray" onclick="document.getElementById('signup').classList.add('hidden');document.getElementById('authTitle').innerText='Login';document.getElementById('authBtn').innerText='Login';">Login</button><button type="button" class="btn gray" onclick="document.getElementById('signup').classList.remove('hidden');document.getElementById('authTitle').innerText='Create Account';document.getElementById('authBtn').innerText='Create Account';">Create Account</button></div>
-<div id="buy" class="modal hidden"><div class="modalbox"><button class="close" onclick="closeBuy()">×</button><h2 id="buyTitle">Package</h2><div id="buyInfo"></div><div id="buyChoice"></div><div id="buyPay" class="pay hidden"></div><input id="buySender" placeholder="Sender Number (optional)"><input id="buyTxid" placeholder="Transaction ID"><button class="btn pink" onclick="confirmBuy()">Confirm Order</button><div id="buyMsg"></div></div></div>
+
+<div id="auth" class="modal hidden" onclick="if(event.target===this)closeAuth()">
+<div class="box">
+<button class="close" onclick="closeAuth()">×</button>
+<h2 id="authTitle">Login</h2>
+<div id="authMsg"></div>
+
+<div id="signup" class="hidden">
+<label>Name</label>
+<input id="name" type="text" placeholder="Your name">
+<label>Phone</label>
+<input id="phone" type="tel" placeholder="Phone number">
+</div>
+
+<label>Gmail</label>
+<input id="email" type="email" placeholder="example@gmail.com">
+
+<label>Password</label>
+<input id="pass" type="password" placeholder="Minimum 6 characters">
+
+<button id="authBtn" class="btn" style="width:100%;margin-top:15px" onclick="auth()">Login</button>
+
+<div class="row">
+<button class="btn secondary" onclick="mode('login')">Login</button>
+<button class="btn green" onclick="mode('signup')">Create Account</button>
+</div>
+</div>
+</div>
+
+<div id="pkgModal" class="modal hidden" onclick="if(event.target===this)closePkg()">
+<div class="box">
+<button class="close" onclick="closePkg()">×</button>
+<div id="pkgDetails"></div>
+</div>
+</div>
+
+<div id="topupModal" class="modal hidden" onclick="if(event.target===this)closeTopup()">
+<div class="box">
+<button class="close" onclick="closeTopup()">×</button>
+<h2>Balance Top Up</h2>
+<label>Payment Method</label>
+<select id="topMethod" onchange="showPayNumber()">
+<option value="">Select Method</option>
+<option value="bKash">bKash</option>
+<option value="Nagad">Nagad</option>
+<option value="Rocket">Rocket</option>
+</select>
+<div id="payNumber" class="payment"></div>
+<label>Amount</label>
+<input id="topAmount" type="number" placeholder="Amount">
+<label>Transaction ID</label>
+<input id="topTxn" type="text" placeholder="Transaction ID">
+<button class="btn green" onclick="submitTopup()">Submit</button>
+<div id="topMsg"></div>
+</div>
+</div>
+
 <script>
-const URL='https://wiztksrtzjmsxzolollf.supabase.co',KEY='sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi',db=supabase.createClient(URL,KEY);
-/* ====== শুধু এই ৩টি জায়গায় আপনার payment number বসাবেন ====== */
-let PAY={bKash:'',Nagad:'',Rocket:''};
+const SUPABASE_URL='https://wiztksrtzjmsxzolollf.supabase.co';
+const SUPABASE_KEY='sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi';
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let user=null,profile=null,PAY={bKash:'',Nagad:'',Rocket:''};
+
+const $=id=>document.getElementById(id);
+
+function msg(id,text,error=false){$(id).innerHTML='<div class="msg '+(error?'error':'')+'">'+esc(text)+'</div>'}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+function openAuth(m='login'){mode(m);$('auth').classList.remove('hidden')}
+function closeAuth(){$('auth').classList.add('hidden');$('authMsg').innerHTML=''}
+function mode(m){
+const s=m==='signup';
+$('signup').classList.toggle('hidden',!s);
+$('authTitle').textContent=s?'Create Account':'Login';
+$('authBtn').textContent=s?'Create Account':'Login';
+$('authMsg').innerHTML='';
+}
+
+async function auth(){
+const email=$('email').value.trim().toLowerCase(),pass=$('pass').value,s=!$('signup').classList.contains('hidden');
+if(!email.endsWith('@gmail.com'))return msg('authMsg','Please use a Gmail address.',true);
+if(pass.length<6)return msg('authMsg','Password must be at least 6 characters.',true);
+$('authBtn').disabled=true;
+msg('authMsg','Processing...');
+try{
+if(s){
+const name=$('name').value.trim(),phone=$('phone').value.trim();
+if(!name)return msg('authMsg','Name is required.',true);
+if(!phone)return msg('authMsg','Phone is required.',true);
+const r=await db.auth.signUp({email,password:pass,options:{data:{name:name,phone:phone}}});
+if(r.error)throw r.error;
+if(r.data.session){
+user=r.data.user;await ensureProfile();closeAuth();await start();
+}else{
+msg('authMsg','Account created. Now Login করুন.');
+$('pass').value='';mode('login');
+}
+}else{
+const r=await db.auth.signInWithPassword({email,password:pass});
+if(r.error)throw r.error;
+user=r.data.user;await ensureProfile();closeAuth();await start();
+}
+}catch(e){msg('authMsg',e.message||'Login failed.',true)}
+finally{$('authBtn').disabled=false}
+}
+
+async function ensureProfile(){
+if(!user)return;
+let r=await db.from('Profiles').select('*').eq('id',user.id).maybeSingle();
+if(r.error)throw r.error;
+if(r.data){profile=r.data;return}
+const n=user.user_metadata?.name||'Buyer',p=user.user_metadata?.phone||'';
+const c=await db.from('Profiles').insert([{id:user.id,Name:n,Phone:p,Role:'buyer',balance:0}]).select().single();
+if(c.error)throw c.error;
+profile=c.data;
+}
 
 async function loadPaymentSettings(){
-  const r=await db.from('SiteSettings').select('bkash_number,nagad_number,rocket_number').eq('id',1).maybeSingle();
-  if(!r.error && r.data){
-    PAY={bKash:r.data.bkash_number||'',Nagad:r.data.nagad_number||'',Rocket:r.data.rocket_number||''};
-  }
-}
-const CONTACT='YOUR_CONTACT_NUMBER',WHATSAPP='YOUR_WHATSAPP_NUMBER';
-let user=null,profile=null,chosen=null,method='';
-const $=id=>document.getElementById(id);const esc=x=>String(x??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');const money=x=>Number(x||0).toFixed(0);
-function copyNumber(x){if(!x)return alert('এই Payment Method-এর নম্বর Admin এখনো সেট করেননি।');navigator.clipboard?.writeText(x).then(()=>alert('Number copied.')).catch(()=>{let t=document.createElement('textarea');t.value=x;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();alert('Number copied.')})}
-function payBox(m){let n=PAY[m]||'';if(!n)return `<b>${esc(m)} Number</b><div class="msg err">Admin এখনো ${esc(m)} number সেট করেননি।</div>`;return `<b>${esc(m)} Number</b><div class="row" style="margin-top:7px"><div class="num">${esc(n)}</div><button class="copy" onclick="copyNumber(${JSON.stringify(n)})">Copy</button></div>`}
-function openAuth(m='login'){
-  $('auth').classList.remove('hidden');
-  mode(m);
+const r=await db.from('Payment Settings').select('id,bkash_number,nagad_number,rocket_number').eq('id',1).maybeSingle();
+if(!r.error&&r.data)PAY={bKash:r.data.bkash_number||'',Nagad:r.data.nagad_number||'',Rocket:r.data.rocket_number||''};
 }
 
-function closeAuth(){
-  $('auth').classList.add('hidden');
-  $('authMsg').innerHTML='';
+async function loadPublic(){
+const r=await db.from('Package').select('id,title,price,duration,image_url').order('id',{ascending:false});
+if(r.error){$('publicPkgs').innerHTML='<div class="empty">Packages load হয়নি।</div>';return}
+renderPkgs($('publicPkgs'),r.data||[]);
+renderPkgs($('packagesList'),r.data||[]);
 }
 
-function mode(m){
-  const signupMode = m === 'signup';
-
-  $('authTitle').innerText = signupMode ? 'Create Account' : 'Login';
-  $('authBtn').innerText = signupMode ? 'Create Account' : 'Login';
-
-  if(signupMode){
-    $('signup').classList.remove('hidden');
-  }else{
-    $('signup').classList.add('hidden');
-  }
-
-  $('authMsg').innerHTML='';
+function renderPkgs(el,data){
+if(!data.length){el.innerHTML='<div class="empty">No packages available.</div>';return}
+el.innerHTML=data.map(p=>`<div class="card">${p.image_url?`<img src="${esc(p.image_url)}" onerror="this.style.display='none'">`:''}<h3>${esc(p.title)}</h3><div class="price">${esc(p.price)} Tk</div><p>Duration: ${esc(p.duration)}</p><button class="btn secondary" onclick="viewPkg(${p.id})">View Package</button><button class="btn green" onclick="buy(${p.id})">🛒 Buy Now</button></div>`).join('');
 }
-function msg(id,text,err=false){$(id).innerHTML=text?`<div class="msg ${err?'err':''}">${esc(text)}</div>`:''}
-async function auth(){let email=$('email').value.trim().toLowerCase(),pass=$('pass').value,s=!$('signup').classList.contains('hidden');if(!email.endsWith('@gmail.com'))return msg('authMsg','শুধু @gmail.com ব্যবহার করুন।',true);if(pass.length<6)return msg('authMsg','Password কমপক্ষে 6 characters দিন।',true);$('authBtn').disabled=true;msg('authMsg','Processing...');try{if(s){let name=$('name').value.trim(),phone=$('phone').value.trim();if(!name)return msg('authMsg','Name দিন।',true);let r=await db.auth.signUp({email,password:pass,options:{data:{name,phone}}});if(r.error)throw r.error;msg('authMsg','Account তৈরি হয়েছে। এখন Login করুন।');$('pass').value='';mode('login')}else{let r=await db.auth.signInWithPassword({email,password:pass});if(r.error)throw r.error;user=r.data.user;await ensureProfile();closeAuth();start()}}catch(e){msg('authMsg',e.message||'Login failed.',true)}finally{$('authBtn').disabled=false}}
-async function ensureProfile(){if(!user)return;let r=await db.from('Profiles').select('*').eq('id',user.id).maybeSingle();if(r.data){profile=r.data;return}let n=user.user_metadata?.name||'Buyer',p=user.user_metadata?.phone||'';let c=await db.from('Profiles').insert([{id:user.id,Name:n,Phone:p,Role:'buyer',balance:0}]).select().single();if(!c.error)profile=c.data}
-function publicView(){$('public').classList.remove('hidden');['home','packages','orders','balance','access','profile'].forEach(x=>$(x).classList.add('hidden'));$('nav').classList.add('hidden');$('topBtn').innerText='Login';$('topBtn').onclick=()=>openAuth('login')}
-function page(id,b){if(!user)return openAuth('login');document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));$('public').classList.add('hidden');$(id).classList.remove('hidden');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b?.classList.add('active');if(id==='home')recent();if(id==='packages')loadPkgs('appPkgs');if(id==='orders')orders();if(id==='balance')loadProfile();if(id==='access')access();if(id==='profile')loadProfile()}
-function start(){$('nav').classList.remove('hidden');$('topBtn').innerText='Account';$('topBtn').onclick=()=>page('profile',document.querySelector('[data-p="profile"]'));page('home',document.querySelector('[data-p="home"]'));loadProfile()}
-async function loadPkgs(id){let b=$(id);b.innerHTML='<div class="empty">Loading...</div>';let r=await db.from('Package').select('id,title,price,duration,image_url').order('id',{ascending:false});if(r.error)return b.innerHTML=`<div class="empty">${esc(r.error.message)}</div>`;renderPkgs(b,r.data||[])}
-function renderPkgs(b,a){b.innerHTML='';if(!a.length)return b.innerHTML='<div class="empty">No packages found.</div>';a.forEach(p=>{let d=document.createElement('div');d.className='pkg';d.innerHTML=`${p.image_url?`<img src="${esc(p.image_url)}" onerror="this.style.display='none'">`:''}<div class="pb"><div class="pt">${esc(p.title)}</div><div class="muted">${esc(p.duration||'')}</div><div class="price">৳${money(p.price)}</div><button class="btn blue" onclick="viewPkg(${p.id})">View Package</button><button class="btn pink" onclick="buy(${p.id})">🛒 Buy Now</button></div>`;b.appendChild(d)})}
-async function loadPublic(){let r=await db.from('Package').select('id,title,price,duration,image_url').order('id',{ascending:false});if(r.error)return $('publicPkgs').innerHTML='<div class="empty">Packages load হয়নি।</div>';renderPkgs($('publicPkgs'),r.data||[])}
-async function viewPkg(id){let r=await db.from('Package').select('id,title,price,duration,image_url').eq('id',id).single();if(r.error)return alert(r.error.message);chosen=r.data;$('buyTitle').innerText=r.data.title;$('buyInfo').innerHTML=`<div class="card"><b>${esc(r.data.title)}</b><p class="muted">Selected package duration: ${esc(r.data.duration)}</p><div class="price">৳${money(r.data.price)}</div></div>`;$('buyChoice').innerHTML=`<button class="btn gray" onclick="choose('Balance')">Buy with Balance — ৳${money(r.data.price)}</button><button class="btn gray" onclick="choose('bKash')">Pay by bKash</button><button class="btn gray" onclick="choose('Nagad')">Pay by Nagad</button><button class="btn gray" onclick="choose('Rocket')">Pay by Rocket</button>`;$('buy').classList.remove('hidden')}
-async function buy(id){if(!user)return openAuth('login');await viewPkg(id)}function closeBuy(){$('buy').classList.add('hidden')}
-async function choose(m){method=m;$('buyPay').classList.toggle('hidden',m==='Balance');if(m!=='Balance'){await loadPaymentSettings();$('buyPay').innerHTML=payBox(m)}else{$('buyPay').innerHTML=''}$('buyMsg').innerHTML='';}
-async function confirmBuy(){if(!user)return closeBuy(),openAuth('login');if(!chosen||!method)return msg('buyMsg','Payment method select করুন।',true);let price=Number(chosen.price||0);if(method==='Balance'){let r=await db.from('Profiles').select('balance').eq('id',user.id).single();if(r.error)return msg('buyMsg',r.error.message,true);if(Number(r.data.balance||0)<price)return msg('buyMsg','Balance কম। আগে Add Fund করুন।',true);return msg('buyMsg','Balance purchase-এর জন্য secure RPC/Backend লাগবে। Direct payment ব্যবহার করুন।',true)}let tx=$('buyTxid').value.trim();if(!tx)return msg('buyMsg','Transaction ID দিন।',true);let o=await db.from('Orders').insert([{user_id:user.id,buyer_name:profile?.Name||'Buyer',phone:profile?.Phone||'',package_title:chosen.title,price,duration:chosen.duration||'',payment_method:method,transaction_id:tx,status:'Pending',access_key:''}]);if(o.error)return msg('buyMsg',o.error.message,true);alert('Order submitted. Admin confirm করলে My Access-এ key দেখা যাবে.');closeBuy();orders()}
-async function loadProfile(){if(!user)return;let r=await db.from('Profiles').select('*').eq('id',user.id).maybeSingle();if(r.data){profile=r.data;$('welcome').innerText=r.data.Name||'Buyer';$('bal').innerText=money(r.data.balance);$('profileInfo').innerHTML=`<div class="card"><b>Name</b><br>${esc(r.data.Name||'')}<hr><b>Phone</b><br>${esc(r.data.Phone||'')}<hr><b>Gmail</b><br>${esc(user.email||'')}<hr><b>Balance</b><br><span class="price">৳${money(r.data.balance)}</span></div>`}}
-async function orders(){let b=$('myOrders');b.innerHTML='<div class="empty">Loading...</div>';let r=await db.from('Orders').select('id,package_title,price,duration,payment_method,status').eq('user_id',user.id).neq('package_title','Balance Top Up').order('id',{ascending:false});if(r.error)return b.innerHTML=`<div class="empty">${esc(r.error.message)}</div>`;if(!r.data?.length)return b.innerHTML='<div class="empty">No orders yet.</div>';b.innerHTML=r.data.map(o=>`<div class="card"><b>${esc(o.package_title)}</b><p>${esc(o.duration||'')} • ৳${money(o.price)}</p><p>Payment: ${esc(o.payment_method||'')}</p><span class="badge ${o.status==='Confirmed'?'ok':''}">${esc(o.status||'Pending')}</span></div>`).join('')}
-async function access(){let b=$('keys');b.innerHTML='<div class="empty">Loading...</div>';let r=await db.from('Orders').select('package_title,price,duration,access_key').eq('user_id',user.id).eq('status','Confirmed').neq('package_title','Balance Top Up').order('id',{ascending:false});if(r.error)return b.innerHTML=`<div class="empty">${esc(r.error.message)}</div>`;if(!r.data?.length)return b.innerHTML='<div class="empty">No confirmed access yet.</div>';b.innerHTML=r.data.map(o=>`<div class="card"><b>${esc(o.package_title)}</b><p>${esc(o.duration||'')} • ৳${money(o.price)}</p><p>Access Key</p><div class="row"><div class="num">${esc(o.access_key||'Not provided')}</div>${o.access_key?`<button class="copy" onclick="copyNumber('${esc(o.access_key)}')">Copy</button>`:''}</div></div>`).join('')}
-async function recent(){let b=$('recent');let r=await db.from('Orders').select('buyer_name,package_title,duration,price').eq('status','Confirmed').neq('package_title','Balance Top Up').order('id',{ascending:false}).limit(10);if(r.error)return b.innerHTML='<div class="empty">Recent orders are unavailable.</div>';b.innerHTML=r.data?.length?r.data.map(o=>`<div class="card"><b>${esc(o.buyer_name||'Buyer')}</b><br><span class="muted">${esc(o.package_title||'')} • ${esc(o.duration||'')} • ৳${money(o.price)}</span></div>`).join(''):'<div class="empty">No recent orders.</div>'}
-$('method').onchange=async()=>{let m=$('method').value;if(['bKash','Nagad','Rocket'].includes(m)){await loadPaymentSettings();$('topPay').classList.remove('hidden');$('topPay').innerHTML=payBox(m)}else{$('topPay').classList.add('hidden');$('topPay').innerHTML=''}};
-async function topup(){if(!user)return openAuth('login');let amount=Number($('amount').value),m=$('method').value,tx=$('txid').value.trim();if(!amount||!m||!tx)return msg('topMsg','Amount, payment method এবং Transaction ID দিন।',true);let r=await db.from('Orders').insert([{user_id:user.id,buyer_name:profile?.Name||'Buyer',phone:profile?.Phone||'',package_title:'Balance Top Up',price:amount,duration:'Balance',payment_method:m,transaction_id:tx,status:'Pending',access_key:''}]);if(r.error)return msg('topMsg',r.error.message,true);msg('topMsg','Request submitted. Admin approve করলে balance যোগ হবে।');$('amount').value='';$('txid').value=''}
-async function logout(){await db.auth.signOut();user=null;profile=null;publicView();loadPublic()}
-$('call').onclick=e=>{if(CONTACT.startsWith('YOUR_')){e.preventDefault();alert('index.html-এ CONTACT number বসান')}};$('wa').onclick=e=>{if(WHATSAPP.startsWith('YOUR_')){e.preventDefault();alert('index.html-এ WhatsApp number বসান')}};if(!CONTACT.startsWith('YOUR_'))$('call').href='tel:'+CONTACT;if(!WHATSAPP.startsWith('YOUR_'))$('wa').href='https://wa.me/'+WHATSAPP.replace(/\D/g,'');
-(async()=>{await loadPaymentSettings();await loadPublic();let r=await db.auth.getSession();if(r.data.session?.user){user=r.data.session.user;await ensureProfile();start()}else publicView()})();
-</script></body></html>
+
+async function viewPkg(id){
+const r=await db.from('Package').select('*').eq('id',id).single();
+if(r.error)return alert(r.error.message);
+const p=r.data;
+$('pkgDetails').innerHTML=`${p.image_url?`<img src="${esc(p.image_url)}" style="width:100%;max-height:220px;object-fit:contain">`:''}<h2>${esc(p.title)}</h2><p><b>Price:</b> ${esc(p.price)} Tk</p><p><b>Duration:</b> ${esc(p.duration)}</p><button class="btn green" onclick="buy(${p.id})">🛒 Buy Now</button>`;
+$('pkgModal').classList.remove('hidden');
+}
+function closePkg(){$('pkgModal').classList.add('hidden')}
+
+async function buy(id){
+if(!user){closePkg();openAuth('login');return}
+closePkg();
+const r=await db.from('Package').select('*').eq('id',id).single();
+if(r.error)return alert(r.error.message);
+const p=r.data;
+if(!confirm('Order '+p.title+' for '+p.price+' Tk?'))return;
+const o=await db.from('Orders').insert([{buyer_id:user.id,package_id:p.id,status:'Pending'}]);
+if(o.error)alert(o.error.message);else{alert('Order submitted successfully.');showPage('orders')}
+}
+
+function showPage(page){
+['home','packages','orders','balance','access','profile'].forEach(x=>$(x+'Page').classList.add('hidden'));
+$(page+'Page').classList.remove('hidden');
+if(page==='orders')loadOrders();
+if(page==='balance')loadBalance();
+if(page==='access')loadAccess();
+if(page==='profile')loadProfile();
+if(page==='packages')loadPublic();
+}
+
+async function loadOrders(){
+if(!user)return $('ordersList').innerHTML='<div class="empty">Please Login first.</div>';
+const r=await db.from('Orders').select('*').eq('buyer_id',user.id).order('id',{ascending:false});
+if(r.error)return $('ordersList').innerHTML='<div class="empty">'+esc(r.error.message)+'</div>';
+$('ordersList').innerHTML=r.data.length?r.data.map(o=>`<div class="card" style="margin-bottom:10px"><b>Order #${o.id}</b><p>Status: ${esc(o.status)}</p>${o.access_key?`<p class="success">Access Key: ${esc(o.access_key)}</p>`:''}</div>`).join(''):'<div class="empty">No orders yet.</div>';
+}
+
+async function loadBalance(){
+if(!user)return;
+const r=await db.from('Profiles').select('balance').eq('id',user.id).maybeSingle();
+if(!r.error&&r.data){profile={...(profile||{}),...r.data};$('myBalance').textContent=(r.data.balance||0)+' Tk'}
+}
+
+async function loadAccess(){
+if(!user)return $('accessList').innerHTML='<div class="empty">Please Login first.</div>';
+const r=await db.from('Orders').select('*').eq('buyer_id',user.id).eq('status','Confirmed').order('id',{ascending:false});
+if(r.error)return $('accessList').innerHTML='<div class="empty">'+esc(r.error.message)+'</div>';
+$('accessList').innerHTML=r.data.length?r.data.map(o=>`<div class="card" style="margin-bottom:10px"><b>Order #${o.id}</b><p>Access Key: <b>${esc(o.access_key||'Not generated yet')}</b></p></div>`).join(''):'<div class="empty">No confirmed access.</div>';
+}
+
+function loadProfile(){
+if(!user)return $('profileInfo').innerHTML='Please Login first.';
+$('profileInfo').innerHTML='<p><b>Name:</b> '+esc(profile?.Name||user.user_metadata?.name||'Buyer')+'</p><p><b>Phone:</b> '+esc(profile?.Phone||user.user_metadata?.phone||'')+'</p><p><b>Email:</b> '+esc(user.email)+'</p><button class="btn secondary" onclick="logout()">Logout</button>';
+}
+
+function openTopup(){if(!user)return openAuth('login');showPayNumber();$('topupModal').classList.remove('hidden')}
+function closeTopup(){$('topupModal').classList.add('hidden')}
+function showPayNumber(){const m=$('topMethod').value;$('payNumber').innerHTML=m&&PAY[m]?'<b>'+m+' Number:</b> '+esc(PAY[m]):'Select a payment method.'}
+
+async function submitTopup(){
+if(!user)return;
+const method=$('topMethod').value,amount=Number($('topAmount').value),txn=$('topTxn').value.trim();
+if(!method)return msg('topMsg','Select payment method.',true);
+if(!amount||amount<=0)return msg('topMsg','Enter a valid amount.',true);
+if(!txn)return msg('topMsg','Enter Transaction ID.',true);
+const r=await db.from('Orders').insert([{buyer_id:user.id,status:'Pending',order_type:'Balance Top Up',amount:amount,payment_method:method,transaction_id:txn}]);
+if(r.error)return msg('topMsg',r.error.message,true);
+msg('topMsg','Top Up request submitted successfully.');
+}
+
+async function logout(){await db.auth.signOut();user=null;profile=null;$('topBtn').textContent='Login';$('topBtn').onclick=()=>openAuth('login');showPage('home')}
+
+async function start(){
+$('topBtn').textContent='Logout';
+$('topBtn').onclick=logout;
+await loadPaymentSettings();
+await loadPublic();
+await loadBalance();
+showPage('home');
+}
+
+(async()=>{
+await loadPaymentSettings();
+await loadPublic();
+const s=await db.auth.getSession();
+if(s.data.session){user=s.data.session.user;try{await ensureProfile();await start()}catch(e){console.error(e)}}
+})();
+</script>
+</body>
+</html>
