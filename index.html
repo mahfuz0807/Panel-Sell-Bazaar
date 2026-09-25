@@ -9,7 +9,7 @@
 </style>
 </head>
 <body>
-<header class="head"><div class="brand"><div class="logo">PS</div>Panel Sell Bazaar</div><button id="topBtn" class="top" onclick="openAuth('login')">Login</button></header>
+<header class="head"><div class="brand"><div class="logo">PS</div>Panel Sell Bazaar</div><button id="topBtn" class="top" onclick="document.getElementById('auth').classList.remove('hidden')">Login</button></header>
 <main class="wrap">
 <section id="public" class="page"><div class="sec hero"><h1>Welcome to Panel Sell Bazaar</h1><p class="muted">Packages দেখুন। Buy Now চাপলে তবেই Login/Create Account আসবে।</p><button class="btn blue" onclick="document.getElementById('publicPkgs').scrollIntoView({behavior:'smooth'})">View Packages</button></div><div class="sec"><h2>Available Packages</h2><div id="publicPkgs" class="grid"><div class="empty">Loading...</div></div></div><div class="sec"><h2>Help & Contact</h2><p class="muted">Payment বা Order নিয়ে সমস্যা হলে যোগাযোগ করুন।</p><div class="help"><a id="call" href="#">☎ Call</a><a id="wa" href="#" target="_blank">💬 WhatsApp</a></div></div></section>
 <section id="home" class="page hidden"><div class="sec"><h2>Welcome, <span id="welcome">Buyer</span></h2><p class="muted">আপনার account থেকে সবকিছু manage করুন।</p></div><div class="sec"><h2>Recent Confirmed Orders</h2><div id="recent"><div class="empty">Loading...</div></div></div></section>
