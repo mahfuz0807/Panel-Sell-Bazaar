@@ -1,1429 +1,1315 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="bn">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Panel Sell Bazaar</title>
 
-  <meta charset="UTF-8">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box}
 
-  <title>Panel Sell Bazaar</title>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f5f7fb;
+  color:#182033;
+  padding-bottom:75px;
+}
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+header{
+  background:#fff;
+  border-bottom:1px solid #e6e9ef;
+  padding:16px;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
 
-  <style>
+.header-inner{
+  max-width:1000px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    *{
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
-      font-family:Arial,sans-serif;
-    }
+.logo{
+  font-size:20px;
+  font-weight:700;
+}
 
-    body{
-      background:#0b1020;
-      color:white;
-      min-height:100vh;
-    }
+.balance{
+  background:#eef5ff;
+  color:#1769e0;
+  padding:9px 13px;
+  border-radius:20px;
+  font-weight:bold;
+}
 
-    header{
-      background:#121a30;
-      padding:18px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      border-bottom:1px solid #273354;
-    }
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:18px 14px;
+}
 
-    .logo{
-      font-size:22px;
-      font-weight:bold;
-    }
+.card{
+  background:#fff;
+  border:1px solid #e6e9ef;
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:15px;
+  box-shadow:0 3px 12px rgba(0,0,0,.04);
+}
 
-    button{
-      border:0;
-      border-radius:8px;
-      padding:11px 18px;
-      cursor:pointer;
-      font-weight:bold;
-    }
+.hero{
+  text-align:center;
+  padding:28px 18px;
+}
 
-    .login-btn{
-      background:#4f8cff;
-      color:white;
-    }
+.hero h1{
+  margin:0 0 8px;
+  font-size:28px;
+}
 
-    .logout-btn{
-      background:#e74c3c;
-      color:white;
-      display:none;
-    }
+.muted{
+  color:#70798b;
+  line-height:1.5;
+}
 
-    .container{
-      max-width:1000px;
-      margin:auto;
-      padding:25px 15px;
-    }
+input,select{
+  width:100%;
+  padding:12px;
+  border:1px solid #d9dee8;
+  border-radius:10px;
+  background:#fff;
+  margin-top:7px;
+  outline:none;
+}
 
-    .hero{
-      text-align:center;
-      padding:35px 10px;
-    }
+button{
+  border:0;
+  border-radius:10px;
+  padding:11px 15px;
+  cursor:pointer;
+  font-weight:700;
+}
 
-    .hero h1{
-      font-size:34px;
-      margin-bottom:10px;
-    }
+.primary{
+  background:#1769e0;
+  color:#fff;
+}
 
-    .hero p{
-      color:#aeb8d4;
-    }
+.success{
+  background:#16a36a;
+  color:#fff;
+}
 
-    .packages{
-      display:grid;
-      grid-template-columns:
-        repeat(auto-fit,minmax(230px,1fr));
-      gap:18px;
-      margin-top:25px;
-    }
+.danger{
+  background:#e5484d;
+  color:#fff;
+}
 
-    .card{
-      background:#121a30;
-      border:1px solid #29365d;
-      border-radius:14px;
-      padding:22px;
-      text-align:center;
-    }
+.secondary{
+  background:#eef2f7;
+  color:#27344d;
+}
 
-    .card h2{
-      margin-bottom:12px;
-    }
+.full{
+  width:100%;
+}
 
-    .price{
-      font-size:25px;
-      font-weight:bold;
-      margin:12px 0;
-    }
+.hidden{
+  display:none!important;
+}
 
-    .duration{
-      color:#aeb8d4;
-      margin-bottom:18px;
-    }
+.message{
+  margin-top:10px;
+  color:#1769e0;
+  line-height:1.5;
+}
 
-    .order-btn{
-      background:#4f8cff;
-      color:white;
-      width:100%;
-    }
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
 
-    .modal{
-      display:none;
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.75);
-      justify-content:center;
-      align-items:center;
-      padding:15px;
-      z-index:10;
-    }
+.product-img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  border-radius:12px;
+  background:#eef1f5;
+}
 
-    .modal-box{
-      background:#121a30;
-      width:100%;
-      max-width:500px;
-      max-height:90vh;
-      overflow:auto;
-      border-radius:15px;
-      padding:25px;
-      border:1px solid #29365d;
-    }
+.product-title{
+  font-size:19px;
+  font-weight:bold;
+  margin-top:12px;
+}
 
-    .modal-box h2{
-      margin-bottom:20px;
-    }
+.price{
+  color:#1769e0;
+  font-size:20px;
+  font-weight:bold;
+  margin:7px 0;
+}
 
-    label{
-      display:block;
-      margin-top:13px;
-      margin-bottom:6px;
-      color:#dce3f5;
-    }
+.badge{
+  display:inline-block;
+  padding:6px 9px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
 
-    input,
-    select{
-      width:100%;
-      padding:12px;
-      border-radius:8px;
-      border:1px solid #394a78;
-      background:#0b1020;
-      color:white;
-      outline:none;
-    }
+.pending{
+  background:#fff4cc;
+  color:#936800;
+}
 
-    .payment-number{
-      background:#182441;
-      border-radius:8px;
-      padding:13px;
-      margin-top:10px;
-      color:#7ee2ff;
-      font-weight:bold;
-      word-break:break-word;
-    }
+.confirmed{
+  background:#dff8ec;
+  color:#087548;
+}
 
-    .copy-btn{
-      width:100%;
-      background:#4f8cff;
-      color:white;
-      margin-top:8px;
-      display:none;
-    }
+.cancelled{
+  background:#ffe3e3;
+  color:#b4232a;
+}
 
-    .submit-btn{
-      width:100%;
-      background:#20b86b;
-      color:white;
-      margin-top:20px;
-    }
+.recent{
+  padding:11px 0;
+  border-bottom:1px solid #edf0f4;
+}
 
-    .close-btn{
-      width:100%;
-      background:#39445f;
-      color:white;
-      margin-top:10px;
-    }
+.recent:last-child{
+  border-bottom:0;
+}
 
-    .info{
-      color:#aeb8d4;
-      font-size:13px;
-      margin-top:10px;
-      line-height:1.5;
-    }
+.recent-name{
+  font-weight:bold;
+}
 
-    .status{
-      text-align:center;
-      margin-top:20px;
-      color:#aeb8d4;
-    }
+.recent-info{
+  color:#697386;
+  font-size:14px;
+  margin-top:3px;
+}
 
-    .empty{
-      text-align:center;
-      color:#aeb8d4;
-      padding:30px;
-    }
+.code-box{
+  background:#f3f6fa;
+  border:1px dashed #bbc4d2;
+  padding:12px;
+  border-radius:10px;
+  word-break:break-all;
+  margin:10px 0;
+}
 
-  </style>
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:68px;
+  background:#fff;
+  border-top:1px solid #e3e7ee;
+  display:flex;
+  justify-content:center;
+  z-index:50;
+  box-shadow:0 -3px 15px rgba(0,0,0,.05);
+}
 
+.nav-inner{
+  width:100%;
+  max-width:700px;
+  display:flex;
+  justify-content:space-around;
+}
+
+.nav-btn{
+  flex:1;
+  background:#fff;
+  color:#70798b;
+  border-radius:0;
+  padding:7px 3px;
+  font-size:11px;
+}
+
+.nav-btn.active{
+  color:#1769e0;
+}
+
+.nav-icon{
+  display:block;
+  font-size:20px;
+  margin-bottom:2px;
+}
+
+label{
+  display:block;
+  margin-top:12px;
+  font-weight:bold;
+}
+
+.auth{
+  max-width:430px;
+  margin:45px auto;
+}
+
+.top-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.small{
+  font-size:13px;
+}
+
+.link-btn{
+  display:inline-block;
+  text-decoration:none;
+  padding:10px 14px;
+  border-radius:9px;
+  background:#1769e0;
+  color:white;
+  font-weight:bold;
+}
+
+.empty{
+  text-align:center;
+  padding:25px;
+  color:#747d8f;
+}
+</style>
 </head>
-
 
 <body>
 
-
 <header>
-
-  <div class="logo">
-    Panel Sell Bazaar
+  <div class="header-inner">
+    <div class="logo">Panel Sell Bazaar</div>
+    <div id="balanceBox" class="balance hidden">
+      Balance: ৳0
+    </div>
   </div>
-
-  <div>
-
-    <button
-      id="loginButton"
-      class="login-btn"
-      onclick="openLogin()">
-      Login
-    </button>
-
-    <button
-      id="logoutButton"
-      class="logout-btn"
-      onclick="logout()">
-      Logout
-    </button>
-
-  </div>
-
 </header>
 
 
+<!-- AUTH -->
 
-<main class="container">
+<div id="authSection" class="container">
+  <div class="card auth">
+
+    <h2 id="authTitle">Login</h2>
+
+    <div id="signupNameBox" class="hidden">
+      <label>Name</label>
+      <input id="authName" type="text" placeholder="Your name">
+    </div>
+
+    <label>Email</label>
+    <input id="authEmail" type="email" placeholder="Email">
+
+    <label>Password</label>
+    <input id="authPassword" type="password" placeholder="Password">
+
+    <button id="authButton" class="primary full" onclick="handleAuth()">
+      Login
+    </button>
+
+    <button class="secondary full" style="margin-top:8px"
+      onclick="toggleAuth()">
+      Create account
+    </button>
+
+    <div id="authMessage" class="message"></div>
+
+  </div>
+</div>
 
 
-  <section class="hero">
+<!-- APP -->
 
-    <h1>
-      Panel Sell Bazaar
-    </h1>
+<div id="appSection" class="hidden">
 
-    <p>
-      Choose your panel package and place your order.
-    </p>
+  <main class="container">
 
-  </section>
+    <!-- HOME -->
+    <section id="homePage">
+
+      <div class="card hero">
+        <h1>Welcome to Panel Sell Bazaar</h1>
+        <p class="muted">
+          Packages কিনুন, Balance ব্যবহার করুন এবং নিজের purchased access
+          এক জায়গা থেকে পরিচালনা করুন।
+        </p>
+
+        <div class="top-actions" style="justify-content:center">
+          <button class="primary" onclick="showPage('packagesPage')">
+            View Packages
+          </button>
+
+          <button class="secondary" onclick="showPage('balancePage')">
+            Add Balance
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Recent Orders</h2>
+        <div id="recentOrders"></div>
+      </div>
+
+    </section>
 
 
+    <!-- PACKAGES -->
 
-  <section>
+    <section id="packagesPage" class="hidden">
 
-    <h2>
-      Available Packages
-    </h2>
+      <div class="card">
+        <h2>Packages</h2>
+        <p class="muted">
+          Admin যে Packages যোগ করেছে সেগুলো এখানে দেখা যাবে।
+        </p>
+      </div>
+
+      <div id="packageList" class="grid"></div>
+
+    </section>
 
 
-    <div
-      id="packages"
-      class="packages">
+    <!-- ORDERS -->
 
-      <!-- Packages will load from Supabase -->
+    <section id="ordersPage" class="hidden">
+
+      <div class="card">
+        <h2>My Orders</h2>
+        <div id="myOrders"></div>
+      </div>
+
+    </section>
+
+
+    <!-- BALANCE -->
+
+    <section id="balancePage" class="hidden">
 
       <div class="card">
 
-        <h2>
-          Aim Hacker
-        </h2>
+        <h2>Balance</h2>
 
         <div class="price">
-          ৳20
+          ৳<span id="balanceAmount">0</span>
         </div>
 
-        <div class="duration">
-          1 Hour
+        <p class="muted">
+          Balance দিয়ে Package কিনতে পারবেন।
+        </p>
+
+      </div>
+
+
+      <div class="card">
+
+        <h2>Add Balance</h2>
+
+        <label>Amount</label>
+        <input id="topupAmount" type="number" min="1"
+          placeholder="100">
+
+        <label>Payment Method</label>
+        <select id="topupMethod">
+          <option value="bKash">bKash</option>
+          <option value="Nagad">Nagad</option>
+          <option value="Rocket">Rocket</option>
+        </select>
+
+        <div style="margin-top:15px">
+          <b>bKash:</b> 01720974862<br>
+          <b>Nagad:</b> 01612652459<br>
+          <b>Rocket:</b> 01720974862
         </div>
 
-        <button
-          class="order-btn"
-          onclick="openOrder('Aim Hacker','1 Hour',20)">
+        <label>Transaction ID</label>
+        <input id="topupTransaction"
+          type="text"
+          placeholder="Transaction ID">
 
-          Order Now
+        <button class="primary full"
+          style="margin-top:15px"
+          onclick="submitTopup()">
+          Submit Balance Request
+        </button>
 
+        <div id="topupMessage" class="message"></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ACCESS -->
+
+    <section id="accessPage" class="hidden">
+
+      <div class="card">
+        <h2>My Access</h2>
+        <p class="muted">
+          শুধু Confirmed purchase-এর Access এখানে দেখা যাবে।
+        </p>
+      </div>
+
+      <div id="accessList"></div>
+
+    </section>
+
+
+    <!-- PROFILE -->
+
+    <section id="profilePage" class="hidden">
+
+      <div class="card">
+
+        <h2>Profile</h2>
+
+        <p>
+          <b>Name:</b>
+          <span id="profileName"></span>
+        </p>
+
+        <p>
+          <b>Phone:</b>
+          <span id="profilePhone"></span>
+        </p>
+
+        <p>
+          <b>Balance:</b>
+          ৳<span id="profileBalance"></span>
+        </p>
+
+        <button class="danger" onclick="logout()">
+          Logout
         </button>
 
       </div>
 
+
+      <div class="card">
+
+        <h2>Help & Contact</h2>
+
+        <p class="muted">
+          Website বা order নিয়ে সমস্যা হলে নিচের contact ব্যবহার করুন।
+        </p>
+
+        <div class="top-actions">
+
+          <a class="link-btn"
+             href="https://wa.me/"
+             target="_blank">
+            WhatsApp
+          </a>
+
+          <a class="link-btn"
+             href="tel:"
+             target="_blank">
+            Call
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- BOTTOM NAV -->
+
+  <nav class="bottom-nav">
+
+    <div class="nav-inner">
+
+      <button class="nav-btn active"
+        onclick="showPage('homePage',this)">
+        <span class="nav-icon">⌂</span>
+        Home
+      </button>
+
+      <button class="nav-btn"
+        onclick="showPage('packagesPage',this)">
+        <span class="nav-icon">📦</span>
+        Packages
+      </button>
+
+      <button class="nav-btn"
+        onclick="showPage('ordersPage',this)">
+        <span class="nav-icon">🧾</span>
+        Orders
+      </button>
+
+      <button class="nav-btn"
+        onclick="showPage('accessPage',this)">
+        <span class="nav-icon">🔑</span>
+        My Access
+      </button>
+
+      <button class="nav-btn"
+        onclick="showPage('profilePage',this)">
+        <span class="nav-icon">👤</span>
+        Profile
+      </button>
+
     </div>
 
-
-    <div
-      id="packageStatus"
-      class="status">
-    </div>
-
-  </section>
-
-
-</main>
-
-
-
-<!-- =========================
-     LOGIN MODAL
-========================= -->
-
-
-<div
-  id="loginModal"
-  class="modal">
-
-
-  <div class="modal-box">
-
-
-    <h2>
-      Login / Sign Up
-    </h2>
-
-
-    <label>
-      Email
-    </label>
-
-    <input
-      id="loginEmail"
-      type="email"
-      placeholder="Enter your email">
-
-
-    <label>
-      Password
-    </label>
-
-    <input
-      id="loginPassword"
-      type="password"
-      placeholder="Enter your password">
-
-
-    <button
-      class="submit-btn"
-      onclick="loginUser()">
-
-      Login
-
-    </button>
-
-
-    <button
-      class="submit-btn"
-      onclick="signupUser()">
-
-      Sign Up
-
-    </button>
-
-
-    <button
-      class="close-btn"
-      onclick="closeLogin()">
-
-      Close
-
-    </button>
-
-
-    <p class="info">
-
-      New buyer?
-      Enter your email and password,
-      then press Sign Up.
-
-    </p>
-
-
-  </div>
+  </nav>
 
 </div>
-
-
-
-<!-- =========================
-     ORDER MODAL
-========================= -->
-
-
-<div
-  id="orderModal"
-  class="modal">
-
-
-  <div class="modal-box">
-
-
-    <h2>
-      Place Order
-    </h2>
-
-
-    <label>
-      Package
-    </label>
-
-    <input
-      id="packageTitle"
-      type="text"
-      readonly>
-
-
-    <label>
-      Duration
-    </label>
-
-    <input
-      id="packageDuration"
-      type="text"
-      readonly>
-
-
-    <label>
-      Price
-    </label>
-
-    <input
-      id="packagePrice"
-      type="text"
-      readonly>
-
-
-    <label>
-      Your Name
-    </label>
-
-    <input
-      id="buyerName"
-      type="text"
-      placeholder="Enter your name">
-
-
-    <label>
-      Phone Number
-    </label>
-
-    <input
-      id="buyerPhone"
-      type="text"
-      placeholder="Enter your phone number">
-
-
-    <label>
-      Payment Method
-    </label>
-
-
-    <select
-      id="paymentMethod"
-      onchange="showPaymentNumber()">
-
-      <option value="">
-        Select Payment Method
-      </option>
-
-      <option value="bKash">
-        bKash
-      </option>
-
-      <option value="Nagad">
-        Nagad
-      </option>
-
-      <option value="Rocket">
-        Rocket
-      </option>
-
-    </select>
-
-
-
-    <div
-      id="paymentNumber"
-      class="payment-number"
-      style="display:none">
-
-    </div>
-
-
-
-    <button
-      id="copyPaymentNumber"
-      type="button"
-      class="copy-btn"
-      onclick="copyPaymentNumber()">
-
-      Copy Number
-
-    </button>
-
-
-
-    <p class="info">
-
-      প্রথমে উপরের নম্বরে payment করুন।
-      তারপর Transaction ID এখানে দিন।
-
-    </p>
-
-
-
-    <label>
-      Transaction ID
-    </label>
-
-    <input
-      id="transactionId"
-      type="text"
-      placeholder="Enter Transaction ID">
-
-
-
-    <button
-      class="submit-btn"
-      onclick="submitOrder()">
-
-      Submit Order
-
-    </button>
-
-
-
-    <button
-      class="close-btn"
-      onclick="closeOrder()">
-
-      Close
-
-    </button>
-
-
-  </div>
-
-</div>
-
 
 
 <script>
-
 
 /* =========================
    SUPABASE
 ========================= */
 
-
 const SUPABASE_URL =
-  "https://wiztksrtzjmsxzolollf.supabase.co";
-
+"https://wiztksrtzjmsxzolollf.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
+"sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
 
-
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-
-
-/* =========================
-   PAYMENT NUMBERS
-========================= */
-
-
-const paymentNumbers = {
-
-  bKash: "01720974862",
-
-  Nagad: "01612652459",
-
-  Rocket: "01720974862"
-
-};
-
+const db =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
 
 /* =========================
-   SELECTED PACKAGE
+   STATE
 ========================= */
 
-
-let selectedProduct = "";
-
-let selectedDuration = "";
-
-let selectedPrice = 0;
-
-
-
-/* =========================
-   LOGIN MODAL
-========================= */
-
-
-function openLogin(){
-
-  document.getElementById(
-    "loginModal"
-  ).style.display = "flex";
-
-}
-
-
-
-function closeLogin(){
-
-  document.getElementById(
-    "loginModal"
-  ).style.display = "none";
-
-}
-
-
-
-/* =========================
-   SIGN UP
-========================= */
-
-
-async function signupUser(){
-
-  const email =
-    document
-      .getElementById("loginEmail")
-      .value
-      .trim();
-
-
-  const password =
-    document
-      .getElementById("loginPassword")
-      .value;
-
-
-  if(!email || !password){
-
-    alert(
-      "Email and password দিন।"
-    );
-
-    return;
-
-  }
-
-
-  if(password.length < 6){
-
-    alert(
-      "Password কমপক্ষে 6 characters হতে হবে।"
-    );
-
-    return;
-
-  }
-
-
-  const { error } =
-    await supabaseClient.auth.signUp({
-
-      email: email,
-
-      password: password
-
-    });
-
-
-  if(error){
-
-    alert(
-      "Sign Up failed: " +
-      error.message
-    );
-
-    return;
-
-  }
-
-
-  alert(
-    "Sign Up successful. এখন Login করুন।"
-  );
-
-}
-
-
-
-/* =========================
-   LOGIN
-========================= */
-
-
-async function loginUser(){
-
-  const email =
-    document
-      .getElementById("loginEmail")
-      .value
-      .trim();
-
-
-  const password =
-    document
-      .getElementById("loginPassword")
-      .value;
-
-
-  if(!email || !password){
-
-    alert(
-      "Email and password দিন।"
-    );
-
-    return;
-
-  }
-
-
-  const { error } =
-    await supabaseClient.auth.signInWithPassword({
-
-      email: email,
-
-      password: password
-
-    });
-
-
-  if(error){
-
-    alert(
-      "Login failed: " +
-      error.message
-    );
-
-    return;
-
-  }
-
-
-  closeLogin();
-
-  updateLoginButton();
-
-  alert(
-    "Login successful!"
-  );
-
-}
-
-
-
-/* =========================
-   LOGOUT
-========================= */
-
-
-async function logout(){
-
-  await supabaseClient.auth.signOut();
-
-  updateLoginButton();
-
-  alert(
-    "Logged out."
-  );
-
-}
-
-
-
-/* =========================
-   LOGIN BUTTON STATUS
-========================= */
-
-
-async function updateLoginButton(){
-
-  const { data } =
-    await supabaseClient.auth.getSession();
-
-
-  const loggedIn =
-    !!data.session;
-
-
-  document.getElementById(
-    "loginButton"
-  ).style.display =
-    loggedIn
-      ? "none"
-      : "inline-block";
-
-
-  document.getElementById(
-    "logoutButton"
-  ).style.display =
-    loggedIn
-      ? "inline-block"
-      : "none";
-
-}
-
-
-
-/* =========================
-   OPEN ORDER
-========================= */
-
-
-async function openOrder(
-  product,
-  duration,
-  price
-){
-
-  const { data } =
-    await supabaseClient.auth.getSession();
-
-
-  if(!data.session){
-
-    alert(
-      "Please login first."
-    );
-
-    openLogin();
-
-    return;
-
-  }
-
-
-  selectedProduct =
-    product;
-
-
-  selectedDuration =
-    duration;
-
-
-  selectedPrice =
-    price;
-
-
-
-  document.getElementById(
-    "packageTitle"
-  ).value =
-    product;
-
-
-  document.getElementById(
-    "packageDuration"
-  ).value =
-    duration;
-
-
-  document.getElementById(
-    "packagePrice"
-  ).value =
-    "৳" + price;
-
-
-
-  document.getElementById(
-    "orderModal"
-  ).style.display =
-    "flex";
-
-
-
-  /* Load buyer profile */
-
-
-  const profile =
-    await supabaseClient
-      .from("Profiles")
-      .select(
-        '"Name","Phone"'
-      )
-      .eq(
-        "id",
-        data.session.user.id
-      )
-      .maybeSingle();
-
-
-  if(profile.data){
-
-    document.getElementById(
-      "buyerName"
-    ).value =
-      profile.data.Name || "";
-
-
-    document.getElementById(
-      "buyerPhone"
-    ).value =
-      profile.data.Phone || "";
-
-  }
-
-}
-
-
-
-/* =========================
-   CLOSE ORDER
-========================= */
-
-
-function closeOrder(){
-
-  document.getElementById(
-    "orderModal"
-  ).style.display =
-    "none";
-
-
-  document.getElementById(
-    "paymentMethod"
-  ).value =
-    "";
-
-
-  document.getElementById(
-    "paymentNumber"
-  ).style.display =
-    "none";
-
-
-  document.getElementById(
-    "paymentNumber"
-  ).innerHTML =
-    "";
-
-
-  document.getElementById(
-    "copyPaymentNumber"
-  ).style.display =
-    "none";
-
-}
-
-
-
-/* =========================
-   SHOW PAYMENT NUMBER
-========================= */
-
-
-function showPaymentNumber(){
-
-  const method =
-    document.getElementById(
-      "paymentMethod"
-    ).value;
-
-
-  const box =
-    document.getElementById(
-      "paymentNumber"
-    );
-
-
-  const copyBtn =
-    document.getElementById(
-      "copyPaymentNumber"
-    );
-
-
-  if(!method){
-
-    box.style.display =
-      "none";
-
-    box.innerHTML =
-      "";
-
-    copyBtn.style.display =
-      "none";
-
-    return;
-
-  }
-
-
-  const number =
-    paymentNumbers[method];
-
-
-  box.style.display =
-    "block";
-
-
-  box.innerHTML =
-    method +
-    " Payment Number: " +
-    number;
-
-
-  copyBtn.style.display =
-    "block";
-
-}
-
-
-
-/* =========================
-   COPY PAYMENT NUMBER
-========================= */
-
-
-async function copyPaymentNumber(){
-
-  const method =
-    document.getElementById(
-      "paymentMethod"
-    ).value;
-
-
-  if(!method){
-
-    return;
-
-  }
-
-
-  const number =
-    paymentNumbers[method];
-
-
-  try{
-
-    await navigator.clipboard.writeText(
-      number
-    );
-
-
-    alert(
-      "Payment number copied!"
-    );
-
-
-  }catch(error){
-
-    alert(
-      "Copy failed. Please copy the number manually."
-    );
-
-  }
-
-}
-
-
-
-/* =========================
-   SUBMIT ORDER
-========================= */
-
-
-async function submitOrder(){
-
-  const { data: sessionData } =
-    await supabaseClient.auth.getSession();
-
-
-  if(!sessionData.session){
-
-    alert(
-      "Please login first."
-    );
-
-    return;
-
-  }
-
-
-
-  const name =
-    document
-      .getElementById("buyerName")
-      .value
-      .trim();
-
-
-
-  const phone =
-    document
-      .getElementById("buyerPhone")
-      .value
-      .trim();
-
-
-
-  const method =
-    document
-      .getElementById("paymentMethod")
-      .value;
-
-
-
-  const transaction =
-    document
-      .getElementById("transactionId")
-      .value
-      .trim();
-
-
-
-  if(
-    !name ||
-    !phone ||
-    !method ||
-    !transaction
-  ){
-
-    alert(
-      "Please fill in all required information."
-    );
-
-    return;
-
-  }
-
-
-
-  const { error } =
-    await supabaseClient
-      .from("Orders")
-      .insert([{
-
-        user_id:
-          sessionData.session.user.id,
-
-        buyer_name:
-          name,
-
-        phone:
-          phone,
-
-        "package title":
-          selectedProduct,
-
-        price:
-          selectedPrice,
-
-        duration:
-          selectedDuration,
-
-        status:
-          "Pending",
-
-        "payment method":
-          method,
-
-        "transaction id":
-          transaction
-
-      }]);
-
-
-
-  if(error){
-
-    alert(
-      "Order failed: " +
-      error.message
-    );
-
-    return;
-
-  }
-
-
-
-  alert(
-    "Order submitted successfully! Your order is now Pending."
-  );
-
-
-
-  document.getElementById(
-    "transactionId"
-  ).value =
-    "";
-
-
-
-  document.getElementById(
-    "paymentMethod"
-  ).value =
-    "";
-
-
-
-  document.getElementById(
-    "paymentNumber"
-  ).style.display =
-    "none";
-
-
-
-  document.getElementById(
-    "paymentNumber"
-  ).innerHTML =
-    "";
-
-
-
-  document.getElementById(
-    "copyPaymentNumber"
-  ).style.display =
-    "none";
-
-
-
-  closeOrder();
-
-}
-
-
-
-/* =========================
-   LOAD PACKAGES FROM SUPABASE
-========================= */
-
-
-async function loadPackages(){
-
-  const container =
-    document.getElementById(
-      "packages"
-    );
-
-
-  const status =
-    document.getElementById(
-      "packageStatus"
-    );
-
-
-  status.innerHTML =
-    "Loading packages...";
-
-
-
-  const result =
-    await supabaseClient
-      .from("Package")
-      .select(
-        "id,title,price,duration"
-      )
-      .order(
-        "id",
-        {
-          ascending:true
-        }
-      );
-
-
-
-  if(result.error){
-
-    console.log(
-      "Package load error:",
-      result.error.message
-    );
-
-
-    status.innerHTML =
-      "";
-
-
-    return;
-
-  }
-
-
-
-  if(
-    !result.data ||
-    result.data.length === 0
-  ){
-
-    status.innerHTML =
-      "No packages available.";
-
-    return;
-
-  }
-
-
-
-  container.innerHTML =
-    "";
-
-
-
-  result.data.forEach(
-    function(p){
-
-      container.innerHTML += `
-
-        <div class="card">
-
-          <h2>
-            ${escapeHtml(p.title)}
-          </h2>
-
-          <div class="price">
-            ৳${Number(p.price).toFixed(0)}
-          </div>
-
-          <div class="duration">
-            ${escapeHtml(p.duration)}
-          </div>
-
-          <button
-            class="order-btn"
-            onclick='openOrder(
-              ${JSON.stringify(p.title)},
-              ${JSON.stringify(p.duration)},
-              ${Number(p.price)}
-            )'>
-
-            Order Now
-
-          </button>
-
-        </div>
-
-      `;
-
-    }
-  );
-
-
-
-  status.innerHTML =
-    "";
-
-}
-
+let signupMode = false;
+let currentUser = null;
 
 
 /* =========================
    ESCAPE HTML
 ========================= */
 
-
 function escapeHtml(value){
 
-  return String(value)
-
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
 
 
-
 /* =========================
-   PAGE LOAD
+   AUTH MODE
 ========================= */
 
+function toggleAuth(){
 
-updateLoginButton();
+  signupMode = !signupMode;
 
-loadPackages();
+  document.getElementById("authTitle").innerText =
+    signupMode ? "Create Account" : "Login";
+
+  document.getElementById("authButton").innerText =
+    signupMode ? "Create Account" : "Login";
+
+  document.getElementById("signupNameBox")
+    .classList.toggle("hidden", !signupMode);
+
+  document.getElementById("authMessage").innerText = "";
+
+}
 
 
+/* =========================
+   LOGIN / SIGNUP
+========================= */
 
-</script>
+async function handleAuth(){
+
+  const email =
+    document.getElementById("authEmail").value.trim();
+
+  const password =
+    document.getElementById("authPassword").value;
+
+  const message =
+    document.getElementById("authMessage");
+
+  if(!email || !password){
+
+    message.innerText =
+      "Email এবং Password দিন।";
+
+    return;
+
+  }
+
+  message.innerText =
+    signupMode
+      ? "Account তৈরি হচ্ছে..."
+      : "Login হচ্ছে...";
 
 
-</body>
+  try{
 
-</html>
+    if(signupMode){
+
+      const name =
+        document.getElementById("authName")
+          .value.trim();
+
+      if(!name){
+
+        message.innerText =
+          "Name দিন।";
+
+        return;
+
+      }
+
+
+      const result =
+        await db.auth.signUp({
+
+          email,
+          password
+
+        });
+
+
+      if(result.error){
+
+        message.innerText =
+          result.error.message;
+
+        return;
+
+      }
+
+
+      if(!result.data.user){
+
+        message.innerText =
+          "Account তৈরি হয়নি।";
+
+        return;
+
+      }
+
+
+      const profile =
+        await db
+          .from("Profiles")
+          .insert({
+
+            id:result.data.user.id,
+            Name:name,
+            Phone:"",
+            Role:"buyer",
+            balance:0
+
+          });
+
+
+      if(profile.error){
+
+        message.innerText =
+          "Profile তৈরি হয়নি: " +
+          profile.error.message;
+
+        return;
+
+      }
+
+
+      message.innerText =
+        "Account তৈরি হয়েছে। এখন Login করুন।";
+
+      toggleAuth();
+
+      return;
+
+    }
+
+
+    const result =
+      await db.auth.signInWithPassword({
+
+        email,
+        password
+
+      });
+
+
+    if(result.error){
+
+      message.innerText =
+        "Login failed: " +
+        result.error.message;
+
+      return;
+
+    }
+
+
+    currentUser =
+      result.data.user;
+
+    await startApp();
+
+
+  }catch(error){
+
+    message.innerText =
+      "Error: " + error.message;
+
+  }
+
+}
+
+
+/* =========================
+   START APP
+========================= */
+
+async function startApp(){
+
+  document.getElementById("authSection")
+    .classList.add("hidden");
+
+  document.getElementById("appSection")
+    .classList.remove("hidden");
+
+  await loadProfile();
+  await loadPackages();
+  await loadOrders();
+  await loadRecentOrders();
+  await loadAccess();
+
+}
+
+
+/* =========================
+   PROFILE
+========================= */
+
+async function loadProfile(){
+
+  if(!currentUser) return;
+
+
+  const result =
+    await db
+      .from("Profiles")
+      .select("id,Name,Phone,Role,balance")
+      .eq("id",currentUser.id)
+      .maybeSingle();
+
+
+  if(result.error){
+
+    console.log(result.error);
+    return;
+
+  }
+
+
+  if(!result.data) return;
+
+
+  const balance =
+    Number(result.data.balance || 0);
+
+
+  document.getElementById("balanceBox")
+    .innerText =
+      "Balance: ৳" + balance;
+
+  document.getElementById("balanceBox")
+    .classList.remove("hidden");
+
+
+  document.getElementById("balanceAmount")
+    .innerText = balance;
+
+  document.getElementById("profileName")
+    .innerText = result.data.Name || "";
+
+  document.getElementById("profilePhone")
+    .innerText = result.data.Phone || "";
+
+  document.getElementById("profileBalance")
+    .innerText = balance;
+
+}
+
+
+/* =========================
+   PACKAGES
+========================= */
+
+async function loadPackages(){
+
+  const list =
+    document.getElementById("packageList");
+
+
+  const result =
+    await db
+      .from("Package")
+      .select("id,title,price,duration,panel_link,image_url")
+      .order("id",{ascending:true});
+
+
+  if(result.error){
+
+    list.innerHTML =
+      `<div class="card">
+        Package load failed:
+        ${escapeHtml(result.error.message)}
+      </div>`;
+
+    return;
+
+  }
+
+
+  list.innerHTML = "";
+
+
+  if(!result.data.length){
+
+    list.innerHTML =
+      `<div class="card empty">
+        No Packages available.
+      </div>`;
+
+    return;
+
+  }
+
+
+  result.data.forEach(item => {
+
+    const image =
+      item.image_url ||
+      "https://via.placeholder.com/600x350?text=Panel";
+
+
+    list.innerHTML += `
+
+      <div class="card">
+
+        <img class="product-img"
+          src="${escapeHtml(image)}"
+          onerror="this.src='https://via.placeholder.com/600x350?text=Panel'">
+
+        <div class="product-title">
+          ${escapeHtml(item.title)}
+        </div>
+
+        <div class="price">
+          ৳${Number(item.price || 0).toFixed(0)}
+        </div>
+
+        <p class="muted">
+          ${escapeHtml(item.duration)}
+        </p>
+
+        <button class="primary full"
+          onclick="buyPackage(
+            ${Number(item.id)},
+            ${JSON.stringify(item.title)},
+            ${Number(item.price)},
+            ${JSON.stringify(item.duration)}
+          )">
+          Buy Now
+        </button>
+
+      </div>
+
+    `;
+
+  });
+
+}
+
+
+/* =========================
+   BUY PACKAGE
+========================= */
+
+async function buyPackage(
+  packageId,
+  title,
+  price,
+  duration
+){
+
+  const choice =
+    prompt(
+      `Buy ${title} - ৳${price}\n\n` +
+      `1 = Balance দিয়ে\n` +
+      `2 = Direct Payment`
+    );
+
+
+  if(choice === "1"){
+
+    await buyWithBalance(
+      packageId,
+      title,
+      price,
+      duration
+    );
+
+    return;
+
+  }
+
+
+  if(choice === "2"){
+
+    await buyWithDirectPayment(
+      packageId,
+      title,
+      price,
+      duration
+    );
+
+    return;
+
+  }
+
+}
+
+
+/* =========================
+   BALANCE PURCHASE
+========================= */
+
+async function buyWithBalance(
+  packageId,
+  title,
+  price,
+  duration
+){
+
+  const profile =
+    await db
+      .from("Profiles")
+      .select("balance,Name,Phone")
+      .eq("id",currentUser.id)
+      .single();
+
+
+  if(profile.error){
+
+    alert(profile.error.message);
+    return;
+
+  }
+
+
+  const balance =
+    Number(profile.data.balance || 0);
+
+
+  if(balance < price){
+
+    alert(
+      `Balance কম।\nCurrent Balance: ৳${balance}`
+    );
+
+    showPage("balancePage");
+
+    return;
+
+  }
+
+
+  const newBalance =
+    balance - price;
+
+
+  const update =
+    await db
+      .from("Profiles")
+      .update({
+        balance:newBalance
+      })
+      .eq("id",currentUser.id);
+
+
+  if(update.error){
+
+    alert(update.error.message);
+    return;
+
+  }
+
+
+  const order =
+    await db
+      .from("Orders")
+      .insert({
+
+        user_id:currentUser.id,
+
+        buyer_name:profile.data.Name,
+
+        phone:profile.data.Phone,
+
+        package_title:title,
+
+        price:price,
+
+        duration:duration,
+
+        payment_method:"Balance",
+
+        transaction_id:"BALANCE-" +
+          Date.now(),
+
+        status:"Pending",
+
+        access_key:""
+
+      });
+
+
+  if(order.error){
+
+    /* Rollback balance */
+
+    await db
+      .from("Profiles")
+      .update({
+        balance:balance
+      })
+      .eq("id",currentUser.id);
+
+    alert(order.error.message);
+    return;
+
+  }
+
+
+  alert(
+    "Order placed successfully.\nStatus: Pending"
+  );
+
+
+  await refreshAll();
+
+  showPage("ordersPage");
+
+}
+
+
+/* =========================
+   DIRECT PAYMENT
+========================= */
+
+async function buyWithDirectPayment(
+  packageId,
+  title,
+  price,
+  duration
+){
+
+  const method =
+    prompt(
+      "Payment Method লিখুন:\nbKash\nNagad\nRocket"
+    );
+
+
+  if(!method) return;
+
+
+  const allowed =
+    ["bkash","nagad","rocket"];
+
+
+  if(
+    !allowed.includes(
+      method.toLowerCase()
+    )
+  ){
+
+    alert("সঠিক Payment Method দিন।");
+    return;
+
+  }
+
+
+  const transaction =
+    prompt("Transaction ID দিন:");
+
+
+  if(!transaction){
+
+    alert("Transaction ID প্রয়োজন।");
+    return;
+
+  }
+
+
+  const profile =
+    await db
+      .from("Profiles")
+      .select("Name,Phone")
+      .eq("id",currentUser.id)
+      .single();
+
+
+  if(profile.error){
+
+    alert(profile.error.message);
+    return;
+
+  }
+
+
+  const order =
+    await db
+      .from("Orders")
+      .insert({
+
+        user_id:currentUser.id,
+
+        buyer_name:profile.data.Name,
+
+        phone:profile.data.Phone,
+
+        package_title:title,
+
+        price:price,
+
+        duration:duration,
+
+        payment_method:
+          method,
+
+        transaction_id:
+          transaction,
+
+        status:"Pending",
+
+        access_key:""
+
+      });
+
+
+  if(order.error){
+
+    alert(order.error.message);
+    return;
+
+  }
+
+
+  alert(
+    "Payment information submitted.\nStatus: Pending"
+  );
+
+
+  await refreshAll();
+
+  showPage("ordersPage");
+
+}
+
+
+/* =========================
+   TOP UP BALANCE
+========================= */
+
+async function submitTopup(){
+
+  const amount =
+    Number(
+      document.getElementById("topupAmount").value
+    );
+
+  const method =
+    document.getElementById("topupMethod").value;
+
+  const transaction =
+    document.getElementById("topupTransaction")
+      .value.trim();
+
+  const message =
+    document.getElementById("topupMessage");
+
+
+  if(!amount || amount <= 0){
+
+    message.innerText =
+      "সঠিক Amount দিন।";
+
+    return;
+
+  }
+
+
+  if(!transaction){
+
+    message.innerText =
+      "Transaction ID দিন।";
+
+    return;
+
+  }
+
+
+  const profile =
+    await db
+      .from("Profiles")
+      .select("Name,Phone")
+      .eq("id",currentUser.id)
+      .single();
+
+
+  if(profile.error){
+
+    message.innerText =
+      profile.error.message;
+
+    return;
+
+  }
+
+
+  const order =
+    await db
+      .from("Orders")
+      .insert({
+
+        user_id:currentUser.id,
+
+        buyer_name:profile.data.Name,
+
+        phone:profile.data.Phone,
+
+        package_title:"Balance Top Up",
+
+     
