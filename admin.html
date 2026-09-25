@@ -9,14 +9,12 @@
 
 <style>
 *{box-sizing:border-box}
-
 body{
   margin:0;
   font-family:Arial,sans-serif;
   background:#f5f7fb;
   color:#222;
 }
-
 header{
   background:#fff;
   padding:18px;
@@ -25,16 +23,8 @@ header{
   top:0;
   z-index:10;
 }
-
-header h2{
-  margin:0;
-}
-
-.container{
-  padding:15px;
-  padding-bottom:90px;
-}
-
+header h2{margin:0}
+.container{padding:15px;padding-bottom:90px}
 .section{
   background:#fff;
   padding:15px;
@@ -42,7 +32,6 @@ header h2{
   margin-bottom:15px;
   box-shadow:0 2px 8px #0000000d;
 }
-
 input,select,button{
   width:100%;
   padding:12px;
@@ -51,81 +40,20 @@ input,select,button{
   border-radius:9px;
   font-size:15px;
 }
-
 button{
   background:#111;
   color:white;
   border:none;
   cursor:pointer;
 }
-
-button.danger{
-  background:#d93025;
-}
-
-button.green{
-  background:#16803c;
-}
-
-button.orange{
-  background:#d97706;
-}
-
+button.danger{background:#d93025}
+button.green{background:#16803c}
 .card{
   border:1px solid #eee;
   padding:12px;
   border-radius:12px;
   margin:10px 0;
 }
-
-.pending-card{
-  border-left:5px solid #d97706;
-  background:#fffaf0;
-}
-
-.confirmed-card{
-  border-left:5px solid #16803c;
-  background:#f3fff7;
-}
-
-.cancelled-card{
-  border-left:5px solid #d93025;
-  background:#fff5f5;
-}
-
-.status{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:bold;
-}
-
-.status.pending{
-  background:#fff0c2;
-  color:#8a5700;
-}
-
-.status.confirmed{
-  background:#d9f7e5;
-  color:#087334;
-}
-
-.status.cancelled{
-  background:#ffdcdc;
-  color:#a40000;
-}
-
-.request-actions{
-  display:flex;
-  gap:8px;
-  margin-top:10px;
-}
-
-.request-actions button{
-  flex:1;
-}
-
 nav{
   position:fixed;
   bottom:0;
@@ -136,7 +64,6 @@ nav{
   display:flex;
   z-index:20;
 }
-
 nav button{
   margin:0;
   border-radius:0;
@@ -144,31 +71,13 @@ nav button{
   color:#333;
   font-size:12px;
 }
-
 nav button.active{
   background:#111;
   color:white;
 }
-
-.hidden{
-  display:none;
-}
-
-.small{
-  font-size:13px;
-  color:#666;
-}
-
-.price{
-  font-weight:bold;
-  font-size:18px;
-}
-
-hr{
-  border:0;
-  border-top:1px solid #eee;
-  margin:12px 0;
-}
+.hidden{display:none}
+.small{font-size:13px;color:#666}
+.price{font-weight:bold;font-size:18px}
 </style>
 </head>
 
@@ -176,243 +85,97 @@ hr{
 
 <header>
   <h2>Panel Sell Bazaar</h2>
-  <div class="small">Admin Panel — Private</div>
+  <div class="small">Admin Panel</div>
 </header>
 
 <div class="container">
 
-<!-- ================= HOME ================= -->
-
+<!-- HOME -->
 <div id="home" class="page">
-
   <div class="section">
-
     <h3>Dashboard</h3>
-
-    <p>
-      Total Packages:
-      <b id="packageCount">0</b>
-    </p>
-
-    <p>
-      Total Orders:
-      <b id="orderCount">0</b>
-    </p>
-
-    <p>
-      Total Buyers:
-      <b id="buyerCount">0</b>
-    </p>
-
+    <p>Total Packages: <b id="packageCount">0</b></p>
+    <p>Total Orders: <b id="orderCount">0</b></p>
+    <p>Total Buyers: <b id="buyerCount">0</b></p>
   </div>
-
-
-  <!-- QUICK PENDING -->
-
-  <div class="section">
-
-    <h3>Pending Balance Requests</h3>
-
-    <div id="homePendingRequests">
-      Loading...
-    </div>
-
-  </div>
-
 </div>
 
-
-<!-- ================= PACKAGES ================= -->
-
+<!-- PACKAGES -->
 <div id="packages" class="page hidden">
 
   <div class="section">
-
     <h3>Add Package</h3>
 
-    <input
-      id="packageTitle"
-      placeholder="Package name"
-    >
+    <input id="packageTitle" placeholder="Package name">
+    <input id="packagePrice" type="number" placeholder="Price">
+    <input id="packageDuration" placeholder="Duration">
+    <input id="packageImage" placeholder="Image URL">
+    <input id="packageLink" placeholder="Panel Link">
 
-    <input
-      id="packagePrice"
-      type="number"
-      placeholder="Price"
-    >
-
-    <input
-      id="packageDuration"
-      placeholder="Duration"
-    >
-
-    <input
-      id="packageImage"
-      placeholder="Image URL"
-    >
-
-    <input
-      id="packageLink"
-      placeholder="Panel Link"
-    >
-
-    <button onclick="addPackage()">
-      Add Package
-    </button>
-
+    <button onclick="addPackage()">Add Package</button>
   </div>
 
-
   <div class="section">
-
     <h3>All Packages</h3>
-
-    <div id="packageList">
-      Loading...
-    </div>
-
+    <div id="packageList">Loading...</div>
   </div>
 
 </div>
 
-
-<!-- ================= ORDERS ================= -->
-
+<!-- ORDERS -->
 <div id="orders" class="page hidden">
 
   <div class="section">
-
     <h3>All Orders</h3>
-
-    <div id="orderList">
-      Loading...
-    </div>
-
+    <div id="orderList">Loading...</div>
   </div>
 
 </div>
 
-
-<!-- ================= BALANCE ================= -->
-
+<!-- BALANCE -->
 <div id="balance" class="page hidden">
 
   <div class="section">
-
-    <h3>Balance Requests</h3>
-
-    <p class="small">
-      Buyer balance request এখানে আসবে।
-      Transaction ID মিলিয়ে দেখে Approve অথবা Reject করুন।
-    </p>
-
-    <div id="balanceRequests">
-      Loading...
-    </div>
-
-  </div>
-
-
-  <div class="section">
-
     <h3>Buyer Balances</h3>
-
-    <div id="balanceList">
-      Loading...
-    </div>
-
+    <div id="balanceList">Loading...</div>
   </div>
 
 </div>
 
-
-<!-- ================= ACCESS ================= -->
-
+<!-- ACCESS -->
 <div id="access" class="page hidden">
 
   <div class="section">
-
     <h3>Access / Panel Links</h3>
-
-    <div id="accessList">
-      Loading...
-    </div>
-
+    <div id="accessList">Loading...</div>
   </div>
 
 </div>
 
-
-<!-- ================= PROFILE ================= -->
-
+<!-- PROFILE -->
 <div id="profile" class="page hidden">
 
   <div class="section">
-
     <h3>Admin Profile</h3>
-
-    <p id="adminName">
-      Loading...
-    </p>
-
+    <p id="adminName">Loading...</p>
     <p id="adminPhone"></p>
-
-    <button
-      class="danger"
-      onclick="logout()">
-      Logout
-    </button>
-
+    <button class="danger" onclick="logout()">Logout</button>
   </div>
 
 </div>
 
 </div>
 
-
-<!-- ================= NAVIGATION ================= -->
-
 <nav>
-
-  <button
-    class="active"
-    onclick="showPage('home',this)">
-    Home
-  </button>
-
-  <button
-    onclick="showPage('packages',this)">
-    Packages
-  </button>
-
-  <button
-    onclick="showPage('orders',this)">
-    Orders
-  </button>
-
-  <button
-    onclick="showPage('balance',this)">
-    Balance
-  </button>
-
-  <button
-    onclick="showPage('access',this)">
-    Access
-  </button>
-
-  <button
-    onclick="showPage('profile',this)">
-    Profile
-  </button>
-
+  <button class="active" onclick="showPage('home',this)">Home</button>
+  <button onclick="showPage('packages',this)">Packages</button>
+  <button onclick="showPage('orders',this)">Orders</button>
+  <button onclick="showPage('balance',this)">Balance</button>
+  <button onclick="showPage('access',this)">Access</button>
+  <button onclick="showPage('profile',this)">Profile</button>
 </nav>
 
-
 <script>
-
-/* =====================================================
-   SUPABASE
-===================================================== */
 
 const SUPABASE_URL =
 "https://wiztksrtzjmsxzolollf.supabase.co";
@@ -421,2148 +184,611 @@ const SUPABASE_KEY =
 "sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
 
 const supabaseClient =
-supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeHtml(value){
-
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-}
-
-
-function escapeAttr(value){
-
-  return escapeHtml(value);
-
-}
-
-
-/* =====================================================
-   PAGE NAVIGATION
-===================================================== */
+// ---------------- PAGE ----------------
 
 function showPage(page,btn){
 
-  document
-    .querySelectorAll(".page")
-    .forEach(x =>
-      x.classList.add("hidden")
-    );
+  document.querySelectorAll(".page")
+    .forEach(x=>x.classList.add("hidden"));
 
-  const target =
-    document.getElementById(page);
+  document.getElementById(page)
+    .classList.remove("hidden");
 
-  if(target){
-    target.classList.remove("hidden");
-  }
+  document.querySelectorAll("nav button")
+    .forEach(x=>x.classList.remove("active"));
 
-  document
-    .querySelectorAll("nav button")
-    .forEach(x =>
-      x.classList.remove("active")
-    );
+  btn.classList.add("active");
 
-  if(btn){
-    btn.classList.add("active");
-  }
-
-
-  if(page==="home"){
-    loadDashboard();
-    loadBalanceRequests();
-  }
-
-  if(page==="packages"){
-    loadPackages();
-  }
-
-  if(page==="orders"){
-    loadOrders();
-  }
-
-  if(page==="balance"){
-    loadBalances();
-    loadBalanceRequests();
-  }
-
-  if(page==="access"){
-    loadAccess();
-  }
-
+  if(page==="packages") loadPackages();
+  if(page==="orders") loadOrders();
+  if(page==="balance") loadBalances();
+  if(page==="access") loadAccess();
 }
 
 
-/* =====================================================
-   CHECK ADMIN
-===================================================== */
+// ---------------- CHECK ADMIN ----------------
 
 async function checkAdmin(){
 
-  const {
-    data:{
-      user
-    }
-  } =
-  await supabaseClient.auth.getUser();
-
+  const {data:{user}} =
+    await supabaseClient.auth.getUser();
 
   if(!user){
-
     location.href="index.html";
-
     return;
   }
 
+  const {data,error} =
+    await supabaseClient
+      .from("Profiles")
+      .select("*")
+      .eq("id",user.id)
+      .single();
 
-  const {
-    data,
-    error
-  } =
-  await supabaseClient
-    .from("Profiles")
-    .select("*")
-    .eq("id",user.id)
-    .single();
-
-
-  if(
-    error ||
-    !data ||
-    data.Role !== "admin"
-  ){
-
+  if(error || !data || data.Role !== "admin"){
     alert("Admin access denied");
-
     location.href="index.html";
-
     return;
   }
 
-
-  document.getElementById(
-    "adminName"
-  ).innerText =
+  document.getElementById("adminName").innerText =
     "Name: " + (data.Name || "");
 
-
-  document.getElementById(
-    "adminPhone"
-  ).innerText =
+  document.getElementById("adminPhone").innerText =
     "Phone: " + (data.Phone || "");
 
-
   loadDashboard();
-
-  loadBalanceRequests();
-
 }
 
 
-/* =====================================================
-   DASHBOARD
-===================================================== */
+// ---------------- DASHBOARD ----------------
 
 async function loadDashboard(){
 
-  const {
-    count:pc
-  } =
-  await supabaseClient
-    .from("Package")
-    .select("*",{
-      count:"exact",
-      head:true
-    });
+  const {count:pc} =
+    await supabaseClient
+      .from("Package")
+      .select("*",{count:"exact",head:true});
 
+  const {count:oc} =
+    await supabaseClient
+      .from("Orders")
+      .select("*",{count:"exact",head:true});
 
-  const {
-    count:oc
-  } =
-  await supabaseClient
-    .from("Orders")
-    .select("*",{
-      count:"exact",
-      head:true
-    });
+  const {count:bc} =
+    await supabaseClient
+      .from("Profiles")
+      .select("*",{count:"exact",head:true})
+      .eq("Role","buyer");
 
-
-  const {
-    count:bc
-  } =
-  await supabaseClient
-    .from("Profiles")
-    .select("*",{
-      count:"exact",
-      head:true
-    })
-    .eq("Role","buyer");
-
-
-  document.getElementById(
-    "packageCount"
-  ).innerText =
-    pc || 0;
-
-
-  document.getElementById(
-    "orderCount"
-  ).innerText =
-    oc || 0;
-
-
-  document.getElementById(
-    "buyerCount"
-  ).innerText =
-    bc || 0;
-
+  document.getElementById("packageCount").innerText = pc || 0;
+  document.getElementById("orderCount").innerText = oc || 0;
+  document.getElementById("buyerCount").innerText = bc || 0;
 }
 
 
-/* =====================================================
-   ADD PACKAGE
-===================================================== */
+// ---------------- PACKAGE ADD ----------------
 
 async function addPackage(){
 
   const title =
-    document
-      .getElementById("packageTitle")
-      .value
-      .trim();
-
+    document.getElementById("packageTitle").value.trim();
 
   const price =
-    document
-      .getElementById("packagePrice")
-      .value;
-
+    document.getElementById("packagePrice").value;
 
   const duration =
-    document
-      .getElementById("packageDuration")
-      .value
-      .trim();
-
+    document.getElementById("packageDuration").value.trim();
 
   const image_url =
-    document
-      .getElementById("packageImage")
-      .value
-      .trim();
-
+    document.getElementById("packageImage").value.trim();
 
   const panel_link =
-    document
-      .getElementById("packageLink")
-      .value
-      .trim();
+    document.getElementById("packageLink").value.trim();
 
-
-  if(
-    !title ||
-    !price ||
-    !duration
-  ){
-
-    alert(
-      "Title, price and duration are required"
-    );
-
+  if(!title || !price || !duration){
+    alert("Title, price and duration are required");
     return;
   }
 
-
-  const {
-    error
-  } =
-  await supabaseClient
-    .from("Package")
-    .insert([{
-
-      title:title,
-
-      price:Number(price),
-
-      duration:duration,
-
-      image_url:image_url,
-
-      panel_link:panel_link
-
-    }]);
-
+  const {error} =
+    await supabaseClient
+      .from("Package")
+      .insert([{
+        title:title,
+        price:Number(price),
+        duration:duration,
+        image_url:image_url,
+        panel_link:panel_link
+      }]);
 
   if(error){
-
     alert(error.message);
-
     return;
   }
 
+  alert("Package added successfully");
 
-  alert(
-    "Package added successfully"
-  );
-
-
-  document.getElementById(
-    "packageTitle"
-  ).value="";
-
-
-  document.getElementById(
-    "packagePrice"
-  ).value="";
-
-
-  document.getElementById(
-    "packageDuration"
-  ).value="";
-
-
-  document.getElementById(
-    "packageImage"
-  ).value="";
-
-
-  document.getElementById(
-    "packageLink"
-  ).value="";
-
+  document.getElementById("packageTitle").value="";
+  document.getElementById("packagePrice").value="";
+  document.getElementById("packageDuration").value="";
+  document.getElementById("packageImage").value="";
+  document.getElementById("packageLink").value="";
 
   loadPackages();
-
   loadDashboard();
-
 }
 
 
-/* =====================================================
-   LOAD PACKAGES
-===================================================== */
+// ---------------- PACKAGES ----------------
 
 async function loadPackages(){
 
   const box =
-    document.getElementById(
-      "packageList"
-    );
+    document.getElementById("packageList");
 
+  box.innerHTML="Loading...";
 
-  box.innerHTML =
-    "Loading...";
-
-
-  const {
-    data,
-    error
-  } =
-  await supabaseClient
-    .from("Package")
-    .select("*")
-    .order("id",{
-      ascending:false
-    });
-
+  const {data,error} =
+    await supabaseClient
+      .from("Package")
+      .select("*")
+      .order("id",{ascending:false});
 
   if(error){
-
-    box.innerHTML =
-      "Error: " +
-      escapeHtml(error.message);
-
+    box.innerHTML="Error: "+error.message;
     return;
   }
 
-
-  if(
-    !data ||
-    data.length===0
-  ){
-
-    box.innerHTML =
-      "No packages found";
-
+  if(!data || data.length===0){
+    box.innerHTML="No packages found";
     return;
   }
-
 
   box.innerHTML="";
 
-
   data.forEach(p=>{
 
-    const div =
-      document.createElement(
-        "div"
-      );
+    const div=document.createElement("div");
+    div.className="card";
 
+    div.innerHTML=`
+      <b>${escapeHtml(p.title)}</b>
+      <p class="price">৳${p.price}</p>
+      <p>Duration: ${escapeHtml(p.duration)}</p>
 
-    div.className =
-      "card";
+      <input id="title_${p.id}" value="${escapeAttr(p.title)}">
+      <input id="price_${p.id}" type="number" value="${p.price}">
+      <input id="duration_${p.id}" value="${escapeAttr(p.duration)}">
+      <input id="image_${p.id}" value="${escapeAttr(p.image_url || "")}" placeholder="Image URL">
+      <input id="link_${p.id}" value="${escapeAttr(p.panel_link || "")}" placeholder="Panel Link">
 
-
-    div.innerHTML = `
-
-      <b>
-        ${escapeHtml(p.title)}
-      </b>
-
-      <p class="price">
-        ৳${Number(p.price || 0)}
-      </p>
-
-      <p>
-        Duration:
-        ${escapeHtml(p.duration)}
-      </p>
-
-      <input
-        id="title_${p.id}"
-        value="${escapeAttr(p.title)}"
-      >
-
-      <input
-        id="price_${p.id}"
-        type="number"
-        value="${escapeAttr(p.price)}"
-      >
-
-      <input
-        id="duration_${p.id}"
-        value="${escapeAttr(p.duration)}"
-      >
-
-      <input
-        id="image_${p.id}"
-        value="${escapeAttr(p.image_url || "")}"
-        placeholder="Image URL"
-      >
-
-      <input
-        id="link_${p.id}"
-        value="${escapeAttr(p.panel_link || "")}"
-        placeholder="Panel Link"
-      >
-
-      <button
-        onclick="updatePackage(${p.id})">
+      <button onclick="updatePackage(${p.id})">
         Update
       </button>
 
-      <button
-        class="danger"
-        onclick="deletePackage(${p.id})">
+      <button class="danger" onclick="deletePackage(${p.id})">
         Delete
       </button>
-
     `;
 
-
     box.appendChild(div);
-
   });
-
 }
 
 
-/* =====================================================
-   UPDATE PACKAGE
-===================================================== */
+// ---------------- PACKAGE UPDATE ----------------
 
 async function updatePackage(id){
 
   const title =
-    document
-      .getElementById(
-        "title_"+id
-      )
-      .value
-      .trim();
-
+    document.getElementById("title_"+id).value.trim();
 
   const price =
-    document
-      .getElementById(
-        "price_"+id
-      )
-      .value;
-
+    document.getElementById("price_"+id).value;
 
   const duration =
-    document
-      .getElementById(
-        "duration_"+id
-      )
-      .value
-      .trim();
-
+    document.getElementById("duration_"+id).value.trim();
 
   const image_url =
-    document
-      .getElementById(
-        "image_"+id
-      )
-      .value
-      .trim();
-
+    document.getElementById("image_"+id).value.trim();
 
   const panel_link =
-    document
-      .getElementById(
-        "link_"+id
-      )
-      .value
-      .trim();
+    document.getElementById("link_"+id).value.trim();
 
-
-  if(
-    !title ||
-    !price ||
-    !duration
-  ){
-
-    alert(
-      "Title, price and duration are required"
-    );
-
-    return;
-  }
-
-
-  const {
-    error
-  } =
-  await supabaseClient
-    .from("Package")
-    .update({
-
-      title:title,
-
-      price:Number(price),
-
-      duration:duration,
-
-      image_url:image_url,
-
-      panel_link:panel_link
-
-    })
-    .eq("id",id);
-
+  const {error} =
+    await supabaseClient
+      .from("Package")
+      .update({
+        title:title,
+        price:Number(price),
+        duration:duration,
+        image_url:image_url,
+        panel_link:panel_link
+      })
+      .eq("id",id);
 
   if(error){
-
     alert(error.message);
-
     return;
   }
 
-
-  alert(
-    "Package updated"
-  );
-
-
+  alert("Package updated");
   loadPackages();
-
 }
 
 
-/* =====================================================
-   DELETE PACKAGE
-===================================================== */
+// ---------------- PACKAGE DELETE ----------------
 
 async function deletePackage(id){
 
-  if(
-    !confirm(
-      "Delete this package?"
-    )
-  ){
+  if(!confirm("Delete this package?")) return;
 
-    return;
-  }
-
-
-  const {
-    error
-  } =
-  await supabaseClient
-    .from("Package")
-    .delete()
-    .eq("id",id);
-
+  const {error} =
+    await supabaseClient
+      .from("Package")
+      .delete()
+      .eq("id",id);
 
   if(error){
-
     alert(error.message);
-
     return;
   }
 
-
-  alert(
-    "Package deleted"
-  );
-
-
+  alert("Package deleted");
   loadPackages();
-
   loadDashboard();
-
 }
 
 
-/* =====================================================
-   LOAD ORDERS
-===================================================== */
+// ---------------- ORDERS ----------------
 
 async function loadOrders(){
 
   const box =
-    document.getElementById(
-      "orderList"
-    );
+    document.getElementById("orderList");
 
+  box.innerHTML="Loading...";
 
-  box.innerHTML =
-    "Loading...";
-
-
-  const {
-    data,
-    error
-  } =
-  await supabaseClient
-    .from("Orders")
-    .select("*")
-    .order("id",{
-      ascending:false
-    });
-
+  const {data,error} =
+    await supabaseClient
+      .from("Orders")
+      .select("*")
+      .order("id",{ascending:false});
 
   if(error){
-
-    box.innerHTML =
-      "Error: " +
-      escapeHtml(error.message);
-
+    box.innerHTML="Error: "+error.message;
     return;
   }
 
-
-  if(
-    !data ||
-    data.length===0
-  ){
-
-    box.innerHTML =
-      "No orders found";
-
+  if(!data || data.length===0){
+    box.innerHTML="No orders found";
     return;
   }
-
 
   box.innerHTML="";
 
-
   data.forEach(o=>{
 
-    const div =
-      document.createElement(
-        "div"
-      );
+    const div=document.createElement("div");
+    div.className="card";
 
-
-    div.className =
-      "card";
-
-
-    div.innerHTML = `
-
-      <b>
-        ${escapeHtml(
-          o.buyer_name || ""
-        )}
-      </b>
+    div.innerHTML=`
+      <b>${escapeHtml(o.buyer_name || "")}</b>
 
       <p>
-        Package:
-        ${escapeHtml(
-          o.package_title || ""
-        )}
+      Package: ${escapeHtml(o.package_title || "")}
       </p>
 
       <p>
-        Price:
-        ৳${Number(o.price || 0)}
+      Price: ৳${o.price || 0}
       </p>
 
       <p>
-        Duration:
-        ${escapeHtml(
-          o.duration || ""
-        )}
+      Duration: ${escapeHtml(o.duration || "")}
       </p>
 
       <p>
-        Payment:
-        ${escapeHtml(
-          o.payment_method || ""
-        )}
+      Payment: ${escapeHtml(o.payment_method || "")}
       </p>
 
       <p>
-        Transaction ID:
-        <b>
-          ${escapeHtml(
-            o.transaction_id || ""
-          )}
-        </b>
+      Transaction ID:
+      <b>${escapeHtml(o.transaction_id || "")}</b>
       </p>
 
-      ${
-        o.sender_number
-        ?
-        `
-        <p>
-          Sender Number:
-          <b>
-            ${escapeHtml(
-              o.sender_number
-            )}
-          </b>
-        </p>
-        `
-        :
-        ""
-      }
-
       <p>
-        Status:
-        <b>
-          ${escapeHtml(
-            o.status || ""
-          )}
-        </b>
+      Status:
+      <b>${escapeHtml(o.status || "")}</b>
       </p>
 
       <input
         id="key_${o.id}"
-        value="${escapeAttr(
-          o.access_key || ""
-        )}"
+        value="${escapeAttr(o.access_key || "")}"
         placeholder="Access Key"
       >
 
       <select id="status_${o.id}">
-
-        <option
-          value="Pending"
-          ${
-            o.status==="Pending"
-            ?
-            "selected"
-            :
-            ""
-          }>
+        <option value="Pending" ${o.status==="Pending"?"selected":""}>
           Pending
         </option>
 
-        <option
-          value="Confirmed"
-          ${
-            o.status==="Confirmed"
-            ?
-            "selected"
-            :
-            ""
-          }>
+        <option value="Confirmed" ${o.status==="Confirmed"?"selected":""}>
           Confirmed
         </option>
 
-        <option
-          value="Cancelled"
-          ${
-            o.status==="Cancelled"
-            ?
-            "selected"
-            :
-            ""
-          }>
+        <option value="Cancelled" ${o.status==="Cancelled"?"selected":""}>
           Cancelled
         </option>
-
       </select>
 
-      <button
-        class="green"
+      <button class="green"
         onclick="updateOrder(${o.id})">
         Save Order
       </button>
-
     `;
 
-
     box.appendChild(div);
-
   });
-
 }
 
 
-/* =====================================================
-   UPDATE ORDER
-===================================================== */
+// ---------------- UPDATE ORDER ----------------
 
 async function updateOrder(id){
 
   const status =
-    document
-      .getElementById(
-        "status_"+id
-      )
-      .value;
-
+    document.getElementById("status_"+id).value;
 
   const access_key =
-    document
-      .getElementById(
-        "key_"+id
-      )
-      .value
-      .trim();
+    document.getElementById("key_"+id).value.trim();
 
-
-  const {
-    data:oldOrder,
-    error:oldError
-  } =
-  await supabaseClient
-    .from("Orders")
-    .select("*")
-    .eq("id",id)
-    .single();
-
-
-  if(oldError){
-
-    alert(oldError.message);
-
-    return;
-  }
-
-
-  /* ================================================
-     BALANCE TOP UP APPROVAL
-  ================================================= */
-
-  if(
-    oldOrder.package_title ===
-      "Balance Top Up" &&
-
-    oldOrder.status !==
-      "Confirmed" &&
-
-    status ===
-      "Confirmed"
-  ){
-
-    const success =
-      await approveBalanceRequest(
-        id,
-        false
-      );
-
-
-    if(!success){
-
-      return;
-    }
-
-
-    /*
-      approveBalanceRequest already
-      changes the order status.
-    */
-
-    loadOrders();
-
-    loadBalances();
-
-    loadBalanceRequests();
-
-    loadDashboard();
-
-    return;
-  }
-
-
-  /* ================================================
-     NORMAL ORDER UPDATE
-  ================================================= */
-
-  const {
-    error
-  } =
-  await supabaseClient
-    .from("Orders")
-    .update({
-
-      status:status,
-
-      access_key:access_key
-
-    })
-    .eq("id",id);
-
-
-  if(error){
-
-    alert(error.message);
-
-    return;
-  }
-
-
-  alert(
-    "Order updated"
-  );
-
-
-  loadOrders();
-
-  loadBalances();
-
-  loadBalanceRequests();
-
-  loadDashboard();
-
-}
-
-
-/* =====================================================
-   LOAD BALANCE REQUESTS
-===================================================== */
-
-async function loadBalanceRequests(){
-
-  const box =
-    document.getElementById(
-      "balanceRequests"
-    );
-
-
-  const homeBox =
-    document.getElementById(
-      "homePendingRequests"
-    );
-
-
-  if(box){
-
-    box.innerHTML =
-      "Loading...";
-
-  }
-
-
-  if(homeBox){
-
-    homeBox.innerHTML =
-      "Loading...";
-
-  }
-
-
-  const {
-    data,
-    error
-  } =
-  await supabaseClient
-    .from("Orders")
-    .select("*")
-    .eq(
-      "package_title",
-      "Balance Top Up"
-    )
-    .order("id",{
-      ascending:false
-    });
-
-
-  if(error){
-
-    const msg =
-      "Error: " +
-      escapeHtml(
-        error.message
-      );
-
-
-    if(box){
-
-      box.innerHTML =
-        msg;
-
-    }
-
-
-    if(homeBox){
-
-      homeBox.innerHTML =
-        msg;
-
-    }
-
-
-    return;
-  }
-
-
-  if(
-    !data ||
-    data.length===0
-  ){
-
-    if(box){
-
-      box.innerHTML =
-        '<p class="small">No balance requests found.</p>';
-
-    }
-
-
-    if(homeBox){
-
-      homeBox.innerHTML =
-        '<p class="small">No balance requests.</p>';
-
-    }
-
-
-    return;
-  }
-
-
-  /* ================================================
-     FULL BALANCE REQUEST LIST
-  ================================================= */
-
-  if(box){
-
-    box.innerHTML="";
-
-
-    data.forEach(o=>{
-
-      const statusClass =
-        o.status === "Confirmed"
-        ?
-        "confirmed"
-        :
-        o.status === "Cancelled"
-        ?
-        "cancelled"
-        :
-        "pending";
-      const cardClass =
-        o.status === "Confirmed"
-        ?
-        "confirmed-card"
-        :
-        o.status === "Cancelled"
-        ?
-        "cancelled-card"
-        :
-        "pending-card";
-
-
-      const div =
-        document.createElement(
-          "div"
-        );
-
-
-      div.className =
-        "card " +
-        cardClass;
-
-
-      div.innerHTML = `
-
-        <b>
-          ${escapeHtml(
-            o.buyer_name ||
-            "Buyer"
-          )}
-        </b>
-
-        <p>
-          Phone:
-          <b>
-            ${escapeHtml(
-              o.phone ||
-              "Not provided"
-            )}
-          </b>
-        </p>
-
-        <p>
-          Amount:
-          <span class="price">
-            ৳${Number(
-              o.price || 0
-            ).toFixed(2)}
-          </span>
-        </p>
-
-        <p>
-          Payment Method:
-          <b>
-            ${escapeHtml(
-              o.payment_method ||
-              "Not provided"
-            )}
-          </b>
-        </p>
-
-        ${
-          o.sender_number
-          ?
-          `
-          <p>
-            Sender Number:
-            <b>
-              ${escapeHtml(
-                o.sender_number
-              )}
-            </b>
-          </p>
-          `
-          :
-          `
-          <p class="small">
-            Sender Number:
-            Not provided
-          </p>
-          `
-        }
-
-        <p>
-          Transaction ID:
-          <b>
-            ${escapeHtml(
-              o.transaction_id ||
-              "Not provided"
-            )}
-          </b>
-        </p>
-
-        <p>
-          Status:
-          <span
-            class="status ${statusClass}">
-            ${escapeHtml(
-              o.status ||
-              "Pending"
-            )}
-          </span>
-        </p>
-
-        <hr>
-
-        ${
-          o.status === "Pending"
-          ?
-          `
-          <div class="request-actions">
-
-            <button
-              class="green"
-              onclick="
-                approveBalanceRequest(${o.id})
-              ">
-              ✓ Approve
-            </button>
-
-            <button
-              class="danger"
-              onclick="
-                rejectBalanceRequest(${o.id})
-              ">
-              ✕ Reject
-            </button>
-
-          </div>
-          `
-          :
-          `
-          <p class="small">
-            This request has already been reviewed.
-          </p>
-          `
-        }
-
-      `;
-
-
-      box.appendChild(div);
-
-    });
-
-  }
-
-
-  /* ================================================
-     HOME PENDING ONLY
-  ================================================= */
-
-  if(homeBox){
-
-    const pending =
-      data.filter(
-        x =>
-          x.status ===
-          "Pending"
-      );
-
-
-    if(!pending.length){
-
-      homeBox.innerHTML =
-        '<p class="small">No pending balance requests.</p>';
-
-    }
-    else{
-
-      homeBox.innerHTML="";
-
-
-      pending.forEach(o=>{
-
-        const div =
-          document.createElement(
-            "div"
-          );
-
-
-        div.className =
-          "card pending-card";
-
-
-        div.innerHTML = `
-
-          <b>
-            ${escapeHtml(
-              o.buyer_name ||
-              "Buyer"
-            )}
-          </b>
-
-          <p>
-            Amount:
-            <span class="price">
-              ৳${Number(
-                o.price || 0
-              ).toFixed(2)}
-            </span>
-          </p>
-
-          <p>
-            Method:
-            ${escapeHtml(
-              o.payment_method ||
-              ""
-            )}
-          </p>
-
-          <p>
-            TXID:
-            <b>
-              ${escapeHtml(
-                o.transaction_id ||
-                ""
-              )}
-            </b>
-          </p>
-
-          <button
-            class="green"
-            onclick="
-              approveBalanceRequest(${o.id})
-            ">
-            ✓ Approve
-          </button>
-
-        `;
-
-
-        homeBox.appendChild(
-          div
-        );
-
-      });
-
-    }
-
-  }
-
-}
-
-
-/* =====================================================
-   APPROVE BALANCE REQUEST
-===================================================== */
-
-async function approveBalanceRequest(
-  id,
-  showAlert=true
-){
-
-  try{
-
-    const {
-      data:order,
-      error:orderError
-    } =
+  const {data:oldOrder,error:oldError} =
     await supabaseClient
       .from("Orders")
       .select("*")
       .eq("id",id)
       .single();
 
+  if(oldError){
+    alert(oldError.message);
+    return;
+  }
 
-    if(orderError){
+  // Balance Top Up
+  if(
+    oldOrder.package_title === "Balance Top Up" &&
+    oldOrder.status !== "Confirmed" &&
+    status === "Confirmed"
+  ){
 
-      alert(
-        orderError.message
-      );
-
-      return false;
-    }
-
-
-    if(
-      !order ||
-      order.package_title !==
-        "Balance Top Up"
-    ){
-
-      alert(
-        "This is not a Balance Top Up request."
-      );
-
-      return false;
-    }
-
-
-    if(
-      order.status ===
-      "Confirmed"
-    ){
-
-      if(showAlert){
-
-        alert(
-          "This request is already approved."
-        );
-
-      }
-
-      loadBalanceRequests();
-
-      return true;
-    }
-
-
-    if(
-      order.status ===
-      "Cancelled"
-    ){
-
-      alert(
-        "This request is already cancelled."
-      );
-
-      return false;
-    }
-
-
-    const amount =
-      Number(
-        order.price || 0
-      );
-
-
-    if(
-      !amount ||
-      amount <= 0
-    ){
-
-      alert(
-        "Invalid balance amount."
-      );
-
-      return false;
-    }
-
-
-    const confirmed =
-      confirm(
-        "Approve this balance request?\n\n" +
-        "Buyer: " +
-        (order.buyer_name || "") +
-        "\nAmount: ৳" +
-        amount +
-        "\nTransaction ID: " +
-        (order.transaction_id || "")
-      );
-
-
-    if(
-      !confirmed
-    ){
-
-      return false;
-    }
-
-
-    /* ================================================
-       CHECK DUPLICATE CREDIT
-    ================================================= */
-
-    const {
-      data:alreadyCredited,
-      error:creditCheckError
-    } =
-    await supabaseClient
-      .from("BalanceTransactions")
-      .select("id")
-      .eq(
-        "user_id",
-        order.user_id
-      )
-      .eq(
-        "type",
-        "credit"
-      )
-      .eq(
-        "note",
-        "Balance Top Up Order #"+
-        order.id
-      )
-      .limit(1);
-
-
-    if(creditCheckError){
-
-      alert(
-        creditCheckError.message
-      );
-
-      return false;
-    }
-
-
-    /* ================================================
-       ADD BALANCE
-    ================================================= */
-
-    if(
-      !alreadyCredited ||
-      alreadyCredited.length === 0
-    ){
-
-      const {
-        data:profile,
-        error:profileError
-      } =
+    const {data:profile,error:profileError} =
       await supabaseClient
         .from("Profiles")
         .select("balance")
-        .eq(
-          "id",
-          order.user_id
-        )
+        .eq("id",oldOrder.user_id)
         .single();
 
-
-      if(profileError){
-
-        alert(
-          profileError.message
-        );
-
-        return false;
-      }
-
-
-      const oldBalance =
-        Number(
-          profile.balance || 0
-        );
-
-
-      const newBalance =
-        oldBalance +
-        amount;
-
-
-      const {
-        error:updateBalanceError
-      } =
-      await supabaseClient
-        .from("Profiles")
-        .update({
-
-          balance:
-            newBalance
-
-        })
-        .eq(
-          "id",
-          order.user_id
-        );
-
-
-      if(updateBalanceError){
-
-        alert(
-          updateBalanceError.message
-        );
-
-        return false;
-      }
-
-
-      /* ============================================
-         BALANCE HISTORY
-      ============================================ */
-
-      const {
-        error:transactionError
-      } =
-      await supabaseClient
-        .from("BalanceTransactions")
-        .insert([{
-
-          user_id:
-            order.user_id,
-
-          amount:
-            amount,
-
-          type:
-            "credit",
-
-          note:
-            "Balance Top Up Order #"+
-            order.id
-
-        }]);
-
-
-      if(transactionError){
-
-        alert(
-          "Balance updated but transaction history failed: " +
-          transactionError.message
-        );
-
-        return false;
-      }
-
+    if(profileError){
+      alert(profileError.message);
+      return;
     }
 
+    const newBalance =
+      Number(profile.balance || 0) +
+      Number(oldOrder.price || 0);
 
-    /* ================================================
-       CONFIRM ORDER
-    ================================================= */
+    const {error:updateBalanceError} =
+      await supabaseClient
+        .from("Profiles")
+        .update({balance:newBalance})
+        .eq("id",oldOrder.user_id);
 
-    const {
-      error:updateOrderError
-    } =
+    if(updateBalanceError){
+      alert(updateBalanceError.message);
+      return;
+    }
+
+    await supabaseClient
+      .from("BalanceTransactions")
+      .insert([{
+        user_id:oldOrder.user_id,
+        amount:Number(oldOrder.price || 0),
+        type:"credit",
+        note:"Balance Top Up"
+      }]);
+  }
+
+  const {error} =
     await supabaseClient
       .from("Orders")
       .update({
-
-        status:
-          "Confirmed",
-
-        access_key:
-          order.access_key || ""
-
+        status:status,
+        access_key:access_key
       })
-      .eq(
-        "id",
-        id
-      );
-
-
-    if(updateOrderError){
-
-      alert(
-        updateOrderError.message
-      );
-
-      return false;
-    }
-
-
-    if(showAlert){
-
-      alert(
-        "Balance request approved successfully.\n" +
-        "৳" +
-        amount +
-        " added to buyer balance."
-      );
-
-    }
-
-
-    loadBalanceRequests();
-
-    loadBalances();
-
-    loadOrders();
-
-    loadDashboard();
-
-
-    return true;
-
-  }
-  catch(error){
-
-    alert(
-      error.message ||
-      "Something went wrong."
-    );
-
-    return false;
-
-  }
-
-}
-
-
-/* =====================================================
-   REJECT BALANCE REQUEST
-===================================================== */
-
-async function rejectBalanceRequest(id){
-
-  const {
-    data:order,
-    error:orderError
-  } =
-  await supabaseClient
-    .from("Orders")
-    .select("*")
-    .eq("id",id)
-    .single();
-
-
-  if(orderError){
-
-    alert(
-      orderError.message
-    );
-
-    return;
-  }
-
-
-  if(
-    !order ||
-    order.package_title !==
-      "Balance Top Up"
-  ){
-
-    alert(
-      "This is not a Balance Top Up request."
-    );
-
-    return;
-  }
-
-
-  if(
-    order.status ===
-    "Confirmed"
-  ){
-
-    alert(
-      "Confirmed request cannot be rejected."
-    );
-
-    return;
-  }
-
-
-  if(
-    order.status ===
-    "Cancelled"
-  ){
-
-    alert(
-      "This request is already cancelled."
-    );
-
-    return;
-  }
-
-
-  const confirmed =
-    confirm(
-      "Reject this balance request?"
-    );
-
-
-  if(!confirmed){
-
-    return;
-  }
-
-
-  const {
-    error
-  } =
-  await supabaseClient
-    .from("Orders")
-    .update({
-
-      status:
-        "Cancelled",
-
-      access_key:
-        ""
-
-    })
-    .eq(
-      "id",
-      id
-    );
-
+      .eq("id",id);
 
   if(error){
-
-    alert(
-      error.message
-    );
-
+    alert(error.message);
     return;
   }
 
-
-  alert(
-    "Balance request rejected."
-  );
-
-
-  loadBalanceRequests();
+  alert("Order updated");
 
   loadOrders();
-
-  loadDashboard();
-
+  loadBalances();
 }
 
 
-/* =====================================================
-   LOAD BUYER BALANCES
-===================================================== */
+// ---------------- BALANCES ----------------
 
 async function loadBalances(){
 
   const box =
-    document.getElementById(
-      "balanceList"
-    );
+    document.getElementById("balanceList");
 
+  box.innerHTML="Loading...";
 
-  if(!box){
-
-    return;
-  }
-
-
-  box.innerHTML =
-    "Loading...";
-
-
-  const {
-    data,
-    error
-  } =
-  await supabaseClient
-    .from("Profiles")
-    .select("*")
-    .eq("Role","buyer")
-    .order("id",{
-      ascending:false
-    });
-
+  const {data,error} =
+    await supabaseClient
+      .from("Profiles")
+      .select("*")
+      .eq("Role","buyer")
+      .order("Name");
 
   if(error){
-
-    box.innerHTML =
-      "Error: " +
-      escapeHtml(
-        error.message
-      );
-
+    box.innerHTML="Error: "+error.message;
     return;
   }
-
-
-  if(
-    !data ||
-    data.length===0
-  ){
-
-    box.innerHTML =
-      "No buyers found";
-
-    return;
-  }
-
 
   box.innerHTML="";
 
+  if(!data || data.length===0){
+    box.innerHTML="No buyers found";
+    return;
+  }
 
   data.forEach(p=>{
 
-    const div =
-      document.createElement(
-        "div"
-      );
+    const div=document.createElement("div");
+    div.className="card";
 
-
-    div.className =
-      "card";
-
-
-    div.innerHTML = `
-
-      <b>
-        ${escapeHtml(
-          p.Name ||
-          "Buyer"
-        )}
-      </b>
-
-      <p>
-        Phone:
-        ${escapeHtml(
-          p.Phone ||
-          "Not provided"
-        )}
-      </p>
-
-      <p>
-        Current Balance:
-        <span class="price">
-          ৳${Number(
-            p.balance || 0
-          ).toFixed(2)}
-        </span>
-      </p>
+    div.innerHTML=`
+      <b>${escapeHtml(p.Name || "Buyer")}</b>
+      <p>${escapeHtml(p.Phone || "")}</p>
+      <p>Current Balance: <b>৳${p.balance || 0}</b></p>
 
       <input
         id="balance_${p.id}"
         type="number"
-        step="0.01"
-        value="${Number(
-          p.balance || 0
-        )}"
         placeholder="New balance"
+        value="${p.balance || 0}"
       >
 
-      <button
-        class="green"
-        onclick="
-          changeBalance('${escapeAttr(p.id)}')
-        ">
+      <button onclick="changeBalance('${p.id}')">
         Update Balance
       </button>
-
     `;
 
-
     box.appendChild(div);
-
   });
-
 }
 
 
-/* =====================================================
-   CHANGE BUYER BALANCE
-===================================================== */
+// ---------------- CHANGE BALANCE ----------------
 
 async function changeBalance(id){
 
-  const input =
-    document.getElementById(
-      "balance_"+id
-    );
+  const value =
+    document.getElementById("balance_"+id).value;
 
+  const amount=Number(value);
 
-  if(!input){
-
+  if(amount < 0){
+    alert("Balance cannot be negative");
     return;
   }
 
-
-  const newBalance =
-    Number(
-      input.value
-    );
-
-
-  if(
-    Number.isNaN(newBalance) ||
-    newBalance < 0
-  ){
-
-    alert(
-      "Enter a valid balance."
-    );
-
-    return;
-  }
-
-
-  const confirmed =
-    confirm(
-      "Set buyer balance to ৳" +
-      newBalance +
-      "?"
-    );
-
-
-  if(!confirmed){
-
-    return;
-  }
-
-
-  const {
-    error
-  } =
-  await supabaseClient
-    .from("Profiles")
-    .update({
-
-      balance:
-        newBalance
-
-    })
-    .eq(
-      "id",
-      id
-    );
-
+  const {error} =
+    await supabaseClient
+      .from("Profiles")
+      .update({balance:amount})
+      .eq("id",id);
 
   if(error){
-
-    alert(
-      error.message
-    );
-
+    alert(error.message);
     return;
   }
 
-
-  alert(
-    "Balance updated."
-  );
-
-
+  alert("Balance updated");
   loadBalances();
-
 }
 
 
-/* =====================================================
-   LOAD ACCESS
-===================================================== */
+// ---------------- ACCESS ----------------
 
 async function loadAccess(){
 
   const box =
-    document.getElementById(
-      "accessList"
-    );
+    document.getElementById("accessList");
 
+  box.innerHTML="Loading...";
 
-  if(!box){
-
-    return;
-  }
-
-
-  box.innerHTML =
-    "Loading...";
-
-
-  const {
-    data,
-    error
-  } =
-  await supabaseClient
-    .from("Orders")
-    .select("*")
-    .eq(
-      "status",
-      "Confirmed"
-    )
-    .neq(
-      "package_title",
-      "Balance Top Up"
-    )
-    .order("id",{
-      ascending:false
-    });
-
+  const {data,error} =
+    await supabaseClient
+      .from("Orders")
+      .select("*")
+      .eq("status","Confirmed")
+      .neq("package_title","Balance Top Up")
+      .order("id",{ascending:false});
 
   if(error){
-
-    box.innerHTML =
-      "Error: " +
-      escapeHtml(
-        error.message
-      );
-
+    box.innerHTML="Error: "+error.message;
     return;
   }
-
-
-  if(
-    !data ||
-    data.length===0
-  ){
-
-    box.innerHTML =
-      "No confirmed access found";
-
-    return;
-  }
-
 
   box.innerHTML="";
 
-
-  data.forEach(o=>{
-
-    const div =
-      document.createElement(
-        "div"
-      );
-
-
-    div.className =
-      "card confirmed-card";
-
-
-    div.innerHTML = `
-
-      <b>
-        ${escapeHtml(
-          o.buyer_name ||
-          "Buyer"
-        )}
-      </b>
-
-      <p>
-        Package:
-        ${escapeHtml(
-          o.package_title ||
-          ""
-        )}
-        </p>
-
-      <p>
-        Price:
-        ৳${Number(
-          o.price || 0
-        )}
-      </p>
-
-      <p>
-        Duration:
-        ${escapeHtml(
-          o.duration ||
-          ""
-        )}
-      </p>
-
-      <p>
-        Access Key:
-        <b>
-          ${escapeHtml(
-            o.access_key ||
-            "Not provided"
-          )}
-        </b>
-      </p>
-
-    `;
-
-
-    box.appendChild(div);
-
-  });
-
-}
-
-
-/* =====================================================
-   LOGOUT
-===================================================== */
-
-async function logout(){
-
-  const confirmed =
-    confirm(
-      "Are you sure you want to logout?"
-    );
-
-
-  if(!confirmed){
-
+  if(!data || data.length===0){
+    box.innerHTML="No confirmed access found";
     return;
   }
 
+  data.forEach(o=>{
 
-  await supabaseClient.auth.signOut();
+    const div=document.createElement("div");
+    div.className="card";
 
-  location.href =
-    "index.html";
+    div.innerHTML=`
+      <b>${escapeHtml(o.buyer_name || "")}</b>
 
+      <p>
+      Package:
+      ${escapeHtml(o.package_title || "")}
+      </p>
+
+      <p>
+      Key:
+      <b>${escapeHtml(o.access_key || "Not set")}</b>
+      </p>
+    `;
+
+    box.appendChild(div);
+  });
 }
 
 
-/* =====================================================
-   START
-===================================================== */
+// ---------------- LOGOUT ----------------
+
+async function logout(){
+
+  await supabaseClient.auth.signOut();
+
+  location.href="index.html";
+}
+
+
+// ---------------- SECURITY HELPERS ----------------
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function escapeAttr(value){
+  return escapeHtml(value);
+}
+
+
+// START
 
 checkAdmin();
 
