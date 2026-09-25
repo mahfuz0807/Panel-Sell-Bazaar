@@ -38,7 +38,30 @@ let user=null,profile=null,chosen=null,method='';
 const $=id=>document.getElementById(id);const esc=x=>String(x??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');const money=x=>Number(x||0).toFixed(0);
 function copyNumber(x){if(!x)return alert('এই Payment Method-এর নম্বর Admin এখনো সেট করেননি।');navigator.clipboard?.writeText(x).then(()=>alert('Number copied.')).catch(()=>{let t=document.createElement('textarea');t.value=x;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();alert('Number copied.')})}
 function payBox(m){let n=PAY[m]||'';if(!n)return `<b>${esc(m)} Number</b><div class="msg err">Admin এখনো ${esc(m)} number সেট করেননি।</div>`;return `<b>${esc(m)} Number</b><div class="row" style="margin-top:7px"><div class="num">${esc(n)}</div><button class="copy" onclick="copyNumber(${JSON.stringify(n)})">Copy</button></div>`}
-function openAuth(m='login'){$('auth').classList.remove('hidden');mode(m)}function closeAuth(){$('auth').classList.add('hidden');$('authMsg').innerHTML=''}function mode(m){let s=m==='signup';$('authTitle').innerText=s?'Create Account':'Login';$('authBtn').innerText=s?'Create Account':'Login';$('signup').classList.toggle('hidden',!s);$('authMsg').innerHTML=''}
+function openAuth(m='login'){
+  $('auth').classList.remove('hidden');
+  mode(m);
+}
+
+function closeAuth(){
+  $('auth').classList.add('hidden');
+  $('authMsg').innerHTML='';
+}
+
+function mode(m){
+  const signupMode = m === 'signup';
+
+  $('authTitle').innerText = signupMode ? 'Create Account' : 'Login';
+  $('authBtn').innerText = signupMode ? 'Create Account' : 'Login';
+
+  if(signupMode){
+    $('signup').classList.remove('hidden');
+  }else{
+    $('signup').classList.add('hidden');
+  }
+
+  $('authMsg').innerHTML='';
+}
 function msg(id,text,err=false){$(id).innerHTML=text?`<div class="msg ${err?'err':''}">${esc(text)}</div>`:''}
 async function auth(){let email=$('email').value.trim().toLowerCase(),pass=$('pass').value,s=!$('signup').classList.contains('hidden');if(!email.endsWith('@gmail.com'))return msg('authMsg','শুধু @gmail.com ব্যবহার করুন।',true);if(pass.length<6)return msg('authMsg','Password কমপক্ষে 6 characters দিন।',true);$('authBtn').disabled=true;msg('authMsg','Processing...');try{if(s){let name=$('name').value.trim(),phone=$('phone').value.trim();if(!name)return msg('authMsg','Name দিন।',true);let r=await db.auth.signUp({email,password:pass,options:{data:{name,phone}}});if(r.error)throw r.error;msg('authMsg','Account তৈরি হয়েছে। এখন Login করুন।');$('pass').value='';mode('login')}else{let r=await db.auth.signInWithPassword({email,password:pass});if(r.error)throw r.error;user=r.data.user;await ensureProfile();closeAuth();start()}}catch(e){msg('authMsg',e.message||'Login failed.',true)}finally{$('authBtn').disabled=false}}
 async function ensureProfile(){if(!user)return;let r=await db.from('Profiles').select('*').eq('id',user.id).maybeSingle();if(r.data){profile=r.data;return}let n=user.user_metadata?.name||'Buyer',p=user.user_metadata?.phone||'';let c=await db.from('Profiles').insert([{id:user.id,Name:n,Phone:p,Role:'buyer',balance:0}]).select().single();if(!c.error)profile=c.data}
