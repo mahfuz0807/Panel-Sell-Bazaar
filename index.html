@@ -7,37 +7,46 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;color:#172033;background:linear-gradient(135deg,#eef6ff,#f8fbff,#eefcf7);padding-bottom:25px}
-header{background:#fff;border-bottom:1px solid #e3e8ef;position:sticky;top:0;z-index:20;padding:12px}
-.head{max-width:1050px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px}
-.logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#1769e0,#16a36a);color:#fff;display:grid;place-items:center;font-weight:800}
-.container{max-width:1050px;margin:auto;padding:16px 14px}
-.card{background:#fff;border:1px solid #e1e6ee;border-radius:16px;padding:18px;margin-bottom:15px;box-shadow:0 5px 18px rgba(35,55,80,.06)}
-.hero{text-align:center;padding:30px 18px}.hero h1{font-size:28px;margin:0 0 12px}
-.muted{color:#6d7788;line-height:1.55}
-button{border:0;border-radius:10px;padding:12px 15px;font-size:14px;font-weight:700;cursor:pointer}
-.primary{background:#1769e0;color:#fff}.secondary{background:#edf1f6;color:#26344b}.danger{background:#e5484d;color:#fff}.full{width:100%}
-input{width:100%;padding:13px;margin-top:7px;border:1px solid #d5dce6;border-radius:10px;font-size:15px;outline:0}
-input:focus{border-color:#1769e0}label{display:block;margin-top:12px;font-weight:700}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
-.product-img{width:100%;height:165px;object-fit:cover;border-radius:12px;background:#eef1f5}
-.product-title{font-size:19px;font-weight:700;margin-top:11px}.price{font-size:20px;font-weight:700;color:#1769e0;margin:7px 0}
-.empty{text-align:center;padding:25px;color:#747d8f}.error{color:#d93025}.ok{color:#087548}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#f4f8ff,#fff,#f5fbf8);color:#172033;padding-bottom:80px}
+header{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid #e5e8ee;padding:10px 12px}
+.head{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:9px;font-size:19px;font-weight:800}
+.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#1769e0,#16a36a);color:#fff;display:grid;place-items:center}
+.top{display:flex;align-items:center;gap:8px}
+.balance{background:linear-gradient(90deg,#ff1680,#ff2e66);color:#fff;border-radius:25px;padding:11px 18px;font-weight:800}
+button{border:0;border-radius:10px;padding:11px 16px;font-weight:800;cursor:pointer}
+.primary{background:#1769e0;color:#fff}.pink{background:linear-gradient(90deg,#ff126e,#8a24e8);color:#fff}.secondary{background:#edf1f6;color:#26344b}.danger{background:#e5484d;color:#fff}
+.container{max-width:1100px;margin:auto;padding:18px 14px}
+.hero{background:#fff;border:1px solid #e2e7ef;border-radius:18px;padding:28px;text-align:center;margin-bottom:18px}
+.hero h1{font-size:30px;margin:0 0 8px}.muted{color:#6e7787;line-height:1.5}
+.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.product{background:#fff;border:1px solid #e1e5eb;border-radius:17px;overflow:hidden;box-shadow:0 5px 16px rgba(30,50,80,.07)}
+.product img{width:100%;aspect-ratio:1/1;object-fit:cover;background:#eef1f5}
+.product-body{padding:13px 14px 16px;text-align:center}
+.product-title{border:1px solid #e5e8ee;border-radius:25px;padding:12px 8px;font-weight:700;font-size:16px}
+.product-price{font-size:23px;font-weight:900;color:#16a05f;margin:16px 0}
+.product button{width:100%;margin-top:8px;font-size:15px}
+.section-title{background:#fff;border:1px solid #e2e7ef;border-radius:16px;padding:16px;margin-bottom:14px}
+.empty{text-align:center;padding:30px;color:#737c8d;background:#fff;border-radius:15px;border:1px solid #e2e7ef}
 .hidden{display:none!important}
-.msg{margin-top:12px;line-height:1.5}
-.nav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:15px}.nav button{flex:1;min-width:90px}
-.page{display:none}.page.active{display:block}
+.modal{position:fixed;inset:0;background:rgba(8,16,30,.58);z-index:100;display:none;align-items:center;justify-content:center;padding:16px}
+.modal.show{display:flex}
+.modal-box{width:100%;max-width:430px;background:#fff;border-radius:18px;padding:20px;max-height:90vh;overflow:auto}
+.modal-head{display:flex;align-items:center;justify-content:space-between}
+.close{width:38px;height:38px;border-radius:50%;padding:0;background:#edf1f6;font-size:20px}
+.option{display:flex;justify-content:space-between;align-items:center;border:1px solid #e1e6ee;border-radius:13px;padding:14px;margin-top:10px}
+.option b{font-size:16px}.option span{color:#16a05f;font-weight:900}
+label{display:block;font-weight:700;margin-top:12px}
+input{width:100%;padding:13px;margin-top:7px;border:1px solid #d6dce5;border-radius:10px;font-size:15px;outline:none}
+input:focus{border-color:#1769e0}
+.msg{margin-top:12px;line-height:1.5}.error{color:#d93025}.ok{color:#087548}
+.nav{position:fixed;bottom:0;left:0;right:0;height:68px;background:#fff;border-top:1px solid #e3e7ee;z-index:50;display:flex;justify-content:center}
+.navin{width:100%;max-width:700px;display:flex}.nav button{flex:1;background:#fff;color:#727b8b;border-radius:0;padding:6px 2px;font-size:11px}.nav button.active{color:#1769e0}.ico{display:block;font-size:19px;margin-bottom:2px}
+.app-page{display:none}.app-page.active{display:block}
+.card{background:#fff;border:1px solid #e2e7ef;border-radius:16px;padding:18px;margin-bottom:15px}
 .recent{padding:11px 0;border-bottom:1px solid #edf0f4}.recent:last-child{border:0}
-.badge{display:inline-block;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:700;background:#fff4cc;color:#936800}
-.confirmed{background:#dff8ec;color:#087548}.cancelled{background:#ffe3e3;color:#b4232a}
-.code{background:#f3f6fa;border:1px dashed #bbc4d2;padding:12px;border-radius:10px;word-break:break-all;margin-top:10px}
-.balance{background:#edf5ff;color:#1769e0;padding:9px 12px;border-radius:20px;font-weight:700}
-
-#loginModal{position:fixed;inset:0;background:rgba(10,20,35,.55);z-index:100;display:none;align-items:center;justify-content:center;padding:18px}
-#loginModal.show{display:flex}
-.authbox{background:#fff;width:100%;max-width:430px;border-radius:18px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow:auto}
-.authTop{display:flex;justify-content:space-between;align-items:center}.close{background:#edf1f6;border-radius:50%;width:38px;height:38px;padding:0}
+.code{background:#f3f6fa;border:1px dashed #bbc4d2;padding:12px;border-radius:10px;word-break:break-all;margin-top:8px}
+@media(max-width:650px){.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.product-body{padding:10px}.product-title{font-size:14px}.product-price{font-size:20px;margin:12px 0}.product button{font-size:13px;padding:10px 6px}.brand{font-size:16px}.logo{width:38px;height:38px}}
 </style>
 </head>
 <body>
@@ -45,26 +54,23 @@ input:focus{border-color:#1769e0}label{display:block;margin-top:12px;font-weight
 <header>
 <div class="head">
 <div class="brand"><div class="logo">PS</div><span>Panel Sell Bazaar</span></div>
-<div style="display:flex;align-items:center;gap:8px">
-<div id="balanceBox" class="balance hidden">Balance: ৳0</div>
-<button id="loginTop" class="primary" onclick="openLogin()">Login</button>
+<div class="top">
+<div id="balanceBox" class="balance hidden">৳0</div>
+<button id="loginBtn" class="pink" onclick="openAuth(false)">Login</button>
 </div>
 </div>
 </header>
 
-<!-- PUBLIC -->
 <div id="publicSite" class="container">
-<div class="card hero">
-<h1>Welcome to Panel Sell Bazaar</h1>
-<p class="muted">Packages দেখুন। Order করার সময় Login করুন।</p>
+<div class="hero">
+<h1>Panel Sell Bazaar</h1>
+<p class="muted">Package দেখুন। পছন্দের Package-এর Buy Now চাপলে আগে Duration বেছে নিন, তারপর প্রয়োজন হলে Login করুন।</p>
 </div>
 
-<div class="card">
-<h2>Available Packages</h2>
-<div id="publicPackages" class="grid"><div class="empty">Packages loading...</div></div>
-</div>
+<div class="section-title"><h2 style="margin:0">Available Packages</h2></div>
+<div id="publicProducts" class="products"><div class="empty">Packages loading...</div></div>
 
-<div class="card">
+<div class="card" style="margin-top:18px">
 <h2>Help & Contact</h2>
 <p class="muted">Payment বা Order নিয়ে সমস্যা হলে যোগাযোগ করুন।</p>
 <button class="primary">📞 Call</button>
@@ -72,83 +78,82 @@ input:focus{border-color:#1769e0}label{display:block;margin-top:12px;font-weight
 </div>
 </div>
 
-<!-- LOGIN MODAL -->
-<div id="loginModal">
-<div class="authbox">
-<div class="authTop">
-<h2 id="authTitle" style="margin:0">Login</h2>
-<button class="close" onclick="closeAuth()">×</button>
+<!-- Duration -->
+<div id="durationModal" class="modal">
+<div class="modal-box">
+<div class="modal-head"><h2 id="durationTitle">Choose Duration</h2><button class="close" onclick="closeDuration()">×</button></div>
+<p id="durationInfo" class="muted"></p>
+<div id="durationOptions"></div>
+</div>
 </div>
 
+<!-- Auth -->
+<div id="authModal" class="modal">
+<div class="modal-box">
+<div class="modal-head"><h2 id="authTitle">Login</h2><button class="close" onclick="closeAuth()">×</button></div>
 <div id="signupFields" class="hidden">
-<label>Name</label>
-<input id="authName" type="text" placeholder="Your name">
-<label>Phone Number</label>
-<input id="authPhone" type="tel" placeholder="Phone number">
+<label>Name</label><input id="authName" type="text" placeholder="Your name">
+<label>Phone Number</label><input id="authPhone" type="tel" placeholder="Phone number">
 </div>
-
-<label>Gmail</label>
-<input id="authEmail" type="email" placeholder="example@gmail.com" autocomplete="username">
-
-<label>Password</label>
-<input id="authPassword" type="password" placeholder="Minimum 6 characters" autocomplete="current-password">
-
-<button id="authButton" class="primary full" style="margin-top:15px" onclick="handleAuth()">Login</button>
-<button id="authToggle" class="secondary full" style="margin-top:8px" onclick="toggleAuth()">Create Account</button>
-<div id="authMessage" class="msg"></div>
+<label>Gmail</label><input id="authEmail" type="email" placeholder="example@gmail.com" autocomplete="username">
+<label>Password</label><input id="authPassword" type="password" placeholder="Minimum 6 characters" autocomplete="current-password">
+<button id="authAction" class="primary" style="width:100%;margin-top:15px" onclick="handleAuth()">Login</button>
+<button id="authSwitch" class="secondary" style="width:100%;margin-top:8px" onclick="switchAuth()">Create Account</button>
+<div id="authMsg" class="msg"></div>
 </div>
 </div>
 
-<!-- APP -->
-<div id="app" class="container hidden">
-<div class="nav">
-<button class="primary" onclick="page('home')">Home</button>
-<button class="secondary" onclick="page('packages')">Packages</button>
-<button class="secondary" onclick="page('orders')">Orders</button>
-<button class="secondary" onclick="page('balance')">Balance</button>
-<button class="secondary" onclick="page('access')">Access</button>
-<button class="secondary" onclick="page('profile')">Profile</button>
-</div>
-
-<section id="home" class="page active">
-<div class="card hero"><h1>Welcome back!</h1><p class="muted">আপনার account থেকে সবকিছু পরিচালনা করুন।</p></div>
-<div class="card"><h2>Recent Orders</h2><div id="recentOrders"><div class="empty">Loading...</div></div></div>
+<!-- App -->
+<div id="app" class="hidden container">
+<section id="pageHome" class="app-page active">
+<div class="hero"><h1>Welcome back!</h1><p class="muted">আপনার Orders, Balance ও Access দেখুন।</p></div>
+<div class="card"><h2>Recent Orders</h2><div id="recentOrders"></div></div>
 </section>
 
-<section id="packages" class="page">
-<div class="card"><h2>Packages</h2><div id="packagesList" class="grid"></div></div>
+<section id="pagePackages" class="app-page">
+<div class="section-title"><h2 style="margin:0">Packages</h2></div>
+<div id="privateProducts" class="products"></div>
 </section>
 
-<section id="orders" class="page">
-<div class="card"><h2>My Orders</h2><div id="ordersList"></div></div>
+<section id="pageOrders" class="app-page">
+<div class="card"><h2>My Orders</h2><div id="orders"></div></div>
 </section>
 
-<section id="balance" class="page">
-<div class="card"><h2>My Balance</h2><div class="price">৳<span id="balanceAmount">0</span></div></div>
-<div class="card">
-<h2>Add Balance</h2>
+<section id="pageBalance" class="app-page">
+<div class="card"><h2>My Balance</h2><div class="product-price">৳<span id="myBalance">0</span></div></div>
+<div class="card"><h2>Add Balance</h2>
 <label>Amount</label><input id="topAmount" type="number" min="1" placeholder="100">
-<label>Payment Method</label><select id="topMethod" style="width:100%;padding:13px;margin-top:7px;border:1px solid #d5dce6;border-radius:10px"><option>bKash</option><option>Nagad</option><option>Rocket</option></select>
+<label>Payment Method</label><select id="topMethod" style="width:100%;padding:13px;margin-top:7px;border:1px solid #d6dce5;border-radius:10px"><option>bKash</option><option>Nagad</option><option>Rocket</option></select>
 <label>Transaction ID</label><input id="topTrx" placeholder="Transaction ID">
-<button class="primary full" style="margin-top:15px" onclick="topup()">Submit Balance Request</button>
+<button class="primary" style="width:100%;margin-top:15px" onclick="topup()">Submit Balance Request</button>
 <div id="topMsg" class="msg"></div>
 </div>
 </section>
 
-<section id="access" class="page">
-<div class="card"><h2>My Access</h2><div id="accessList"></div></div>
+<section id="pageAccess" class="app-page">
+<div class="card"><h2>My Access</h2><div id="access"></div></div>
 </section>
 
-<section id="profile" class="page">
-<div class="card">
-<h2>Profile</h2>
+<section id="pageProfile" class="app-page">
+<div class="card"><h2>Profile</h2>
 <p><b>Name:</b> <span id="pName"></span></p>
 <p><b>Phone:</b> <span id="pPhone"></span></p>
 <p><b>Email:</b> <span id="pEmail"></span></p>
-<p><b>Balance:</b> ৳<span id="pBalance"></span></p>
+<p><b>Balance:</b> ৳<span id="pBal"></span></p>
 <button class="danger" onclick="logout()">Logout</button>
 </div>
 </section>
+
+<nav class="nav">
+<div class="navin">
+<button class="active" onclick="go('pageHome',this)"><span class="ico">⌂</span>Home</button>
+<button onclick="go('pagePackages',this)"><span class="ico">📦</span>Packages</button>
+<button onclick="go('pageOrders',this)"><span class="ico">🧾</span>Orders</button>
+<button onclick="go('pageBalance',this)"><span class="ico">৳</span>Balance</button>
+<button onclick="go('pageAccess',this)"><span class="ico">🔑</span>Access</button>
+<button onclick="go('pageProfile',this)"><span class="ico">👤</span>Profile</button>
+</div>
+</nav>
 </div>
 
 <script>
@@ -156,278 +161,186 @@ const SUPABASE_URL="https://wiztksrtzjmsxzolollf.supabase.co";
 const SUPABASE_KEY="sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let signupMode=false;
-let user=null;
+let signup=false,currentUser=null,pendingPurchase=null;
 
 const $=id=>document.getElementById(id);
+const esc=v=>String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
 
-function esc(v){
-return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
-}
-function gmail(v){return /^[A-Za-z0-9._%+-]+@gmail\\.com$/i.test(v);}
+/* IMPORTANT: correct Gmail check */
+function isGmail(v){return /^[A-Za-z0-9._%+-]+@gmail\.com$/i.test(v);}
 
-function openLogin(){
-signupMode=false;
-updateAuth();
-$("loginModal").classList.add("show");
-setTimeout(()=>$("authEmail").focus(),100);
+function openAuth(create=false){
+signup=create; updateAuthUI(); $("authModal").classList.add("show");
 }
-function openCreate(){
-signupMode=true;
-updateAuth();
-$("loginModal").classList.add("show");
-}
-function closeAuth(){
-$("loginModal").classList.remove("show");
-$("authMessage").innerText="";
-}
-function toggleAuth(){
-signupMode=!signupMode;
-updateAuth();
-}
-function updateAuth(){
-$("authTitle").innerText=signupMode?"Create Account":"Login";
-$("authButton").innerText=signupMode?"Create Account":"Login";
-$("authToggle").innerText=signupMode?"Already have an account? Login":"Create Account";
-$("signupFields").classList.toggle("hidden",!signupMode);
-$("authMessage").innerText="";
+function closeAuth(){ $("authModal").classList.remove("show"); $("authMsg").innerText=""; }
+function switchAuth(){signup=!signup;updateAuthUI();}
+function updateAuthUI(){
+$("authTitle").innerText=signup?"Create Account":"Login";
+$("authAction").innerText=signup?"Create Account":"Login";
+$("authSwitch").innerText=signup?"Already have an account? Login":"Create Account";
+$("signupFields").classList.toggle("hidden",!signup);
+$("authMsg").innerText="";
 }
 
 async function handleAuth(){
-const msg=$("authMessage");
-const email=$("authEmail").value.trim().toLowerCase();
-const password=$("authPassword").value;
-
+const msg=$("authMsg"),email=$("authEmail").value.trim().toLowerCase(),password=$("authPassword").value;
 msg.className="msg";
-
-if(!gmail(email)){msg.innerText="শুধু Gmail address ব্যবহার করুন।";msg.classList.add("error");return;}
+if(!isGmail(email)){msg.innerText="শুধু Gmail address ব্যবহার করুন।";msg.classList.add("error");return;}
 if(password.length<6){msg.innerText="Password কমপক্ষে 6 characters হতে হবে।";msg.classList.add("error");return;}
-
-const btn=$("authButton");
-btn.disabled=true;
-btn.innerText=signupMode?"Creating...":"Logging in...";
-
+const btn=$("authAction");btn.disabled=true;btn.innerText=signup?"Creating...":"Logging in...";
 try{
-if(signupMode){
-const name=$("authName").value.trim();
-const phone=$("authPhone").value.trim();
-
+if(signup){
+const name=$("authName").value.trim(),phone=$("authPhone").value.trim();
 if(!name){msg.innerText="Name দিন।";msg.classList.add("error");return;}
 if(!phone){msg.innerText="Phone number দিন।";msg.classList.add("error");return;}
-
-const r=await db.auth.signUp({
-email:email,
-password:password,
-options:{data:{name:name,phone:phone}}
-});
-
-if(r.error){
-msg.innerText=r.error.message;
-msg.classList.add("error");
-return;
-}
-
+const r=await db.auth.signUp({email,password,options:{data:{name,phone}}});
+if(r.error){msg.innerText=r.error.message;msg.classList.add("error");return;}
 if(r.data.session){
-user=r.data.user;
-closeAuth();
-await start();
+currentUser=r.data.user;closeAuth();await startApp();return;
+}
+msg.innerText="Account তৈরি হয়েছে। এখন Login করুন।";msg.classList.add("ok");
+signup=false;updateAuthUI();$("authPassword").value="";
 return;
 }
-
-msg.innerText="Account তৈরি হয়েছে। এখন Login করুন।";
-msg.classList.add("ok");
-signupMode=false;
-$("authPassword").value="";
-updateAuth();
-return;
+const r=await db.auth.signInWithPassword({email,password});
+if(r.error){msg.innerText="Login failed: "+r.error.message;msg.classList.add("error");return;}
+currentUser=r.data.user;closeAuth();await startApp();
+}catch(e){msg.innerText="Error: "+e.message;msg.classList.add("error");console.error(e);}
+finally{btn.disabled=false;btn.innerText=signup?"Create Account":"Login";}
 }
 
-const r=await db.auth.signInWithPassword({email:email,password:password});
-
-if(r.error){
-msg.innerText="Login failed: "+r.error.message;
-msg.classList.add("error");
-return;
-}
-
-user=r.data.user;
-closeAuth();
-await start();
-
-}catch(e){
-console.error(e);
-msg.innerText="Error: "+e.message;
-msg.classList.add("error");
-}finally{
-btn.disabled=false;
-btn.innerText=signupMode?"Create Account":"Login";
-}
-}
-
-async function start(){
-$("publicSite").classList.add("hidden");
-$("app").classList.remove("hidden");
-$("loginTop").classList.add("hidden");
-await profile();
-await packages();
-await orders();
-await recent();
-await access();
-page("home");
-}
-
-async function profile(){
-if(!user)return;
-const r=await db.from("Profiles").select("id,Name,Phone,Role,balance").eq("id",user.id).maybeSingle();
-if(r.error){console.log("Profile:",r.error.message);return;}
-if(!r.data)return;
-const b=Number(r.data.balance||0);
-$("balanceBox").innerText="Balance: ৳"+b;
-$("balanceBox").classList.remove("hidden");
-$("balanceAmount").innerText=b;
-$("pName").innerText=r.data.Name||"";
-$("pPhone").innerText=r.data.Phone||"";
-$("pEmail").innerText=user.email||"";
-$("pBalance").innerText=b;
-}
-
-async function publicPackages(){
-const box=$("publicPackages");
+async function loadPublic(){
+const box=$("publicProducts");
 const r=await db.from("Package").select("id,title,price,duration,image_url").order("id",{ascending:true});
-if(r.error){
-box.innerHTML='<div class="empty">Packages এখন load হচ্ছে না।</div>';
-console.log("Package:",r.error.message);
-return;
+if(r.error){box.innerHTML='<div class="empty">Package load হয়নি। Supabase Package SELECT policy check করুন।</div>';console.error(r.error);return;}
+if(!r.data.length){box.innerHTML='<div class="empty">No Packages available.</div>';return;}
+renderProducts(box,r.data);
 }
-if(!r.data?.length){box.innerHTML='<div class="empty">No Packages available.</div>';return;}
+
+function renderProducts(box,rows){
 box.innerHTML="";
-r.data.forEach(x=>{
-const img=x.image_url||"https://via.placeholder.com/600x350?text=Panel";
-box.innerHTML+=`<div class="card"><img class="product-img" src="${esc(img)}"><div class="product-title">${esc(x.title)}</div><div class="price">৳${Number(x.price||0).toFixed(0)}</div><p class="muted">${esc(x.duration||"")}</p><button class="primary full" onclick="buy(${Number(x.id)},${JSON.stringify(x.title)},${Number(x.price||0)},${JSON.stringify(x.duration||"")})">Buy Now</button></div>`;
+rows.forEach(x=>{
+const img=x.image_url||"https://via.placeholder.com/700x700?text=Panel";
+box.innerHTML+=`
+<div class="product">
+<img src="${esc(img)}" onerror="this.style.display='none'">
+<div class="product-body">
+<div class="product-title">${esc(x.title)}</div>
+<div class="product-price">PRICE ${Number(x.price||0).toFixed(0)}৳</div>
+<button class="pink" onclick="chooseDuration(${Number(x.id)},${JSON.stringify(x.title)},${Number(x.price||0)},${JSON.stringify(x.duration||"")})">🛒 BUY NOW</button>
+</div>
+</div>`;
 });
 }
 
-async function packages(){
-const box=$("packagesList");
-const r=await db.from("Package").select("id,title,price,duration,image_url").order("id",{ascending:true});
-if(r.error){box.innerHTML='<div class="empty">Packages load failed.</div>';return;}
-if(!r.data?.length){box.innerHTML='<div class="empty">No Packages available.</div>';return;}
-box.innerHTML="";
-r.data.forEach(x=>{
-const img=x.image_url||"https://via.placeholder.com/600x350?text=Panel";
-box.innerHTML+=`<div class="card"><img class="product-img" src="${esc(img)}"><div class="product-title">${esc(x.title)}</div><div class="price">৳${Number(x.price||0).toFixed(0)}</div><p class="muted">${esc(x.duration||"")}</p><button class="primary full" onclick="buy(${Number(x.id)},${JSON.stringify(x.title)},${Number(x.price||0)},${JSON.stringify(x.duration||"")})">Buy Now</button></div>`;
+function chooseDuration(id,title,basePrice,adminDuration){
+pendingPurchase={id,title};
+$("durationTitle").innerText=title;
+$("durationInfo").innerText="আপনার প্রয়োজনের Duration বেছে নিন।";
+const options=[];
+const d=String(adminDuration||"").trim();
+if(d){
+options.push({label:d,price:basePrice});
+}
+/* Example options requested by you. If adminDuration is 1 Hour, show 3 Hours too. */
+if(/1\\s*(hour|hr)/i.test(d)){
+options.push({label:"3 Hours",price:basePrice*2});
+}
+if(!options.length){
+options.push({label:"1 Hour",price:basePrice},{label:"3 Hours",price:basePrice*2});
+}
+$("durationOptions").innerHTML="";
+options.forEach(o=>{
+$("durationOptions").innerHTML+=`<div class="option"><div><b>${esc(o.label)}</b><br><span>৳${Number(o.price).toFixed(0)}</span></div><button class="primary" onclick="continueBuy(${Number(o.price)},${JSON.stringify(o.label)})">Select</button></div>`;
 });
+$("durationModal").classList.add("show");
+}
+function closeDuration(){$("durationModal").classList.remove("show");}
+function continueBuy(price,duration){
+closeDuration();
+pendingPurchase.price=price;pendingPurchase.duration=duration;
+if(!currentUser){openAuth(false);return;}
+completePurchase();
 }
 
-async function buy(id,title,price,duration){
-if(!user){openLogin();return;}
-const c=prompt("1 = Balance দিয়ে কিনুন\\n2 = Direct Payment");
-if(c==="1")await balanceBuy(title,price,duration);
-if(c==="2")await directBuy(title,price,duration);
-}
-
-async function balanceBuy(title,price,duration){
-const p=await db.from("Profiles").select("balance,Name,Phone").eq("id",user.id).single();
-if(p.error){alert(p.error.message);return;}
-const b=Number(p.data.balance||0);
-if(b<price){alert("Balance কম। Current Balance: ৳"+b);page("balance");return;}
-const u=await db.from("Profiles").update({balance:b-price}).eq("id",user.id);
+async function completePurchase(){
+if(!currentUser){openAuth(false);return;}
+const p=await db.from("Profiles").select("balance,Name,Phone").eq("id",currentUser.id).maybeSingle();
+if(p.error){alert("Profile error: "+p.error.message);return;}
+const choice=prompt("1 = Balance দিয়ে কিনুন\\n2 = Direct Payment");
+if(choice==="1"){
+const bal=Number(p.data?.balance||0);
+if(bal<pendingPurchase.price){alert("Balance কম। Current Balance: ৳"+bal);go("pageBalance");return;}
+const u=await db.from("Profiles").update({balance:bal-pendingPurchase.price}).eq("id",currentUser.id);
 if(u.error){alert("Balance update failed: "+u.error.message);return;}
-const o=await db.from("Orders").insert({user_id:user.id,buyer_name:p.data.Name||"",phone:p.data.Phone||"",package_title:title,price:price,duration:duration,payment_method:"Balance",transaction_id:"",status:"Confirmed",access_key:""});
+const o=await db.from("Orders").insert({user_id:currentUser.id,buyer_name:p.data?.Name||"",phone:p.data?.Phone||"",package_title:pendingPurchase.title,price:pendingPurchase.price,duration:pendingPurchase.duration,payment_method:"Balance",transaction_id:"",status:"Confirmed",access_key:""});
 if(o.error){alert("Order failed: "+o.error.message);return;}
 alert("Order successful!");
-await profile();await orders();await access();page("orders");
+await startApp();go("pageOrders");
 }
-
-async function directBuy(title,price,duration){
-const method=prompt("Payment Method লিখুন:\\nbKash / Nagad / Rocket");
+else if(choice==="2"){
+const method=prompt("Payment Method: bKash / Nagad / Rocket");
 if(!method)return;
 const trx=prompt("Transaction ID দিন:");
 if(!trx)return;
-const p=await db.from("Profiles").select("Name,Phone").eq("id",user.id).single();
-if(p.error){alert(p.error.message);return;}
-const o=await db.from("Orders").insert({user_id:user.id,buyer_name:p.data.Name||"",phone:p.data.Phone||"",package_title:title,price:price,duration:duration,payment_method:method,transaction_id:trx,status:"Pending",access_key:""});
+const o=await db.from("Orders").insert({user_id:currentUser.id,buyer_name:p.data?.Name||"",phone:p.data?.Phone||"",package_title:pendingPurchase.title,price:pendingPurchase.price,duration:pendingPurchase.duration,payment_method:method,transaction_id:trx,status:"Pending",access_key:""});
 if(o.error){alert("Order failed: "+o.error.message);return;}
-alert("Order submitted. Admin confirmation-এর পর Access পাবেন.");
-await orders();page("orders");
+alert("Order submitted. Admin confirm করার পর Access পাবেন.");
+await orders();go("pageOrders");
+}
 }
 
+async function startApp(){
+$("publicSite").classList.add("hidden");$("app").classList.remove("hidden");$("loginBtn").classList.add("hidden");
+await profile();await privatePackages();await orders();await recent();await access();go("pageHome");
+}
+
+async function profile(){
+const r=await db.from("Profiles").select("id,Name,Phone,Role,balance").eq("id",currentUser.id).maybeSingle();
+if(r.error||!r.data)return;
+const b=Number(r.data.balance||0);
+$("balanceBox").innerText="৳"+b;$("balanceBox").classList.remove("hidden");
+$("myBalance").innerText=b;$("pName").innerText=r.data.Name||"";$("pPhone").innerText=r.data.Phone||"";$("pEmail").innerText=currentUser.email||"";$("pBal").innerText=b;
+}
+async function privatePackages(){
+const r=await db.from("Package").select("id,title,price,duration,image_url").order("id",{ascending:true});
+if(!r.error)renderProducts($("privateProducts"),r.data||[]);
+}
 async function orders(){
-const box=$("ordersList");
-const r=await db.from("Orders").select("id,package_title,price,duration,status").eq("user_id",user.id).order("id",{ascending:false});
+const box=$("orders"),r=await db.from("Orders").select("id,package_title,price,duration,status").eq("user_id",currentUser.id).order("id",{ascending:false});
 if(r.error){box.innerHTML=`<div class="error">${esc(r.error.message)}</div>`;return;}
-if(!r.data?.length){box.innerHTML='<div class="empty">এখনো কোনো Order নেই।</div>';return;}
-box.innerHTML="";
-r.data.forEach(x=>{
-const s=String(x.status||"").toLowerCase();
-const cls=s==="confirmed"?"confirmed":s==="cancelled"?"cancelled":"badge";
-box.innerHTML+=`<div class="card"><b>${esc(x.package_title)}</b><p class="muted">${esc(x.duration)} • ৳${Number(x.price||0)}</p><span class="badge ${cls}">${esc(x.status)}</span></div>`;
-});
+if(!r.data.length){box.innerHTML='<div class="empty">এখনো কোনো Order নেই।</div>';return;}
+box.innerHTML=r.data.map(x=>`<div class="card"><b>${esc(x.package_title)}</b><p class="muted">${esc(x.duration)} • ৳${Number(x.price||0)}</p><b>${esc(x.status)}</b></div>`).join("");
 }
-
 async function recent(){
-const box=$("recentOrders");
-const r=await db.from("Orders").select("buyer_name,package_title,duration,price").eq("status","Confirmed").neq("package_title","Balance Top Up").order("id",{ascending:false}).limit(10);
-if(r.error){box.innerHTML='<div class="empty">Recent Orders unavailable.</div>';return;}
-if(!r.data?.length){box.innerHTML='<div class="empty">No recent orders.</div>';return;}
-box.innerHTML="";
-r.data.forEach(x=>box.innerHTML+=`<div class="recent"><b>${esc(x.buyer_name)}</b><div class="muted">${esc(x.package_title)} • ${esc(x.duration)} • ৳${Number(x.price||0)}</div></div>`);
+const box=$("recentOrders"),r=await db.from("Orders").select("buyer_name,package_title,duration,price").eq("status","Confirmed").neq("package_title","Balance Top Up").order("id",{ascending:false}).limit(10);
+if(r.error||!r.data.length){box.innerHTML='<div class="empty">No recent orders.</div>';return;}
+box.innerHTML=r.data.map(x=>`<div class="recent"><b>${esc(x.buyer_name)}</b><div class="muted">${esc(x.package_title)} • ${esc(x.duration)} • ৳${Number(x.price||0)}</div></div>`).join("");
 }
-
 async function access(){
-const box=$("accessList");
-const r=await db.from("Orders").select("package_title,duration,price,access_key").eq("user_id",user.id).eq("status","Confirmed").neq("package_title","Balance Top Up").order("id",{ascending:false});
-if(r.error){box.innerHTML=`<div class="error">${esc(r.error.message)}</div>`;return;}
-if(!r.data?.length){box.innerHTML='<div class="empty">এখনো কোনো Confirmed Access নেই।</div>';return;}
-box.innerHTML="";
-r.data.forEach(x=>box.innerHTML+=`<div class="card"><b>${esc(x.package_title)}</b><p class="muted">${esc(x.duration)} • ৳${Number(x.price||0)}</p><div class="code">${esc(x.access_key||"Access key এখনো দেওয়া হয়নি")}</div></div>`);
+const box=$("access"),r=await db.from("Orders").select("package_title,duration,price,access_key").eq("user_id",currentUser.id).eq("status","Confirmed").neq("package_title","Balance Top Up").order("id",{ascending:false});
+if(r.error||!r.data.length){box.innerHTML='<div class="empty">এখনো কোনো Confirmed Access নেই।</div>';return;}
+box.innerHTML=r.data.map(x=>`<div class="card"><b>${esc(x.package_title)}</b><p class="muted">${esc(x.duration)} • ৳${Number(x.price||0)}</p><div class="code">${esc(x.access_key||"Admin এখনো Access Key দেয়নি")}</div></div>`).join("");
 }
-
 async function topup(){
-const amount=Number($("topAmount").value);
-const method=$("topMethod").value;
-const trx=$("topTrx").value.trim();
-if(!amount||amount<=0){$("topMsg").innerText="সঠিক Amount দিন।";return;}
-if(!trx){$("topMsg").innerText="Transaction ID দিন।";return;}
-const p=await db.from("Profiles").select("Name,Phone").eq("id",user.id).single();
-if(p.error){$("topMsg").innerText=p.error.message;return;}
-const r=await db.from("Orders").insert({user_id:user.id,buyer_name:p.data.Name||"",phone:p.data.Phone||"",package_title:"Balance Top Up",price:amount,duration:"Balance",payment_method:method,transaction_id:trx,status:"Pending",access_key:""});
-if(r.error){$("topMsg").innerText=r.error.message;return;}
-$("topMsg").innerText="Balance request submitted.";
-$("topMsg").className="msg ok";
-$("topAmount").value="";$("topTrx").value="";
+const amount=Number($("topAmount").value),trx=$("topTrx").value.trim(),method=$("topMethod").value;
+if(!amount||amount<1){$("topMsg").innerText="Amount দিন।";return}if(!trx){$("topMsg").innerText="Transaction ID দিন।";return}
+const p=await db.from("Profiles").select("Name,Phone").eq("id",currentUser.id).single();
+if(p.error){$("topMsg").innerText=p.error.message;return}
+const r=await db.from("Orders").insert({user_id:currentUser.id,buyer_name:p.data.Name||"",phone:p.data.Phone||"",package_title:"Balance Top Up",price:amount,duration:"Balance",payment_method:method,transaction_id:trx,status:"Pending",access_key:""});
+if(r.error){$("topMsg").innerText=r.error.message;return}
+$("topMsg").innerText="Balance request submitted.";$("topMsg").className="msg ok";
 }
-
-function page(id){
-document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
-$(id).classList.add("active");
-window.scrollTo({top:0,behavior:"smooth"});
+function go(id,btn){
+document.querySelectorAll(".app-page").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");
+document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active");window.scrollTo(0,0);
 }
-
-async function logout(){
-await db.auth.signOut();
-user=null;
-$("app").classList.add("hidden");
-$("publicSite").classList.remove("hidden");
-$("loginTop").classList.remove("hidden");
-$("balanceBox").classList.add("hidden");
-publicPackages();
-}
-
-db.auth.onAuthStateChange((event,session)=>{
-if(session)user=session.user;
-else user=null;
-});
-
+async function logout(){await db.auth.signOut();location.reload();}
 window.addEventListener("load",async()=>{
-updateAuth();
-await publicPackages();
-const r=await db.auth.getSession();
-if(r.data.session){
-user=r.data.session.user;
-await start();
-}
+updateAuthUI();await loadPublic();
+const r=await db.auth.getSession();if(r.data.session){currentUser=r.data.session.user;await startApp();}
 });
 </script>
 </body>
-</html>
+  </html>
+  
