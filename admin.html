@@ -3,405 +3,179 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Panel Sell Bazaar - Admin</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{
-  box-sizing:border-box;
-}
-
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:#0b1020;
-  color:white;
+  background:#f5f7fb;
+  color:#222;
 }
-
 header{
-  background:#121a30;
-  border-bottom:1px solid #29365d;
+  background:#fff;
   padding:18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  border-bottom:1px solid #ddd;
+  position:sticky;
+  top:0;
+  z-index:10;
 }
-
-.logo{
-  font-size:21px;
-  font-weight:bold;
-}
-
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:20px 15px;
-}
-
-.box{
-  background:#121a30;
-  border:1px solid #29365d;
+header h2{margin:0}
+.container{padding:15px;padding-bottom:90px}
+.section{
+  background:#fff;
+  padding:15px;
   border-radius:14px;
-  padding:22px;
-  margin-bottom:20px;
+  margin-bottom:15px;
+  box-shadow:0 2px 8px #0000000d;
 }
-
-.login-box{
-  max-width:450px;
-  margin:50px auto;
-}
-
-h1,h2,h3{
-  margin-top:0;
-}
-
-.info{
-  color:#aeb8d4;
-  line-height:1.5;
-}
-
-label{
-  display:block;
-  margin-top:14px;
-  margin-bottom:6px;
-}
-
-input,
-select,
-textarea{
+input,select,button{
   width:100%;
   padding:12px;
-  border-radius:8px;
-  border:1px solid #394a78;
-  background:#0b1020;
-  color:white;
+  margin:6px 0;
+  border:1px solid #ddd;
+  border-radius:9px;
+  font-size:15px;
 }
-
-textarea{
-  min-height:90px;
-  resize:vertical;
-}
-
 button{
-  border:0;
-  border-radius:8px;
-  padding:11px 16px;
+  background:#111;
+  color:white;
+  border:none;
   cursor:pointer;
-  font-weight:bold;
 }
-
-.main-btn{
-  background:#4f8cff;
-  color:white;
-}
-
-.add-btn{
-  background:#20b86b;
-  color:white;
-}
-
-.edit-btn{
-  background:#f39c12;
-  color:white;
-  margin-right:6px;
-}
-
-.delete-btn{
-  background:#e74c3c;
-  color:white;
-}
-
-.logout-btn{
-  background:#e74c3c;
-  color:white;
-}
-
-.hidden{
-  display:none !important;
-}
-
-.message{
-  margin-top:14px;
-  color:#7ee2ff;
-  line-height:1.5;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:
-  repeat(auto-fit,minmax(220px,1fr));
-  gap:15px;
-}
-
-.list{
-  display:grid;
-  gap:15px;
-  margin-top:18px;
-}
-
-.item{
-  background:#0b1020;
-  border:1px solid #29365d;
+button.danger{background:#d93025}
+button.green{background:#16803c}
+.card{
+  border:1px solid #eee;
+  padding:12px;
   border-radius:12px;
-  padding:18px;
+  margin:10px 0;
 }
-
-.item p{
-  color:#c5cee4;
-  line-height:1.5;
-  margin:7px 0;
+nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#fff;
+  border-top:1px solid #ddd;
+  display:flex;
+  z-index:20;
 }
-
-.price{
-  color:#7ee2ff;
-  font-size:20px;
-  font-weight:bold;
+nav button{
+  margin:0;
+  border-radius:0;
+  background:white;
+  color:#333;
+  font-size:12px;
 }
-
-.divider{
-  height:1px;
-  background:#29365d;
-  margin:25px 0;
+nav button.active{
+  background:#111;
+  color:white;
 }
-
-.status{
-  font-weight:bold;
-}
-
-.pending{
-  color:#f1c40f;
-}
-
-.completed{
-  color:#20b86b;
-}
-
-.cancelled{
-  color:#e74c3c;
-}
-
-.small{
-  font-size:13px;
-  color:#9da9c7;
-}
+.hidden{display:none}
+.small{font-size:13px;color:#666}
+.price{font-weight:bold;font-size:18px}
 </style>
 </head>
 
 <body>
 
 <header>
-
-  <div class="logo">
-    Panel Sell Bazaar — Admin
-  </div>
-
-  <button
-    id="logoutButton"
-    class="logout-btn hidden"
-    onclick="logout()">
-
-    Logout
-
-  </button>
-
+  <h2>Panel Sell Bazaar</h2>
+  <div class="small">Admin Panel</div>
 </header>
 
+<div class="container">
 
-<!-- =========================
-     LOGIN
-========================= -->
+<!-- HOME -->
+<div id="home" class="page">
+  <div class="section">
+    <h3>Dashboard</h3>
+    <p>Total Packages: <b id="packageCount">0</b></p>
+    <p>Total Orders: <b id="orderCount">0</b></p>
+    <p>Total Buyers: <b id="buyerCount">0</b></p>
+  </div>
+</div>
 
-<div
-  id="loginSection"
-  class="container">
+<!-- PACKAGES -->
+<div id="packages" class="page hidden">
 
-  <div class="box login-box">
+  <div class="section">
+    <h3>Add Package</h3>
 
-    <h1>Admin Login</h1>
+    <input id="packageTitle" placeholder="Package name">
+    <input id="packagePrice" type="number" placeholder="Price">
+    <input id="packageDuration" placeholder="Duration">
+    <input id="packageImage" placeholder="Image URL">
+    <input id="packageLink" placeholder="Panel Link">
 
-    <p class="info">
-      Login with your Supabase Admin account.
-    </p>
+    <button onclick="addPackage()">Add Package</button>
+  </div>
 
-    <label>Email</label>
-
-    <input
-      id="email"
-      type="email"
-      placeholder="Admin email">
-
-
-    <label>Password</label>
-
-    <input
-      id="password"
-      type="password"
-      placeholder="Admin password">
-
-
-    <button
-      class="main-btn"
-      onclick="adminLogin()">
-
-      Login
-
-    </button>
-
-
-    <div
-      id="loginMessage"
-      class="message">
-    </div>
-
+  <div class="section">
+    <h3>All Packages</h3>
+    <div id="packageList">Loading...</div>
   </div>
 
 </div>
 
+<!-- ORDERS -->
+<div id="orders" class="page hidden">
 
-
-<!-- =========================
-     ADMIN PANEL
-========================= -->
-
-<div
-  id="adminSection"
-  class="container hidden">
-
-
-  <!-- =========================
-       ITEM MANAGEMENT
-  ========================= -->
-
-  <div class="box">
-
-    <h1>Item Management</h1>
-
-    <p class="info">
-      এখান থেকে যেকোনো বৈধ Item বা Service
-      Add, Edit এবং Delete করতে পারবেন।
-    </p>
-
-
-    <label>Item / Package Name</label>
-
-    <input
-      id="itemTitle"
-      type="text"
-      placeholder="Item name">
-
-
-    <label>Price</label>
-
-    <input
-      id="itemPrice"
-      type="number"
-      min="0"
-      placeholder="20">
-
-
-    <label>Duration</label>
-
-    <input
-      id="itemDuration"
-      type="text"
-      placeholder="1 Hour">
-
-
-    <label>Description</label>
-
-    <textarea
-      id="itemDescription"
-      placeholder="Item description"></textarea>
-
-
-    <button
-      id="saveItemButton"
-      class="add-btn"
-      onclick="saveItem()">
-
-      Add Item
-
-    </button>
-
-
-    <button
-      id="cancelEditButton"
-      class="delete-btn hidden"
-      onclick="cancelEdit()">
-
-      Cancel Edit
-
-    </button>
-
-
-    <div
-      id="itemMessage"
-      class="message">
-    </div>
-
-
-    <div class="divider"></div>
-
-
-    <h2>Existing Items</h2>
-
-
-    <div
-      id="itemList"
-      class="list">
-    </div>
-
-  </div>
-
-
-
-  <!-- =========================
-       ORDERS
-  ========================= -->
-
-  <div class="box">
-
-    <h1>Customer Orders</h1>
-
-    <p class="info">
-      Customer-এর Order এবং Payment information
-      এখানে দেখা যাবে।
-    </p>
-
-
-    <button
-      class="main-btn"
-      onclick="loadOrders()">
-
-      Refresh Orders
-
-    </button>
-
-
-    <div
-      id="orderMessage"
-      class="message">
-    </div>
-
-
-    <div
-      id="orderList"
-      class="list">
-    </div>
-
+  <div class="section">
+    <h3>All Orders</h3>
+    <div id="orderList">Loading...</div>
   </div>
 
 </div>
 
+<!-- BALANCE -->
+<div id="balance" class="page hidden">
 
+  <div class="section">
+    <h3>Buyer Balances</h3>
+    <div id="balanceList">Loading...</div>
+  </div>
+
+</div>
+
+<!-- ACCESS -->
+<div id="access" class="page hidden">
+
+  <div class="section">
+    <h3>Access / Panel Links</h3>
+    <div id="accessList">Loading...</div>
+  </div>
+
+</div>
+
+<!-- PROFILE -->
+<div id="profile" class="page hidden">
+
+  <div class="section">
+    <h3>Admin Profile</h3>
+    <p id="adminName">Loading...</p>
+    <p id="adminPhone"></p>
+    <button class="danger" onclick="logout()">Logout</button>
+  </div>
+
+</div>
+
+</div>
+
+<nav>
+  <button class="active" onclick="showPage('home',this)">Home</button>
+  <button onclick="showPage('packages',this)">Packages</button>
+  <button onclick="showPage('orders',this)">Orders</button>
+  <button onclick="showPage('balance',this)">Balance</button>
+  <button onclick="showPage('access',this)">Access</button>
+  <button onclick="showPage('profile',this)">Profile</button>
+</nav>
 
 <script>
-
-/* =========================
-   SUPABASE
-========================= */
 
 const SUPABASE_URL =
 "https://wiztksrtzjmsxzolollf.supabase.co";
@@ -409,20 +183,595 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
 
-const db =
-window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+const supabaseClient =
+supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 
-let editingItemId = null;
+// ---------------- PAGE ----------------
+
+function showPage(page,btn){
+
+  document.querySelectorAll(".page")
+    .forEach(x=>x.classList.add("hidden"));
+
+  document.getElementById(page)
+    .classList.remove("hidden");
+
+  document.querySelectorAll("nav button")
+    .forEach(x=>x.classList.remove("active"));
+
+  btn.classList.add("active");
+
+  if(page==="packages") loadPackages();
+  if(page==="orders") loadOrders();
+  if(page==="balance") loadBalances();
+  if(page==="access") loadAccess();
+}
 
 
+// ---------------- CHECK ADMIN ----------------
 
-/* =========================
-   ESCAPE HTML
-========================= */
+async function checkAdmin(){
+
+  const {data:{user}} =
+    await supabaseClient.auth.getUser();
+
+  if(!user){
+    location.href="index.html";
+    return;
+  }
+
+  const {data,error} =
+    await supabaseClient
+      .from("Profiles")
+      .select("*")
+      .eq("id",user.id)
+      .single();
+
+  if(error || !data || data.Role !== "admin"){
+    alert("Admin access denied");
+    location.href="index.html";
+    return;
+  }
+
+  document.getElementById("adminName").innerText =
+    "Name: " + (data.Name || "");
+
+  document.getElementById("adminPhone").innerText =
+    "Phone: " + (data.Phone || "");
+
+  loadDashboard();
+}
+
+
+// ---------------- DASHBOARD ----------------
+
+async function loadDashboard(){
+
+  const {count:pc} =
+    await supabaseClient
+      .from("Package")
+      .select("*",{count:"exact",head:true});
+
+  const {count:oc} =
+    await supabaseClient
+      .from("Orders")
+      .select("*",{count:"exact",head:true});
+
+  const {count:bc} =
+    await supabaseClient
+      .from("Profiles")
+      .select("*",{count:"exact",head:true})
+      .eq("Role","buyer");
+
+  document.getElementById("packageCount").innerText = pc || 0;
+  document.getElementById("orderCount").innerText = oc || 0;
+  document.getElementById("buyerCount").innerText = bc || 0;
+}
+
+
+// ---------------- PACKAGE ADD ----------------
+
+async function addPackage(){
+
+  const title =
+    document.getElementById("packageTitle").value.trim();
+
+  const price =
+    document.getElementById("packagePrice").value;
+
+  const duration =
+    document.getElementById("packageDuration").value.trim();
+
+  const image_url =
+    document.getElementById("packageImage").value.trim();
+
+  const panel_link =
+    document.getElementById("packageLink").value.trim();
+
+  if(!title || !price || !duration){
+    alert("Title, price and duration are required");
+    return;
+  }
+
+  const {error} =
+    await supabaseClient
+      .from("Package")
+      .insert([{
+        title:title,
+        price:Number(price),
+        duration:duration,
+        image_url:image_url,
+        panel_link:panel_link
+      }]);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  alert("Package added successfully");
+
+  document.getElementById("packageTitle").value="";
+  document.getElementById("packagePrice").value="";
+  document.getElementById("packageDuration").value="";
+  document.getElementById("packageImage").value="";
+  document.getElementById("packageLink").value="";
+
+  loadPackages();
+  loadDashboard();
+}
+
+
+// ---------------- PACKAGES ----------------
+
+async function loadPackages(){
+
+  const box =
+    document.getElementById("packageList");
+
+  box.innerHTML="Loading...";
+
+  const {data,error} =
+    await supabaseClient
+      .from("Package")
+      .select("*")
+      .order("id",{ascending:false});
+
+  if(error){
+    box.innerHTML="Error: "+error.message;
+    return;
+  }
+
+  if(!data || data.length===0){
+    box.innerHTML="No packages found";
+    return;
+  }
+
+  box.innerHTML="";
+
+  data.forEach(p=>{
+
+    const div=document.createElement("div");
+    div.className="card";
+
+    div.innerHTML=`
+      <b>${escapeHtml(p.title)}</b>
+      <p class="price">৳${p.price}</p>
+      <p>Duration: ${escapeHtml(p.duration)}</p>
+
+      <input id="title_${p.id}" value="${escapeAttr(p.title)}">
+      <input id="price_${p.id}" type="number" value="${p.price}">
+      <input id="duration_${p.id}" value="${escapeAttr(p.duration)}">
+      <input id="image_${p.id}" value="${escapeAttr(p.image_url || "")}" placeholder="Image URL">
+      <input id="link_${p.id}" value="${escapeAttr(p.panel_link || "")}" placeholder="Panel Link">
+
+      <button onclick="updatePackage(${p.id})">
+        Update
+      </button>
+
+      <button class="danger" onclick="deletePackage(${p.id})">
+        Delete
+      </button>
+    `;
+
+    box.appendChild(div);
+  });
+}
+
+
+// ---------------- PACKAGE UPDATE ----------------
+
+async function updatePackage(id){
+
+  const title =
+    document.getElementById("title_"+id).value.trim();
+
+  const price =
+    document.getElementById("price_"+id).value;
+
+  const duration =
+    document.getElementById("duration_"+id).value.trim();
+
+  const image_url =
+    document.getElementById("image_"+id).value.trim();
+
+  const panel_link =
+    document.getElementById("link_"+id).value.trim();
+
+  const {error} =
+    await supabaseClient
+      .from("Package")
+      .update({
+        title:title,
+        price:Number(price),
+        duration:duration,
+        image_url:image_url,
+        panel_link:panel_link
+      })
+      .eq("id",id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  alert("Package updated");
+  loadPackages();
+}
+
+
+// ---------------- PACKAGE DELETE ----------------
+
+async function deletePackage(id){
+
+  if(!confirm("Delete this package?")) return;
+
+  const {error} =
+    await supabaseClient
+      .from("Package")
+      .delete()
+      .eq("id",id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  alert("Package deleted");
+  loadPackages();
+  loadDashboard();
+}
+
+
+// ---------------- ORDERS ----------------
+
+async function loadOrders(){
+
+  const box =
+    document.getElementById("orderList");
+
+  box.innerHTML="Loading...";
+
+  const {data,error} =
+    await supabaseClient
+      .from("Orders")
+      .select("*")
+      .order("id",{ascending:false});
+
+  if(error){
+    box.innerHTML="Error: "+error.message;
+    return;
+  }
+
+  if(!data || data.length===0){
+    box.innerHTML="No orders found";
+    return;
+  }
+
+  box.innerHTML="";
+
+  data.forEach(o=>{
+
+    const div=document.createElement("div");
+    div.className="card";
+
+    div.innerHTML=`
+      <b>${escapeHtml(o.buyer_name || "")}</b>
+
+      <p>
+      Package: ${escapeHtml(o.package_title || "")}
+      </p>
+
+      <p>
+      Price: ৳${o.price || 0}
+      </p>
+
+      <p>
+      Duration: ${escapeHtml(o.duration || "")}
+      </p>
+
+      <p>
+      Payment: ${escapeHtml(o.payment_method || "")}
+      </p>
+
+      <p>
+      Transaction ID:
+      <b>${escapeHtml(o.transaction_id || "")}</b>
+      </p>
+
+      <p>
+      Status:
+      <b>${escapeHtml(o.status || "")}</b>
+      </p>
+
+      <input
+        id="key_${o.id}"
+        value="${escapeAttr(o.access_key || "")}"
+        placeholder="Access Key"
+      >
+
+      <select id="status_${o.id}">
+        <option value="Pending" ${o.status==="Pending"?"selected":""}>
+          Pending
+        </option>
+
+        <option value="Confirmed" ${o.status==="Confirmed"?"selected":""}>
+          Confirmed
+        </option>
+
+        <option value="Cancelled" ${o.status==="Cancelled"?"selected":""}>
+          Cancelled
+        </option>
+      </select>
+
+      <button class="green"
+        onclick="updateOrder(${o.id})">
+        Save Order
+      </button>
+    `;
+
+    box.appendChild(div);
+  });
+}
+
+
+// ---------------- UPDATE ORDER ----------------
+
+async function updateOrder(id){
+
+  const status =
+    document.getElementById("status_"+id).value;
+
+  const access_key =
+    document.getElementById("key_"+id).value.trim();
+
+  const {data:oldOrder,error:oldError} =
+    await supabaseClient
+      .from("Orders")
+      .select("*")
+      .eq("id",id)
+      .single();
+
+  if(oldError){
+    alert(oldError.message);
+    return;
+  }
+
+  // Balance Top Up
+  if(
+    oldOrder.package_title === "Balance Top Up" &&
+    oldOrder.status !== "Confirmed" &&
+    status === "Confirmed"
+  ){
+
+    const {data:profile,error:profileError} =
+      await supabaseClient
+        .from("Profiles")
+        .select("balance")
+        .eq("id",oldOrder.user_id)
+        .single();
+
+    if(profileError){
+      alert(profileError.message);
+      return;
+    }
+
+    const newBalance =
+      Number(profile.balance || 0) +
+      Number(oldOrder.price || 0);
+
+    const {error:updateBalanceError} =
+      await supabaseClient
+        .from("Profiles")
+        .update({balance:newBalance})
+        .eq("id",oldOrder.user_id);
+
+    if(updateBalanceError){
+      alert(updateBalanceError.message);
+      return;
+    }
+
+    await supabaseClient
+      .from("BalanceTransactions")
+      .insert([{
+        user_id:oldOrder.user_id,
+        amount:Number(oldOrder.price || 0),
+        type:"credit",
+        note:"Balance Top Up"
+      }]);
+  }
+
+  const {error} =
+    await supabaseClient
+      .from("Orders")
+      .update({
+        status:status,
+        access_key:access_key
+      })
+      .eq("id",id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  alert("Order updated");
+
+  loadOrders();
+  loadBalances();
+}
+
+
+// ---------------- BALANCES ----------------
+
+async function loadBalances(){
+
+  const box =
+    document.getElementById("balanceList");
+
+  box.innerHTML="Loading...";
+
+  const {data,error} =
+    await supabaseClient
+      .from("Profiles")
+      .select("*")
+      .eq("Role","buyer")
+      .order("Name");
+
+  if(error){
+    box.innerHTML="Error: "+error.message;
+    return;
+  }
+
+  box.innerHTML="";
+
+  if(!data || data.length===0){
+    box.innerHTML="No buyers found";
+    return;
+  }
+
+  data.forEach(p=>{
+
+    const div=document.createElement("div");
+    div.className="card";
+
+    div.innerHTML=`
+      <b>${escapeHtml(p.Name || "Buyer")}</b>
+      <p>${escapeHtml(p.Phone || "")}</p>
+      <p>Current Balance: <b>৳${p.balance || 0}</b></p>
+
+      <input
+        id="balance_${p.id}"
+        type="number"
+        placeholder="New balance"
+        value="${p.balance || 0}"
+      >
+
+      <button onclick="changeBalance('${p.id}')">
+        Update Balance
+      </button>
+    `;
+
+    box.appendChild(div);
+  });
+}
+
+
+// ---------------- CHANGE BALANCE ----------------
+
+async function changeBalance(id){
+
+  const value =
+    document.getElementById("balance_"+id).value;
+
+  const amount=Number(value);
+
+  if(amount < 0){
+    alert("Balance cannot be negative");
+    return;
+  }
+
+  const {error} =
+    await supabaseClient
+      .from("Profiles")
+      .update({balance:amount})
+      .eq("id",id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  alert("Balance updated");
+  loadBalances();
+}
+
+
+// ---------------- ACCESS ----------------
+
+async function loadAccess(){
+
+  const box =
+    document.getElementById("accessList");
+
+  box.innerHTML="Loading...";
+
+  const {data,error} =
+    await supabaseClient
+      .from("Orders")
+      .select("*")
+      .eq("status","Confirmed")
+      .neq("package_title","Balance Top Up")
+      .order("id",{ascending:false});
+
+  if(error){
+    box.innerHTML="Error: "+error.message;
+    return;
+  }
+
+  box.innerHTML="";
+
+  if(!data || data.length===0){
+    box.innerHTML="No confirmed access found";
+    return;
+  }
+
+  data.forEach(o=>{
+
+    const div=document.createElement("div");
+    div.className="card";
+
+    div.innerHTML=`
+      <b>${escapeHtml(o.buyer_name || "")}</b>
+
+      <p>
+      Package:
+      ${escapeHtml(o.package_title || "")}
+      </p>
+
+      <p>
+      Key:
+      <b>${escapeHtml(o.access_key || "Not set")}</b>
+      </p>
+    `;
+
+    box.appendChild(div);
+  });
+}
+
+
+// ---------------- LOGOUT ----------------
+
+async function logout(){
+
+  await supabaseClient.auth.signOut();
+
+  location.href="index.html";
+}
+
+
+// ---------------- SECURITY HELPERS ----------------
 
 function escapeHtml(value){
 
@@ -432,953 +781,16 @@ function escapeHtml(value){
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
+}
 
+function escapeAttr(value){
+  return escapeHtml(value);
 }
 
 
+// START
 
-/* =========================
-   ADMIN LOGIN
-========================= */
-
-async function adminLogin(){
-
-  const message =
-    document.getElementById(
-      "loginMessage"
-    );
-
-
-  const email =
-    document.getElementById(
-      "email"
-    ).value.trim();
-
-
-  const password =
-    document.getElementById(
-      "password"
-    ).value;
-
-
-  if(!email || !password){
-
-    message.innerText =
-      "Email এবং Password দিন।";
-
-    return;
-
-  }
-
-
-  message.innerText =
-    "Login হচ্ছে...";
-
-
-  try{
-
-    const result =
-      await db.auth.signInWithPassword({
-
-        email:email,
-
-        password:password
-
-      });
-
-
-    if(result.error){
-
-      message.innerText =
-        "Login failed: " +
-        result.error.message;
-
-      return;
-
-    }
-
-
-    if(!result.data.user){
-
-      message.innerText =
-        "User পাওয়া যায়নি।";
-
-      return;
-
-    }
-
-
-    /* PROFILE CHECK */
-
-    const profile =
-      await db
-        .from("Profiles")
-        .select('"Role"')
-        .eq(
-          "id",
-          result.data.user.id
-        )
-        .maybeSingle();
-
-
-    if(profile.error){
-
-      message.innerText =
-        "Profile error: " +
-        profile.error.message;
-
-      await db.auth.signOut();
-
-      return;
-
-    }
-
-
-    if(
-      !profile.data ||
-      String(profile.data.Role)
-        .toLowerCase() !== "admin"
-    ){
-
-      message.innerText =
-        "এই account-এর Admin access নেই।";
-
-      await db.auth.signOut();
-
-      return;
-
-    }
-
-
-    /* SHOW ADMIN */
-
-    document
-      .getElementById("loginSection")
-      .classList
-      .add("hidden");
-
-
-    document
-      .getElementById("adminSection")
-      .classList
-      .remove("hidden");
-
-
-    document
-      .getElementById("logoutButton")
-      .classList
-      .remove("hidden");
-
-
-    message.innerText = "";
-
-
-    await loadItems();
-
-    await loadOrders();
-
-
-  }catch(error){
-
-    message.innerText =
-      "Error: " +
-      error.message;
-
-  }
-
-}
-
-
-
-/* =========================
-   LOGOUT
-========================= */
-
-async function logout(){
-
-  await db.auth.signOut();
-
-  location.reload();
-
-}
-
-
-
-/* =========================
-   LOAD ITEMS
-========================= */
-
-async function loadItems(){
-
-  const list =
-    document.getElementById(
-      "itemList"
-    );
-
-
-  const message =
-    document.getElementById(
-      "itemMessage"
-    );
-
-
-  message.innerText =
-    "Items loading...";
-
-
-  const result =
-    await db
-      .from("Package")
-      .select(
-        "id,title,price,duration"
-      )
-      .order(
-        "id",
-        {
-          ascending:true
-        }
-      );
-
-
-  if(result.error){
-
-    message.innerText =
-      "Item load failed: " +
-      result.error.message;
-
-    return;
-
-  }
-
-
-  list.innerHTML = "";
-
-
-  if(
-    !result.data ||
-    result.data.length === 0
-  ){
-
-    list.innerHTML =
-      "<p class='info'>No items found.</p>";
-
-    message.innerText = "";
-
-    return;
-
-  }
-
-
-  result.data.forEach(
-    function(item){
-
-      list.innerHTML += `
-
-        <div class="item">
-
-          <h3>
-            ${escapeHtml(item.title)}
-          </h3>
-
-          <p class="price">
-            ৳${Number(item.price).toFixed(0)}
-          </p>
-
-          <p>
-            <b>Duration:</b>
-            ${escapeHtml(item.duration)}
-          </p>
-
-          <p class="small">
-            Item ID:
-            ${escapeHtml(item.id)}
-          </p>
-
-
-          <button
-            class="edit-btn"
-            onclick='editItem(
-              ${item.id},
-              ${JSON.stringify(item.title)},
-              ${Number(item.price)},
-              ${JSON.stringify(item.duration)}
-            )'>
-
-            Edit
-
-          </button>
-
-
-          <button
-            class="delete-btn"
-            onclick="deleteItem(${item.id})">
-
-            Delete
-
-          </button>
-
-        </div>
-
-      `;
-
-    }
-  );
-
-
-  message.innerText = "";
-
-}
-
-
-
-/* =========================
-   SAVE ITEM
-========================= */
-
-async function saveItem(){
-
-  const title =
-    document.getElementById(
-      "itemTitle"
-    ).value.trim();
-
-
-  const price =
-    Number(
-      document.getElementById(
-        "itemPrice"
-      ).value
-    );
-
-
-  const duration =
-    document.getElementById(
-      "itemDuration"
-    ).value.trim();
-
-
-  const message =
-    document.getElementById(
-      "itemMessage"
-    );
-
-
-  if(!title){
-
-    message.innerText =
-      "Item name দিন।";
-
-    return;
-
-  }
-
-
-  if(
-    Number.isNaN(price) ||
-    price < 0
-  ){
-
-    message.innerText =
-      "সঠিক Price দিন।";
-
-    return;
-
-  }
-
-
-  if(!duration){
-
-    message.innerText =
-      "Duration দিন।";
-
-    return;
-
-  }
-
-
-  message.innerText =
-    "Saving...";
-
-
-  let result;
-
-
-  if(editingItemId !== null){
-
-    result =
-      await db
-        .from("Package")
-        .update({
-
-          title:title,
-
-          price:price,
-
-          duration:duration
-
-        })
-        .eq(
-          "id",
-          editingItemId
-        );
-
-
-  }else{
-
-    result =
-      await db
-        .from("Package")
-        .insert([{
-
-          title:title,
-
-          price:price,
-
-          duration:duration
-
-        }]);
-
-  }
-
-
-  if(result.error){
-
-    message.innerText =
-      "Save failed: " +
-      result.error.message;
-
-    return;
-
-  }
-
-
-  message.innerText =
-    editingItemId !== null
-      ? "Item updated successfully."
-      : "Item added successfully.";
-
-
-  clearItemForm();
-
-  await loadItems();
-
-}
-
-
-
-/* =========================
-   EDIT ITEM
-========================= */
-
-function editItem(
-  id,
-  title,
-  price,
-  duration
-){
-
-  editingItemId =
-    id;
-
-
-  document.getElementById(
-    "itemTitle"
-  ).value =
-    title;
-
-
-  document.getElementById(
-    "itemPrice"
-  ).value =
-    price;
-
-
-  document.getElementById(
-    "itemDuration"
-  ).value =
-    duration;
-
-
-  document.getElementById(
-    "saveItemButton"
-  ).innerText =
-    "Update Item";
-
-
-  document.getElementById(
-    "cancelEditButton"
-  ).classList
-  .remove("hidden");
-
-
-  document.getElementById(
-    "itemMessage"
-  ).innerText =
-    "Editing Item ID: " +
-    id;
-
-}
-
-
-
-/* =========================
-   CANCEL EDIT
-========================= */
-
-function cancelEdit(){
-
-  clearItemForm();
-
-}
-
-
-
-/* =========================
-   CLEAR FORM
-========================= */
-
-function clearItemForm(){
-
-  editingItemId =
-    null;
-
-
-  document.getElementById(
-    "itemTitle"
-  ).value =
-    "";
-
-
-  document.getElementById(
-    "itemPrice"
-  ).value =
-    "";
-
-
-  document.getElementById(
-    "itemDuration"
-  ).value =
-    "";
-
-
-  document.getElementById(
-    "itemDescription"
-  ).value =
-    "";
-
-
-  document.getElementById(
-    "saveItemButton"
-  ).innerText =
-    "Add Item";
-
-
-  document.getElementById(
-    "cancelEditButton"
-  ).classList
-  .add("hidden");
-
-}
-
-
-
-/* =========================
-   DELETE ITEM
-========================= */
-
-async function deleteItem(id){
-
-  if(
-    !confirm(
-      "এই Item delete করতে চান?"
-    )
-  ){
-
-    return;
-
-  }
-
-
-  const message =
-    document.getElementById(
-      "itemMessage"
-    );
-
-
-  message.innerText =
-    "Deleting...";
-
-
-  const result =
-    await db
-      .from("Package")
-      .delete()
-      .eq(
-        "id",
-        id
-      );
-
-
-  if(result.error){
-
-    message.innerText =
-      "Delete failed: " +
-      result.error.message;
-
-    return;
-
-  }
-
-
-  message.innerText =
-    "Item deleted successfully.";
-
-
-  await loadItems();
-
-}
-
-
-
-/* =========================
-   LOAD ORDERS
-========================= */
-
-async function loadOrders(){
-
-  const list =
-    document.getElementById(
-      "orderList"
-    );
-
-
-  const message =
-    document.getElementById(
-      "orderMessage"
-    );
-
-
-  message.innerText =
-    "Orders loading...";
-
-
-  const result =
-    await db
-      .from("Orders")
-      .select(
-        'user_id,buyer_name,phone,"package title",price,duration,status,"payment method","transaction id"'
-      );
-
-
-  if(result.error){
-
-    message.innerText =
-      "Order load failed: " +
-      result.error.message;
-
-    return;
-
-  }
-
-
-  list.innerHTML = "";
-
-
-  if(
-    !result.data ||
-    result.data.length === 0
-  ){
-
-    list.innerHTML =
-      "<p class='info'>No orders found.</p>";
-
-    message.innerText = "";
-
-    return;
-
-  }
-
-
-  result.data.forEach(
-    function(order,index){
-
-      const status =
-        String(
-          order.status || "Pending"
-        );
-
-
-      let statusClass =
-        "pending";
-
-
-      if(
-        status.toLowerCase()
-          .includes("complete")
-      ){
-
-        statusClass =
-          "completed";
-
-      }
-
-
-      if(
-        status.toLowerCase()
-          .includes("cancel")
-      ){
-
-        statusClass =
-          "cancelled";
-
-      }
-
-
-      list.innerHTML += `
-
-        <div class="item">
-
-          <h3>
-            Order #${index + 1}
-          </h3>
-
-          <p>
-            <b>Buyer:</b>
-            ${escapeHtml(order.buyer_name)}
-          </p>
-
-          <p>
-            <b>Phone:</b>
-            ${escapeHtml(order.phone)}
-          </p>
-
-          <p>
-            <b>Item:</b>
-            ${escapeHtml(order["package title"])}
-          </p>
-
-          <p>
-            <b>Price:</b>
-            ৳${Number(order.price || 0).toFixed(0)}
-          </p>
-
-          <p>
-            <b>Duration:</b>
-            ${escapeHtml(order.duration)}
-          </p>
-
-          <p>
-            <b>Payment:</b>
-            ${escapeHtml(order["payment method"])}
-          </p>
-
-          <p>
-            <b>Transaction ID:</b>
-            ${escapeHtml(order["transaction id"])}
-          </p>
-
-          <p>
-            <b>Status:</b>
-
-            <span class="status ${statusClass}">
-              ${escapeHtml(status)}
-            </span>
-
-          </p>
-
-
-          <select
-            id="status${index}">
-
-            <option
-              value="Pending"
-              ${status === "Pending" ? "selected" : ""}>
-
-              Pending
-
-            </option>
-
-            <option
-              value="Completed"
-              ${status === "Completed" ? "selected" : ""}>
-
-              Completed
-
-            </option>
-
-            <option
-              value="Cancelled"
-              ${status === "Cancelled" ? "selected" : ""}>
-
-              Cancelled
-
-            </option>
-
-          </select>
-
-
-          <button
-            class="main-btn"
-            style="margin-top:10px"
-            onclick='updateOrderStatus(
-              ${JSON.stringify(order.user_id)},
-              ${JSON.stringify(order["transaction id"])},
-              ${index}
-            )'>
-
-            Update Status
-
-          </button>
-
-        </div>
-
-      `;
-
-    }
-  );
-
-
-  message.innerText = "";
-
-}
-
-
-
-/* =========================
-   UPDATE ORDER STATUS
-========================= */
-
-async function updateOrderStatus(
-  userId,
-  transactionId,
-  index
-){
-
-  const select =
-    document.getElementById(
-      "status" + index
-    );
-
-
-  const newStatus =
-    select.value;
-
-
-  const message =
-    document.getElementById(
-      "orderMessage"
-    );
-
-
-  message.innerText =
-    "Updating...";
-
-
-  const result =
-    await db
-      .from("Orders")
-      .update({
-
-        status:newStatus
-
-      })
-      .eq(
-        "user_id",
-        userId
-      )
-      .eq(
-        "transaction id",
-        transactionId
-      );
-
-
-  if(result.error){
-
-    message.innerText =
-      "Update failed: " +
-      result.error.message;
-
-    return;
-
-  }
-
-
-  message.innerText =
-    "Order status updated.";
-
-
-  await loadOrders();
-
-}
-
-
-
-/* =========================
-   SESSION CHECK
-========================= */
-
-async function checkSession(){
-
-  const result =
-    await db.auth.getSession();
-
-
-  if(!result.data.session){
-
-    return;
-
-  }
-
-
-  const user =
-    result.data.session.user;
-
-
-  const profile =
-    await db
-      .from("Profiles")
-      .select('"Role"')
-      .eq(
-        "id",
-        user.id
-      )
-      .maybeSingle();
-
-
-  if(
-    profile.data &&
-    String(profile.data.Role)
-      .toLowerCase() === "admin"
-  ){
-
-    document
-      .getElementById("loginSection")
-      .classList
-      .add("hidden");
-
-
-    document
-      .getElementById("adminSection")
-      .classList
-      .remove("hidden");
-
-
-    document
-      .getElementById("logoutButton")
-      .classList
-      .remove("hidden");
-
-
-    await loadItems();
-
-    await loadOrders();
-
-  }
-
-}
-
-
-checkSession();
+checkAdmin();
 
 </script>
 
