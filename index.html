@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Sell Bazaar</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6fb;color:#111}
+header{background:#111827;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}.logo{width:38px;height:38px;border-radius:10px;background:#2563eb;display:flex;align-items:center;justify-content:center;font-weight:800}
+.login-btn{background:#2563eb;color:#fff;border:0;border-radius:8px;padding:9px 14px;cursor:pointer}
+main{max-width:1000px;margin:auto;padding:18px 14px 90px}.page{display:none}.page.active{display:block}
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px #00000010}
+.package-card{display:flex;justify-content:space-between;align-items:center;gap:10px}.btn{border:0;border-radius:9px;padding:10px 14px;cursor:pointer;background:#2563eb;color:#fff}.btn.secondary{background:#e5e7eb;color:#111827}.btn.green{background:#16a34a}
+.price{font-weight:700;color:#2563eb}small{color:#6b7280}input{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:8px;margin-top:6px}
+.option{border:1px solid #e5e7eb;border-radius:10px;padding:12px;margin:8px 0}.option-row{display:flex;align-items:center;gap:10px}.option-row input{width:auto;margin:0}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;z-index:30;overflow-x:auto}
+.nav-btn{min-width:72px;padding:9px 5px;border:0;background:#fff;color:#555;font-size:12px;cursor:pointer}.nav-btn.active{color:#2563eb;font-weight:700}
+.empty{text-align:center;color:#777;padding:20px}.danger{color:#dc2626}.help-box{border-left:5px solid #2563eb}a{color:#2563eb;text-decoration:none}.home-banner{width:100%;max-height:320px;object-fit:cover;border-radius:14px;display:block;margin-bottom:16px}.package-image{width:100%;max-height:190px;object-fit:cover;border-radius:12px;margin-bottom:10px}.balance-warning{background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:10px;padding:12px;margin-top:10px}
+</style>
+<!-- Requires Site Settings column: home_banner_url text -->
+</head>
+<body>
+<header><div class="brand"><div class="logo">PSB</div><div>Panel Sell Bazaar</div></div><button class="login-btn" id="authBtn" onclick="openAuth()">Login</button></header>
+<main>
+<section id="home" class="page active"><div id="homeBanner"></div><div class="card"><h2>Welcome to Panel Sell Bazaar</h2><p>Buy your panel package and manage your orders easily.</p></div><h3>Recent Orders</h3><div id="recentOrders"></div></section>
+<section id="packages" class="page"><h2>Packages</h2><div id="packageList"></div></section>
+<section id="orders" class="page"><h2>My Orders</h2><div id="ordersList"></div></section>
+<section id="balance" class="page"><h2>Balance</h2><div class="card"><h3>Current Balance</h3><h1 id="balanceAmount">৳0</h1><button class="btn green" onclick="openTopup()">Top Up</button></div></section>
+<section id="access" class="page"><h2>Access</h2><div id="accessList"></div></section>
+<section id="profile" class="page"><h2>Profile</h2><div id="profileInfo" class="card"></div></section>
+<section id="help" class="page"><h2>Help & Contact</h2><div class="card help-box"><h3 id="helpTitle">Help & Contact</h3><p id="helpText">Loading...</p><div id="helpLinks"></div></div></section>
+</main>
+<nav class="bottom-nav">
+<button class="nav-btn active" onclick="showPage('home',this)">Home</button><button class="nav-btn" onclick="showPage('packages',this)">Packages</button><button class="nav-btn" onclick="showPage('orders',this)">Orders</button><button class="nav-btn" onclick="showPage('balance',this)">Balance</button><button class="nav-btn" onclick="showPage('access',this)">Access</button><button class="nav-btn" onclick="showPage('profile',this)">Profile</button><button class="nav-btn" onclick="showPage('help',this)">Help</button>
+</nav>
+<script>
+const SUPABASE_URL="https://wiztksrtzjmsxzolollf.supabase.co";
+const SUPABASE_KEY="sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let currentUser=null,packages=[];
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function showPage(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');if(id==='packages')loadPackages();if(id==='orders')loadOrders();if(id==='balance')loadBalance();if(id==='access')loadAccess();if(id==='profile')loadProfile();if(id==='help')loadHelpSettings()}
+async function openAuth(){const email=prompt('Enter your email:');if(!email)return;const password=prompt('Enter your password:');if(!password)return;const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)return alert(error.message);currentUser=data.user;await refreshUI();alert('Login successful')}
+async function logout(){await supabaseClient.auth.signOut();currentUser=null;await refreshUI()}
+async function refreshUI(){const {data}=await supabaseClient.auth.getUser();currentUser=data.user||null;document.getElementById('authBtn').textContent=currentUser?'Logout':'Login';document.getElementById('authBtn').onclick=currentUser?logout:openAuth;await loadPackages();await loadRecentOrders();await loadBalance();await loadProfile();await loadHelpSettings();await loadHomeBanner()}
+async function loadPackages(){const {data,error}=await supabaseClient.from('Package').select('*').order('id',{ascending:true});const box=document.getElementById('packageList');if(error){box.innerHTML='<div class="card danger">'+esc(error.message)+'</div>';return}packages=data||[];if(!packages.length){box.innerHTML='<div class="card empty">No packages available.</div>';return}box.innerHTML=packages.map(p=>`<div class="card package-card"><div style="width:100%">${p.image_url?`<img class="package-image" src="${esc(p.image_url)}" alt="${esc(p.title||'Package')}" onerror="this.style.display='none'">`:''}<h3>${esc(p.title||'Package')}</h3><small>${esc(p.duration||'')}</small><div class="price">৳${Number(p.price||0)}</div></div><div><button class="btn secondary" onclick="viewPkg(${p.id})">View Package</button> <button class="btn" onclick="viewPkg(${p.id})">Buy Now</button></div></div>`).join('')}
+async function getPackageOptions(packageId){const {data,error}=await supabaseClient.from('Package Options').select('*').eq('package_id',packageId).order('id',{ascending:true});if(error){console.error(error);return[]}return data||[]}
+async function viewPkg(id){const p=packages.find(x=>String(x.id)===String(id));if(!p)return;const options=await getPackageOptions(id);let html=`${p.image_url?`<img class="package-image" src="${esc(p.image_url)}" alt="${esc(p.title||'Package')}" onerror="this.style.display='none'">`:''}<h3>${esc(p.title||'Package')}</h3>`;if(options.length){html+='<p><b>Select an option:</b></p>'+options.map((o,i)=>`<label class="option option-row"><input type="radio" name="pkgOption" value="${o.id}" ${i===0?'checked':''}><span><b>${esc(o.duration)}</b> — <span class="price">৳${Number(o.price)}</span></span></label>`).join('')+'<button class="btn green" onclick="confirmOptionBuy('+p.id+')">Confirm & Buy</button>'}else{html+=`<div class="option"><b>${esc(p.duration||'')}</b> — <span class="price">৳${Number(p.price||0)}</span></div><button class="btn green" onclick="confirmLegacyBuy(${p.id})">Buy Now</button>`}showModal(html)}
+async function confirmOptionBuy(packageId){
+  const selected=document.querySelector('input[name="pkgOption"]:checked');
+  if(!selected){alert('Please select an option.');return;}
+  const options=await getPackageOptions(packageId);
+  const option=options.find(x=>String(x.id)===String(selected.value));
+  if(!option)return;
+  await checkBalanceAndBuy(packageId,Number(option.price),()=>buySelectedOption(packageId));
+}
+async function confirmLegacyBuy(packageId){
+  const p=packages.find(x=>String(x.id)===String(packageId));
+  if(!p)return;
+  await checkBalanceAndBuy(packageId,Number(p.price||0),()=>buyLegacy(packageId));
+}
+async function buySelectedOption(packageId){if(!currentUser)return alert('Please login first.');const selected=document.querySelector('input[name="pkgOption"]:checked');if(!selected)return alert('Please select an option.');const options=await getPackageOptions(packageId),option=options.find(x=>String(x.id)===String(selected.value));if(!option)return;const {error}=await supabaseClient.from('Orders').insert({buyer_id:currentUser.id,package_id:packageId,package_option_id:option.id,package_duration:option.duration,status:'Pending',amount:Number(option.price),order_type:'Package Purchase'});if(error)return alert(error.message);closeModal();alert('Order placed successfully.');await loadOrders();await loadRecentOrders()}
+async function buyLegacy(packageId){if(!currentUser)return alert('Please login first.');const p=packages.find(x=>String(x.id)===String(packageId));if(!p)return;const {error}=await supabaseClient.from('Orders').insert({buyer_id:currentUser.id,package_id:packageId,package_duration:p.duration||'',status:'Pending',amount:Number(p.price||0),order_type:'Package Purchase'});if(error)return alert(error.message);closeModal();alert('Order placed successfully.');await loadOrders();await loadRecentOrders()}
+async function loadOrders(){const box=document.getElementById('ordersList');if(!currentUser){box.innerHTML='<div class="card empty">Please login to see your orders.</div>';return}const {data,error}=await supabaseClient.from('Orders').select('*').eq('buyer_id',currentUser.id).order('id',{ascending:false});if(error){box.innerHTML='<div class="card danger">'+esc(error.message)+'</div>';return}if(!data?.length){box.innerHTML='<div class="card empty">No orders yet.</div>';return}box.innerHTML=data.map(o=>`<div class="card"><b>Order #${esc(o.id)}</b><p>Status: <b>${esc(o.status||'')}</b></p><p>Amount: ৳${Number(o.amount||0)}</p><p>Duration: ${esc(o.package_duration||'')}</p>${o.access_key?`<p>Access Key: <b>${esc(o.access_key)}</b></p>`:''}</div>`).join('')}
+async function loadRecentOrders(){const box=document.getElementById('recentOrders');if(!currentUser){box.innerHTML='<div class="card empty">Login to see recent orders.</div>';return}const {data,error}=await supabaseClient.from('Orders').select('*').eq('buyer_id',currentUser.id).order('id',{ascending:false}).limit(5);if(error){box.innerHTML='<div class="card danger">'+esc(error.message)+'</div>';return}if(!data?.length){box.innerHTML='<div class="card empty">No recent orders.</div>';return}box.innerHTML=data.map(o=>`<div class="card"><b>Order #${esc(o.id)}</b><span style="float:right">${esc(o.status||'')}</span><p>৳${Number(o.amount||0)} • ${esc(o.package_duration||'')}</p></div>`).join('')}
+async function loadBalance(){const box=document.getElementById('balanceAmount');if(!currentUser){box.textContent='৳0';return}const {data,error}=await supabaseClient.from('Profiles').select('balance').eq('id',currentUser.id).maybeSingle();if(error){console.error(error);box.textContent='৳0';return}box.textContent='৳'+Number(data?.balance||0)}
+async function loadAccess(){const box=document.getElementById('accessList');if(!currentUser){box.innerHTML='<div class="card empty">Please login first.</div>';return}const {data,error}=await supabaseClient.from('Orders').select('*').eq('buyer_id',currentUser.id).eq('status','Completed').order('id',{ascending:false});if(error){box.innerHTML='<div class="card danger">'+esc(error.message)+'</div>';return}if(!data?.length){box.innerHTML='<div class="card empty">No active access.</div>';return}box.innerHTML=data.map(o=>`<div class="card"><h3>Order #${esc(o.id)}</h3><p>Duration: ${esc(o.package_duration||'')}</p><p>Access Key: <b>${esc(o.access_key||'Not assigned')}</b></p></div>`).join('')}
+async function loadProfile(){const box=document.getElementById('profileInfo');if(!currentUser){box.innerHTML='<p>Please login first.</p>';return}const {data,error}=await supabaseClient.from('Profiles').select('*').eq('id',currentUser.id).maybeSingle();if(error){box.innerHTML='<p class="danger">'+esc(error.message)+'</p>';return}box.innerHTML=`<p><b>Email:</b> ${esc(currentUser.email||'')}</p><p><b>Name:</b> ${esc(data?.Name||'')}</p><p><b>Phone:</b> ${esc(data?.Phone||'')}</p><p><b>Role:</b> ${esc(data?.Role||'buyer')}</p>`}
+async function loadHomeBanner(){
+  const box=document.getElementById('homeBanner');
+  if(!box)return;
+  const {data,error}=await supabaseClient.from('Site Settings').select('home_banner_url').eq('id',1).maybeSingle();
+  if(error || !data?.home_banner_url){
+    box.innerHTML='';
+    return;
+  }
+  box.innerHTML=`<img class="home-banner" src="${esc(data.home_banner_url)}" alt="Panel Sell Bazaar Banner" onerror="this.style.display='none'">`;
+}
+async function loadHelpSettings(){const {data,error}=await supabaseClient.from('Site Settings').select('*').eq('id',1).maybeSingle();if(error){document.getElementById('helpText').textContent='Help settings could not be loaded.';return}const s=data||{};document.getElementById('helpTitle').textContent=s.help_title||'Help & Contact';document.getElementById('helpText').textContent=s.help_text||'';let links='';if(s.contact_number)links+=`<p>📞 <a href="tel:${esc(s.contact_number)}">${esc(s.contact_number)}</a></p>`;if(s.whatsapp_number){let wa=String(s.whatsapp_number).replace(/[^0-9]/g,'');if(wa.startsWith('0'))wa='88'+wa;links+=`<p>🟢 <a target="_blank" href="https://wa.me/${esc(wa)}">WhatsApp</a></p>`}if(s.telegram_username){let tg=String(s.telegram_username).replace(/^@/,'');links+=`<p>🔵 <a target="_blank" href="https://t.me/${esc(tg)}">Telegram</a></p>`}if(s.contact_link)links+=`<p>🔗 <a target="_blank" href="${esc(s.contact_link)}">Contact Link</a></p>`;document.getElementById('helpLinks').innerHTML=links}
+async function checkBalanceAndBuy(packageId, price, buyFunction){
+  if(!currentUser){alert('Please login first.');return;}
+  const {data,error}=await supabaseClient.from('Profiles').select('balance').eq('id',currentUser.id).maybeSingle();
+  if(error){alert('Balance check failed: '+error.message);return;}
+  const balance=Number(data?.balance||0);
+  const amount=Number(price||0);
+  if(balance<amount){
+    alert(`Insufficient Balance!\nআপনার ব্যালেন্স: ৳${balance}\nপ্রয়োজন: ৳${amount}\nআরও ৳${Math.max(0,amount-balance)} যোগ করুন।`);
+    return;
+  }
+  await buyFunction();
+}
+function openTopup(){showModal('<h3>Balance নেই?</h3><p class="balance-warning">আপনার ব্যালেন্স কম থাকলে আগে Top Up করে নিন, তারপর প্যাকেজ কিনুন।</p>');}
+function showModal(content){closeModal();const m=document.createElement('div');m.id='psbModal';m.style='position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;z-index:100;padding:15px';m.innerHTML=`<div style="background:white;max-width:520px;width:100%;max-height:90vh;overflow:auto;border-radius:15px;padding:18px"><button onclick="closeModal()" style="float:right;border:0;background:#eee;border-radius:50%;width:32px;height:32px;cursor:pointer">×</button><div style="padding-top:5px">${content}</div></div>`;document.body.appendChild(m)}
+function closeModal(){document.getElementById('psbModal')?.remove()}
+(async function init(){const {data}=await supabaseClient.auth.getUser();currentUser=data.user||null;await refreshUI()})();
+</script>
+</body>
+</html>
