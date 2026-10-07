@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Sell Bazaar - Admin</title>
+<link rel="manifest" href="psb-manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="psb-logo-192.png">
+<link rel="apple-touch-icon" href="psb-logo-192.png">
+<meta name="theme-color" content="#111827">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#222}
+header{background:#fff;color:#222;padding:14px 18px;position:sticky;top:0;z-index:10;border-bottom:1px solid #ddd;box-shadow:0 2px 8px #0000000d}.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7c3aed,#ec4899,#06b6d4);font-weight:800;box-shadow:0 5px 18px #7c3aed66}.brand-name{font-size:21px;font-weight:bold}.small{font-size:13px;opacity:.8;margin-top:4px}
+.container{padding:15px;padding-bottom:95px}.section{background:#fff;padding:15px;border-radius:14px;margin-bottom:15px;box-shadow:0 2px 8px #0000000d}
+input,select,textarea,button{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd;border-radius:9px;font-size:15px}textarea{min-height:110px;resize:vertical}.pay-select{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:9px;background:#fff;font-size:15px}button{background:#111827;color:#fff;border:0;cursor:pointer}button.green{background:#16803c}button.blue{background:#2563eb}button.danger{background:#d93025}
+.card{border:1px solid #eee;padding:12px;border-radius:12px;margin:10px 0}.price{font-size:18px;font-weight:bold;color:#2563eb}.success{background:#e7f7ed;color:#16803c;padding:12px;border-radius:9px;margin-top:10px}.error{background:#fde8e7;color:#b42318;padding:12px;border-radius:9px;margin-top:10px}.hidden{display:none!important}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;overflow-x:auto;z-index:20}nav button{min-width:85px;margin:0;border-radius:0;background:#fff;color:#333;font-size:12px}nav button.active{background:#111827;color:#fff}
+nav button{min-width:105px;padding:15px 9px;font-size:15px;font-weight:700;background:linear-gradient(180deg,#fff,#f5f3ff);color:#475569}nav button:nth-child(1){color:#7c3aed}nav button:nth-child(2){color:#2563eb}nav button:nth-child(3){color:#ec4899}nav button:nth-child(4){color:#16a34a}nav button:nth-child(5){color:#0891b2}nav button:nth-child(6){color:#f59e0b}nav button:nth-child(7){color:#ef4444}nav button:nth-child(8){color:#7c3aed}nav button.active{background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;box-shadow:0 -3px 12px #7c3aed33}
+.dashboard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#f3f4f6;padding:15px;border-radius:12px;text-align:center}.stat b{display:block;font-size:25px;margin-top:5px}
+.help-box{background:linear-gradient(135deg,#7c3aed,#ec4899,#06b6d4);color:#fff;border-radius:18px;padding:18px;margin-bottom:15px;box-shadow:0 8px 25px #7c3aed44}.help-box h2{margin:0 0 8px}.help-icon{width:48px;height:48px;border-radius:14px;background:#ffffff33;display:flex;align-items:center;justify-content:center;font-size:25px}.help-preview{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;padding:12px;margin-top:12px}
+.package-admin-image{max-width:180px;max-height:120px;object-fit:contain;background:#f8fafc;border-radius:10px;display:block;margin:8px 0}.profile-head{display:flex;align-items:center;gap:12px;margin-bottom:15px}.profile-logo{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#ec4899,#06b6d4);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+@media(max-width:600px){.dashboard-grid{grid-template-columns:1fr}.brand-name{font-size:18px}}
+
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#f5f7fb}
+.login-card{width:100%;max-width:420px;background:#fff;padding:24px;border-radius:18px;box-shadow:0 8px 30px #00000018}
+.login-card h2{margin:0 0 8px}.login-card p{color:#666;font-size:14px}
+
+/* Panel Sell Bazaar brand styling only */
+.brand-logo{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,#7c3aed 0%,#ec4899 48%,#06b6d4 100%);
+  border:2px solid #ffffff55;
+  box-shadow:0 5px 18px #7c3aed66;
+}
+.brand-logo::after{
+  content:"";
+  position:absolute;
+  width:75px;height:10px;
+  background:#ffffff55;
+  transform:rotate(-35deg);
+  top:-18px;left:-18px;
+}
+.brand-name{
+  background:linear-gradient(90deg,#7c3aed,#ec4899,#06b6d4);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+</style>
+</head>
+<body>
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <h2>🔐 Admin Login</h2>
+    <p>Panel Sell Bazaar</p>
+    <input id="loginEmail" type="email" placeholder="Admin Email">
+    <input id="loginPassword" type="password" placeholder="Password">
+    <button class="blue" onclick="adminLogin()">Login</button>
+    <div id="loginMessage"></div>
+  </div>
+</div>
+<div id="adminApp" class="hidden">
+
+<header><div class="brand"><div class="brand-logo">PSB</div><div><div class="brand-name">Panel Sell Bazaar</div><div class="small">Admin Panel</div></div></div><button id="adminNotificationBtn" onclick="toggleNotifications()" style="width:auto;position:relative;background:#fff;color:#111827;border:1px solid #ddd;padding:10px 13px;margin:0">🔔 <span id="adminNotificationBadge" style="display:none;background:#ef4444;color:#fff;border-radius:999px;padding:2px 6px;font-size:11px;position:absolute;top:-5px;right:-5px">0</span></button></header>
+<div class="container">
+<div id="home" class="page"><div class="section"><h3>Dashboard</h3><div id="adminMessage"></div><div class="dashboard-grid"><div class="stat">Total Packages<b id="packageCount">0</b></div><div class="stat">Total Orders<b id="orderCount">0</b></div><div class="stat">Total Buyers<b id="buyerCount">0</b></div></div></div></div>
+
+<div id="packages" class="page hidden"><div class="section"><h3>Add Package</h3><input id="packageTitle" placeholder="Package name"><input id="packagePrice" type="number" placeholder="Price"><input id="packageDuration" placeholder="Duration"><input id="packageImage" placeholder="Image URL"><textarea id="packageDescription" placeholder="Package Details / Description (buyer View / Buy করলে দেখবে)"></textarea><input id="packageVideo" placeholder="Video Link (YouTube / TikTok / any video link)"><input id="packageLink" placeholder="Panel Link"><input id="packageLinkCaption" placeholder="Panel Link Caption (যেমন: Open Panel)"><button class="green" onclick="addPackage()">Add Package</button></div><div class="section"><h3>Package Options</h3><p class="small">প্রতিটি package-এর জন্য যত খুশি Duration + Price option যোগ করুন।</p><div id="optionPackageList">Package options loading...</div></div><div class="section"><h3>All Packages</h3><div id="packageList">Loading...</div></div></div>
+
+<div id="orders" class="page hidden"><div class="section"><h3>All Orders</h3><div id="orderList">Loading...</div></div></div>
+<div id="balance" class="page hidden"><div class="section"><h3>Buyer Balances</h3><div id="balanceList">Loading...</div></div></div>
+<div id="access" class="page hidden"><div class="section"><h3>Access / Panel Links</h3><div id="accessList">Loading...</div></div></div>
+
+<div id="payment" class="page hidden"><div class="section"><h3>💳 Payment Settings</h3><p class="small">bKash, Nagad এবং Rocket number পরিবর্তন করতে পারবেন।</p><label>bKash Number</label><input id="bkashNumber" placeholder="01XXXXXXXXX"><label>Nagad Number</label><input id="nagadNumber" placeholder="01XXXXXXXXX"><label>Rocket Number</label><input id="rocketNumber" placeholder="01XXXXXXXXX"><label>Payment Description</label><textarea id="paymentDescription" placeholder="Payment করার নিয়ম / Transaction ID সম্পর্কে লিখুন"></textarea><button class="blue" onclick="savePaymentSettings()">Save Payment Settings</button><div id="paymentMessage"></div></div></div>
+
+<div id="help" class="page hidden"><div class="section"><div class="help-box"><div class="help-icon">💬</div><h2>Help & Contact</h2><p>Buyer page-এর Help & Contact এখান থেকে পরিবর্তন করুন।</p></div><div class="section" style="margin-bottom:18px"><h3>🖼️ Home Banner</h3><p class="small">Homepage-এর Welcome-এর উপরের colorful banner ও বাংলা caption এখান থেকে পরিবর্তন করতে পারবেন। Image URL খালি রাখলে default banner দেখাবে।</p><label>Banner Image URL (Optional)</label><input id="homeBannerUrl" placeholder="https://example.com/banner.png"><label>Video Link (Optional)</label><input id="homeVideoUrl" placeholder="MP4 video URL or YouTube link"><p class="small">Banner 2 seconds দেখানোর পর Video চলবে। Autoplay-এর জন্য video শুরুতে muted থাকবে।</p><label>Banner Caption</label><textarea id="homeBannerCaption" placeholder="কিভাবে অর্ডার করবেন এবং কিভাবে টাকা Add করবেন..."></textarea><button class="blue" onclick="saveHomeBanner()">💾 Save Home Banner</button><div id="bannerMessage"></div></div>
+<label>Help Title</label><input id="helpTitle" placeholder="Help & Contact"><label>Help Text</label><textarea id="helpText" placeholder="Write your help information..."></textarea><label>Contact Number</label><input id="contactNumber" placeholder="01XXXXXXXXX"><label>WhatsApp Number</label><input id="whatsappNumber" placeholder="01XXXXXXXXX"><label>Telegram Username</label><input id="telegramUsername" placeholder="@username"><label>Telegram Channel Link</label><input id="telegramChannelLink" placeholder="https://t.me/yourchannel"><label>Help / Contact Link</label><input id="contactLink" placeholder="https://example.com"><button class="blue" onclick="saveHelpSettings()">💾 Save Help & Contact</button><div id="helpMessage"></div><div class="help-preview"><b>Preview</b><p id="helpPreviewTitle">Help & Contact</p><p id="helpPreviewText">Your help information will appear here.</p></div></div></div>
+
+<div id="profile" class="page hidden"><div class="section"><h3>Admin Profile</h3><div class="profile-head"><div id="profileLogo" class="profile-logo">A</div><div><strong id="adminName">Loading...</strong><div class="small">Administrator</div><div id="adminRole" class="small">Role: Admin</div></div></div><p id="adminPhone"></p><p id="adminEmail"></p><button class="danger" onclick="logout()">Logout</button></div></div>
+</div>
+<div id="notificationPanel" class="section hidden" style="position:fixed;right:12px;top:72px;z-index:50;width:min(380px,calc(100% - 24px));max-height:70vh;overflow:auto;box-shadow:0 10px 35px #0003"><div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">🔔 Notifications</h3><button style="width:auto;margin:0;padding:7px 10px" onclick="markAllNotificationsRead()">Mark all read</button></div><div id="notificationList" style="margin-top:10px">No notifications.</div></div>
+
+<nav><button class="active" onclick="showPage('home',this)">Home</button><button onclick="showPage('packages',this)">Packages</button><button onclick="showPage('orders',this)">Orders</button><button onclick="showPage('balance',this)">Balance</button><button onclick="showPage('access',this)">Access</button><button onclick="showPage('payment',this)">Payment</button><button onclick="showPage('help',this)">Help</button><button onclick="showPage('profile',this)">Profile</button></nav>
+
+<script>
+const SUPABASE_URL="https://wiztksrtzjmsxzolollf.supabase.co";
+const SUPABASE_KEY="sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
+const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
+  auth: {
+    storageKey: "panel-sell-bazaar-admin-auth-v1",
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});
+
+
+let adminPushRegistration=null;
+let adminPushReady=false;
+
+function urlBase64ToUint8Array(base64String){
+  const padding='='.repeat((4-base64String.length%4)%4);
+  const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
+  const rawData=atob(base64);
+  return Uint8Array.from([...rawData].map(ch=>ch.charCodeAt(0)));
+}
+
+async function registerAdminServiceWorker(){
+  if(!('serviceWorker' in navigator)||!('PushManager' in window)) return null;
+  try{
+    adminPushRegistration=await navigator.serviceWorker.register('./psb-admin-sw.js',{scope:'./'});
+    await navigator.serviceWorker.ready;
+    return adminPushRegistration;
+  }catch(e){
+    console.error('Admin service worker registration failed',e);
+    return null;
+  }
+}
+
+async function getAdminVapidPublicKey(){
+  const session=(await supabaseClient.auth.getSession()).data.session;
+  if(!session) throw new Error('Admin session not found.');
+  const r=await fetch(SUPABASE_URL+'/functions/v1/send-admin-push',{
+    method:'GET',
+    headers:{
+      'apikey':SUPABASE_KEY,
+      'Authorization':'Bearer '+session.access_token
+    }
+  });
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok||!data.publicKey) throw new Error(data.error||'Push public key পাওয়া যায়নি।');
+  return data.publicKey;
+}
+
+async function setupAdminPush(){
+  if(adminPushReady) return true;
+  if(!('Notification' in window)||!('PushManager' in window)||!('serviceWorker' in navigator)) return false;
+  try{
+    const permission=Notification.permission==='granted'? 'granted' : await Notification.requestPermission();
+    if(permission!=='granted') return false;
+    const reg=await registerAdminServiceWorker();
+    if(!reg) return false;
+    const publicKey=await getAdminVapidPublicKey();
+    let subscription=await reg.pushManager.getSubscription();
+    if(!subscription){
+      subscription=await reg.pushManager.subscribe({
+        userVisibleOnly:true,
+        applicationServerKey:urlBase64ToUint8Array(publicKey)
+      });
+    }
+    const json=subscription.toJSON();
+    if(!json.endpoint||!json.keys?.p256dh||!json.keys?.auth) throw new Error('Push subscription incomplete.');
+    const session=(await supabaseClient.auth.getSession()).data.session;
+    if(!session) return false;
+    const save=await supabaseClient.from('Admin Push Subscriptions').upsert([{
+      user_id:session.user.id,
+      endpoint:json.endpoint,
+      p256dh:json.keys.p256dh,
+      auth:json.keys.auth
+    }],{onConflict:'endpoint'});
+    if(save.error) throw save.error;
+    adminPushReady=true;
+    return true;
+  }catch(e){
+    console.error('Admin push setup failed',e);
+    return false;
+  }
+}
+
+function showMessage(id,text,type="info"){const b=document.getElementById(id);if(!b)return;b.className=type;b.innerText=text}
+function showPage(page,btn){document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));document.getElementById(page)?.classList.remove("hidden");document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));btn?.classList.add("active");if(page==="home")loadDashboard();if(page==="packages")loadPackages();if(page==="orders")loadOrders();if(page==="balance")loadBalances();if(page==="access")loadAccess();if(page==="payment")loadPaymentSettings();if(page==="help")loadHelpSettings()}
+
+let notificationChannel=null;
+let notificationUnread=0;
+function browserNotify(title,message){
+  try{
+    if('Notification' in window && Notification.permission==='granted'){
+      if(adminPushRegistration?.showNotification){
+        adminPushRegistration.showNotification(title,{body:message,icon:'./psb-logo-192.png',badge:'./psb-logo-192.png',vibrate:[200,100,200],renotify:true,tag:'psb-admin-'+Date.now()});
+      }else{
+        new Notification(title,{body:message});
+      }
+    }
+  }catch(e){}
+}
+async function requestBrowserNotifications(){
+  try{await setupAdminPush();}catch(e){console.error(e)}}
+function toggleNotifications(){const p=document.getElementById('notificationPanel');if(!p)return;p.classList.toggle('hidden');if(!p.classList.contains('hidden')){loadNotifications();requestBrowserNotifications();}}
+async function loadNotifications(){
+  const box=document.getElementById('notificationList');if(!box)return;
+  const r=await supabaseClient.from('Notifications').select('id,title,message,type,is_read,created_at').order('id',{ascending:false}).limit(30);
+  if(r.error){box.innerHTML='<div class="error">'+escapeHtml(r.error.message)+'</div>';return;}
+  const rows=r.data||[];notificationUnread=rows.filter(x=>!x.is_read).length;updateNotificationBadge();
+  if(!rows.length){box.innerHTML='<div class="small">No notifications.</div>';return;}
+  box.innerHTML=rows.map(n=>`<div class="card" style="background:${n.is_read?'#fff':'#f5f3ff'}"><b>${escapeHtml(n.title)}</b><p style="margin:6px 0">${escapeHtml(n.message)}</p><div class="small">${escapeHtml(formatAdminDateTime(n.created_at))}</div>${!n.is_read?`<button style="width:auto;padding:7px 10px" onclick="markNotificationRead(${n.id})">Mark read</button>`:''}</div>`).join('');
+}
+function updateNotificationBadge(){const b=document.getElementById('adminNotificationBadge');if(!b)return;b.textContent=notificationUnread;b.style.display=notificationUnread?'inline-block':'none';}
+async function markNotificationRead(id){await supabaseClient.from('Notifications').update({is_read:true}).eq('id',id);loadNotifications();}
+async function markAllNotificationsRead(){const r=await supabaseClient.from('Notifications').update({is_read:true}).eq('is_read',false);if(r.error)alert(r.error.message);loadNotifications();}
+function subscribeAdminNotifications(){
+  if(notificationChannel)notificationChannel.unsubscribe();
+  notificationChannel=supabaseClient.channel('admin-notifications').on('postgres_changes',{event:'INSERT',schema:'public',table:'Notifications'},payload=>{
+    const n=payload.new||{};browserNotify(n.title||'Panel Sell Bazaar',n.message||'New notification');
+    notificationUnread++;updateNotificationBadge();loadNotifications();
+  }).subscribe();
+}
+
+async function checkAdmin(){
+  try{
+    const s=(await supabaseClient.auth.getSession()).data.session;
+    if(!s){
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("adminApp").classList.add("hidden");
+      return;
+    }
+
+    const r=await supabaseClient.from("Profiles")
+      .select("id,Name,Phone,Role")
+      .eq("id",s.user.id)
+      .maybeSingle();
+
+    if(r.error){
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("adminApp").classList.add("hidden");
+      showMessage("loginMessage","Profile error: "+r.error.message,"error");
+      return;
+    }
+
+    if(!r.data){
+      await supabaseClient.auth.signOut();
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("adminApp").classList.add("hidden");
+      showMessage("loginMessage","Your profile was not found.","error");
+      return;
+    }
+
+    if(String(r.data.Role||"").trim().toLowerCase()!=="admin"){
+      await supabaseClient.auth.signOut();
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("adminApp").classList.add("hidden");
+      showMessage("loginMessage","Admin access denied. Role found: ["+(r.data.Role||"")+"]","error");
+      return;
+    }
+
+    document.getElementById("adminName").innerText=r.data.Name||s.user.email||"Admin";
+    document.getElementById("adminPhone").innerText="Phone: "+(r.data.Phone||"Not set");
+    document.getElementById("adminEmail").innerText="Email: "+(s.user.email||"");
+    const roleEl=document.getElementById("adminRole");
+    if(roleEl) roleEl.innerText="Role: Admin";
+
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("adminApp").classList.remove("hidden");
+    showMessage("adminMessage","Admin login successful.","success");
+    loadDashboard();
+    loadNotifications();
+    subscribeAdminNotifications();
+    setTimeout(()=>setupAdminPush(),300);
+  }catch(e){
+    document.getElementById("loginScreen").classList.remove("hidden");
+    document.getElementById("adminApp").classList.add("hidden");
+    showMessage("loginMessage","Error: "+(e.message||e),"error");
+  }
+}
+
+async function adminLogin(){
+  const email=document.getElementById("loginEmail").value.trim();
+  const password=document.getElementById("loginPassword").value;
+  if(!email||!password){
+    showMessage("loginMessage","Email and password দিন।","error");
+    return;
+  }
+  showMessage("loginMessage","Logging in...","info");
+  const r=await supabaseClient.auth.signInWithPassword({email,password});
+  if(r.error){
+    showMessage("loginMessage","Login failed: "+r.error.message,"error");
+    return;
+  }
+  await checkAdmin();
+}
+
+async function loadDashboard(){const p=await supabaseClient.from("Package").select("id",{count:"exact",head:true});const o=await supabaseClient.from("Orders").select("id",{count:"exact",head:true});const b=await supabaseClient.from("Profiles").select("id",{count:"exact",head:true}).eq("Role","buyer");document.getElementById("packageCount").innerText=p.count||0;document.getElementById("orderCount").innerText=o.count||0;document.getElementById("buyerCount").innerText=b.count||0}
+
+async function addPackage(){const title=packageTitle.value.trim(),price=Number(packagePrice.value),duration=packageDuration.value.trim(),image_url=packageImage.value.trim(),description=packageDescription.value.trim(),video_link=packageVideo.value.trim(),panel_link=packageLink.value.trim(),panel_link_caption=packageLinkCaption.value.trim();if(!title||!price||!duration){alert("Package name, price and duration are required.");return}const r=await supabaseClient.from("Package").insert([{title,price,duration,image_url,description,video_link,panel_link,panel_link_caption}]);if(r.error){alert(r.error.message);return}alert("Package added successfully.");["packageTitle","packagePrice","packageDuration","packageImage","packageDescription","packageVideo","packageLink","packageLinkCaption"].forEach(x=>document.getElementById(x).value="");loadPackages();loadDashboard()}
+
+async function loadPackages(){const box=document.getElementById("packageList");box.innerHTML="Loading...";const r=await supabaseClient.from("Package").select("*").order("id",{ascending:false});if(r.error){box.innerHTML='<div class="error">'+escapeHtml(r.error.message)+'</div>';return}if(!r.data?.length){box.innerHTML="No packages found.";return}box.innerHTML="";r.data.forEach(p=>{const d=document.createElement("div");d.className="card";d.innerHTML=`<b>${escapeHtml(p.title)}</b><p class="price">৳${escapeHtml(p.price)}</p><p>Duration: ${escapeHtml(p.duration)}</p><p>Stock: <b style="color:${String(p.stock_status||"In Stock")==="Out of Stock"?"#dc2626":"#16a34a"}">${escapeHtml(p.stock_status||"In Stock")}</b></p>${p.image_url?`<img class="package-admin-image" src="${escapeAttr(p.image_url)}" onerror="this.outerHTML='<div class=\\"error\\">Image URL could not be loaded.</div>'">`:''}<input id="title_${p.id}" value="${escapeAttr(p.title)}"><input id="price_${p.id}" type="number" value="${escapeAttr(p.price)}"><input id="duration_${p.id}" value="${escapeAttr(p.duration)}"><input id="image_${p.id}" value="${escapeAttr(p.image_url||"")}" placeholder="Image URL"><textarea id="description_${p.id}" placeholder="Package Details / Description">${escapeHtml(p.description||"")}</textarea><input id="video_${p.id}" value="${escapeAttr(p.video_link||"")}" placeholder="Video Link (YouTube / TikTok / any video link)"><input id="link_${p.id}" value="${escapeAttr(p.panel_link||"")}" placeholder="Panel Link"><input id="caption_${p.id}" value="${escapeAttr(p.panel_link_caption||"")}" placeholder="Panel Link Caption"><button class="blue" onclick="updatePackage(${p.id})">Update</button><button class="green" style="width:auto;padding:9px 12px" onclick="setPackageStock(${p.id},'In Stock')">Stock In</button><button class="danger" style="width:auto;padding:9px 12px" onclick="setPackageStock(${p.id},'Out of Stock')">Stock Out</button><button class="danger" onclick="deletePackage(${p.id})">Delete</button><div id="opts_${p.id}" style="margin-top:10px">Options loading...</div>`;box.appendChild(d);loadPackageOptionsAdmin(p.id)})}
+
+async function updatePackage(id){const title=document.getElementById("title_"+id).value.trim(),price=Number(document.getElementById("price_"+id).value),duration=document.getElementById("duration_"+id).value.trim(),image_url=document.getElementById("image_"+id).value.trim(),description=document.getElementById("description_"+id).value.trim(),video_link=document.getElementById("video_"+id).value.trim(),panel_link=document.getElementById("link_"+id).value.trim(),panel_link_caption=document.getElementById("caption_"+id).value.trim();const r=await supabaseClient.from("Package").update({title,price,duration,image_url,description,video_link,panel_link,panel_link_caption}).eq("id",id);if(r.error){alert(r.error.message);return}alert("Package updated.");loadPackages()}
+async function deletePackage(id){if(!confirm("Delete this package?"))return;const r=await supabaseClient.from("Package").delete().eq("id",id);if(r.error){alert(r.error.message);return}alert("Package deleted.");loadPackages();loadDashboard()}
+async function setPackageStock(id,status){const r=await supabaseClient.from("Package").update({stock_status:status}).eq("id",id);if(r.error){alert(r.error.message);return}alert(status==='Out of Stock'?'Package marked Stock Out.':'Package marked Stock In.');loadPackages()}
+
+async function loadPackageOptionsAdmin(packageId){
+  const box=document.getElementById("opts_"+packageId);if(!box)return;
+  const r=await supabaseClient.from("Package Options").select("*").eq("package_id",packageId).order("id",{ascending:true});
+  if(r.error){box.innerHTML='<div class="error">Options error: '+escapeHtml(r.error.message)+'</div>';return}
+  const rows=r.data||[];
+  let html='<h4>Package Options (Unlimited)</h4><div id="optionRows_'+packageId+'">';
+  rows.forEach(o=>{html+=packageOptionRowHtml(packageId,o.duration,o.price,o.id)});
+  html+='</div><button type="button" class="blue" onclick="addPackageOptionRow('+packageId+')">+ Add Option</button><button type="button" class="green" onclick="savePackageOptions('+packageId+')">Save Options</button>';
+  box.innerHTML=html;
+}
+function packageOptionRowHtml(packageId,duration='',price='',optionId='new'){
+  return `<div class="po-row" data-option-id="${escapeAttr(optionId)}" style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin:6px 0;align-items:center"><input class="po-duration" placeholder="Duration" value="${escapeAttr(duration)}"><input class="po-price" type="number" min="0" placeholder="Price" value="${escapeAttr(price)}"><button type="button" class="danger" style="width:auto;padding:9px 12px;margin:0" onclick="this.parentElement.remove()">Remove</button></div>`;
+}
+function addPackageOptionRow(packageId){const box=document.getElementById('optionRows_'+packageId);if(box)box.insertAdjacentHTML('beforeend',packageOptionRowHtml(packageId));}
+async function savePackageOptions(packageId){
+  const container=document.getElementById('optionRows_'+packageId);if(!container)return;
+  const rows=[];for(const row of container.querySelectorAll('.po-row')){const duration=row.querySelector('.po-duration')?.value.trim(),price=Number(row.querySelector('.po-price')?.value||0);if(duration&&price>0)rows.push({package_id:packageId,duration,price});}
+  const old=await supabaseClient.from('Package Options').select('id').eq('package_id',packageId);
+  if(old.error){alert(old.error.message);return}
+  for(const item of old.data||[]){const d=await supabaseClient.from('Package Options').delete().eq('id',item.id);if(d.error){alert(d.error.message);return}}
+  if(rows.length){const ins=await supabaseClient.from('Package Options').insert(rows);if(ins.error){alert(ins.error.message);return}}
+  alert('Package options saved.');loadPackageOptionsAdmin(packageId);
+}
+async function loadOrders(){
+  const box=document.getElementById("orderList");box.innerHTML="Loading...";
+  const r=await supabaseClient.from("Orders").select("*").order("id",{ascending:false});
+  if(r.error){box.innerHTML='<div class="error">'+escapeHtml(r.error.message)+'</div>';return}
+  if(!r.data?.length){box.innerHTML="No orders found.";return}
+  const buyerIds=[...new Set(r.data.map(o=>o.buyer_id).filter(Boolean))];
+  const packageIds=[...new Set(r.data.map(o=>o.package_id).filter(Boolean))];
+  let buyers={},packs={};
+  if(buyerIds.length){const br=await supabaseClient.from("Profiles").select("id,Name,Phone").in("id",buyerIds);(br.data||[]).forEach(b=>buyers[b.id]=b)}
+  if(packageIds.length){const pr=await supabaseClient.from("Package").select("id,title,panel_link,panel_link_caption").in("id",packageIds);(pr.data||[]).forEach(p=>packs[p.id]=p)}
+  box.innerHTML="";
+  r.data.forEach(o=>{
+    const d=document.createElement("div");d.className="card";
+    const buyer=buyers[o.buyer_id]||{},pack=packs[o.package_id]||{};
+    d.innerHTML=`<b>Order #${escapeHtml(o.id)}</b>
+      <p>Buyer Name: <b>${escapeHtml(buyer.Name||"Buyer")}</b></p>
+      <p>Phone: ${escapeHtml(buyer.Phone||"Not set")}</p>
+      <p>User ID: <span class="user-id"><b>${escapeHtml(o.buyer_id||"")}</b></span> <button type="button" style="width:auto;padding:7px 10px" onclick="copyAdminText('${escapeAttr(o.buyer_id||'').replace(/'/g,"\\'")}')">Copy ID</button></p>
+      <p>Package: <b>${escapeHtml(pack.title||"Package")}</b></p>
+      <p>Order Date & Time: <b>${escapeHtml(formatAdminDateTime(o.created_at))}</b></p>
+      <p>Amount: <b>৳${escapeHtml(o.amount??o.price??0)}</b></p>
+      <p>Duration: <b>${escapeHtml(o.package_duration||"")}</b></p>
+      <p>Payment Method: <b>${escapeHtml(o.payment_method||"Not provided")}</b></p>
+      ${o.transaction_id?`<p>Transaction ID: <b>${escapeHtml(o.transaction_id)}</b></p>`:""}
+      <p>Status: <b>${escapeHtml(o.status||"Pending")}</b></p>
+      ${o.cancellation_reason?`<p>Cancellation Reason: <b>${escapeHtml(o.cancellation_reason)}</b></p>`:""}
+      <label>Cancellation Reason</label>
+      <input id="cancel_reason_${o.id}" value="${escapeAttr(o.cancellation_reason||"")}" placeholder="যেমন: Transaction ID ভুল">
+      <label>Access Key</label>
+      <div style="display:flex;gap:6px;align-items:center">
+        <input id="key_${o.id}" value="${escapeAttr(o.access_key||"")}" placeholder="Paste Access Key here" style="flex:1">
+        <button type="button" style="width:auto;padding:10px 12px;margin:6px 0;background:#2563eb" onclick="pasteAdminField('key_${o.id}')">Paste</button>
+      </div>
+      <select id="status_${o.id}">
+        <option value="Pending" ${o.status==="Pending"?"selected":""}>Pending</option>
+        <option value="Confirmed" ${o.status==="Confirmed"?"selected":""}>Confirmed</option>
+        <option value="Cancelled" ${o.status==="Cancelled"?"selected":""}>Cancelled</option>
+      </select>
+      <button class="green" onclick="updateOrder(${o.id})">Save Order</button>
+      ${pack.panel_link?`<p><a target="_blank" rel="noopener" href="${escapeAttr(pack.panel_link)}">🔗 ${escapeHtml(pack.panel_link_caption||"Open Panel Link")}</a></p>`:""}`;
+    box.appendChild(d);
+  });
+}
+async function updateOrder(id){
+  const status=document.getElementById("status_"+id).value;
+  const access_key=document.getElementById("key_"+id).value.trim();
+  const cancellation_reason=document.getElementById("cancel_reason_"+id)?.value.trim()||"";
+  if(status==="Cancelled" && !cancellation_reason){
+    alert("Cancelled করলে Cancellation Reason লিখুন।");
+    return;
+  }
+  const r=await supabaseClient.from("Orders").update({status,access_key,cancellation_reason}).eq("id",id);
+  if(r.error){alert(r.error.message);return}
+  alert("Order updated successfully.");loadOrders();loadAccess();
+}
+async function copyAdminField(id){const el=document.getElementById(id);if(!el)return;try{await navigator.clipboard.writeText(el.value);alert("Access Key copied.")}catch(e){el.select();document.execCommand("copy");alert("Access Key copied.")}}
+async function pasteAdminField(id){const el=document.getElementById(id);if(!el)return;try{const text=await navigator.clipboard.readText();el.value=text;el.focus()}catch(e){alert("Paste permission পাওয়া যায়নি। Input-এ long-press করে Paste করুন।")}}
+
+async function loadAccess(){const box=document.getElementById("accessList");box.innerHTML="Loading...";const r=await supabaseClient.from("Orders").select("*").eq("status","Confirmed").order("id",{ascending:false});if(r.error){box.innerHTML='<div class="error">'+escapeHtml(r.error.message)+'</div>';return}const data=(r.data||[]).filter(o=>(o.order_type||"").toLowerCase()!=="balance top up");if(!data.length){box.innerHTML="No confirmed access found.";return}const pids=[...new Set(data.map(o=>o.package_id).filter(Boolean))];let packs={};if(pids.length){const pr=await supabaseClient.from("Package").select("id,title,panel_link,panel_link_caption").in("id",pids);if(pr.error){box.innerHTML='<div class="error">'+escapeHtml(pr.error.message)+'</div>';return}(pr.data||[]).forEach(p=>packs[p.id]=p)}box.innerHTML="";data.forEach(o=>{const d=document.createElement("div");d.className="card";const p=packs[o.package_id]||{};d.innerHTML=`<b>${escapeHtml(p.title||"Package")}</b><p>Duration: ${escapeHtml(o.package_duration||"")}</p><p>Buyer: ${escapeHtml(o.buyer_id||"")}</p><p>Access Key: <b>${escapeHtml(o.access_key||"Not set")}</b>${o.access_key?` <button style="width:auto;padding:7px 10px" onclick="copyAdminText('${escapeAttr(o.access_key).replace(/'/g,"\\'")}')">Copy</button>`:''}</p>${p.panel_link?`<p><a target="_blank" href="${escapeAttr(p.panel_link)}">🔗 ${escapeHtml(p.panel_link_caption||"Open Panel Link")}</a></p>`:''}`;box.appendChild(d)})}
+async function loadBalances(){const box=document.getElementById("balanceList");box.innerHTML="Loading...";const r=await supabaseClient.from("Profiles").select("id,Name,Phone,balance,Role").eq("Role","buyer").order("Name");if(r.error){box.innerHTML='<div class="error">'+escapeHtml(r.error.message)+'</div>';return}if(!r.data?.length){box.innerHTML="No buyers found.";return}box.innerHTML="";r.data.forEach(p=>{const d=document.createElement("div");d.className="card";d.innerHTML=`<b>${escapeHtml(p.Name||"Buyer")}</b><p>User ID: <span class="user-id"><b>${escapeHtml(p.id||"")}</b></span></p><label>Name</label><input id="buyer_name_${p.id}" value="${escapeAttr(p.Name||"")}"><label>Phone</label><input id="buyer_phone_${p.id}" value="${escapeAttr(p.Phone||"")}"><button class="blue" onclick="updateBuyerProfile('${p.id}')">Save Buyer Name & Phone</button><p>Current Balance: <b>৳${escapeHtml(p.balance||0)}</b></p><input id="balance_${p.id}" type="number" value="${escapeAttr(p.balance||0)}"><button onclick="changeBalance('${p.id}')">Update Balance</button>`;box.appendChild(d)})}
+async function updateBuyerProfile(id){const Name=document.getElementById('buyer_name_'+id)?.value.trim(),Phone=document.getElementById('buyer_phone_'+id)?.value.trim();if(!Name||!Phone){alert('Name এবং Phone number দিন।');return}const r=await supabaseClient.from('Profiles').update({Name,Phone}).eq('id',id);if(r.error){alert(r.error.message);return}alert('Buyer profile updated.');loadBalances()}
+async function changeBalance(id){const amount=Number(document.getElementById("balance_"+id).value);if(amount<0){alert("Balance cannot be negative.");return}const r=await supabaseClient.from("Profiles").update({balance:amount}).eq("id",id);if(r.error){alert(r.error.message);return}alert("Balance updated.");loadBalances()}
+async function copyAdminText(t){try{await navigator.clipboard.writeText(t);alert("Copied")}catch(e){prompt("Copy:",t)}}
+
+async function loadPaymentSettings(){const r=await supabaseClient.from("Payment Settings").select("id,bkash_number,nagad_number,rocket_number,payment_description").eq("id",1).maybeSingle();if(r.error){showMessage("paymentMessage","Load error: "+r.error.message,"error");return}const d=r.data||{};bkashNumber.value=d.bkash_number||"";nagadNumber.value=d.nagad_number||"";rocketNumber.value=d.rocket_number||"";paymentDescription.value=d.payment_description||""}
+async function savePaymentSettings(){const values={bkash_number:bkashNumber.value.trim(),nagad_number:nagadNumber.value.trim(),rocket_number:rocketNumber.value.trim(),payment_description:paymentDescription.value.trim()};if(!values.bkash_number&&!values.nagad_number&&!values.rocket_number){showMessage("paymentMessage","কমপক্ষে একটি payment number দিন।","error");return}const u=await supabaseClient.from("Payment Settings").update(values).eq("id",1).select("id").maybeSingle();if(u.error){showMessage("paymentMessage","Update error: "+u.error.message,"error");return}if(!u.data){const ins=await supabaseClient.from("Payment Settings").insert([{id:1,...values}]).select("id").single();if(ins.error){showMessage("paymentMessage","Save error: "+ins.error.message,"error");return}}showMessage("paymentMessage","Payment settings saved successfully.","success");await loadPaymentSettings()}
+
+async function loadHelpSettings(){const r=await supabaseClient.from("Site Settings").select("*").eq("id",1).maybeSingle();if(r.error){showMessage("helpMessage","Load error: "+r.error.message,"error");return}const d=r.data||{};helpTitle.value=d.help_title||"";helpText.value=d.help_text||"";contactNumber.value=d.contact_number||"";whatsappNumber.value=d.whatsapp_number||"";telegramUsername.value=d.telegram_username||"";telegramChannelLink.value=d.telegram_channel_link||"";contactLink.value=d.contact_link||"";homeBannerUrl.value=d.home_banner_url||"";homeBannerCaption.value=d.home_banner_caption||"";homeVideoUrl.value=d.home_video_url||"";updateHelpPreview()}
+async function saveHomeBanner(){const values={home_banner_url:homeBannerUrl.value.trim(),home_banner_caption:homeBannerCaption.value.trim(),home_video_url:homeVideoUrl.value.trim()};const u=await supabaseClient.from("Site Settings").update(values).eq("id",1).select("id").maybeSingle();if(u.error){showMessage("bannerMessage","Save error: "+u.error.message,"error");return}if(!u.data){const ins=await supabaseClient.from("Site Settings").insert([{id:1,...values}]).select("id").single();if(ins.error){showMessage("bannerMessage","Save error: "+ins.error.message,"error");return}}showMessage("bannerMessage","Home banner saved successfully.","success")}
+
+async function saveHelpSettings(){const values={help_title:helpTitle.value.trim(),help_text:helpText.value.trim(),contact_number:contactNumber.value.trim(),whatsapp_number:whatsappNumber.value.trim(),telegram_username:telegramUsername.value.trim(),telegram_channel_link:telegramChannelLink.value.trim(),contact_link:contactLink.value.trim(),home_banner_url:homeBannerUrl.value.trim(),home_banner_caption:homeBannerCaption.value.trim()};const u=await supabaseClient.from("Site Settings").update(values).eq("id",1).select("id").maybeSingle();if(u.error){showMessage("helpMessage","Save error: "+u.error.message,"error");return}if(!u.data){const ins=await supabaseClient.from("Site Settings").insert([{id:1,...values}]).select("id").single();if(ins.error){showMessage("helpMessage","Save error: "+ins.error.message,"error");return}}showMessage("helpMessage","Help & Contact saved successfully.","success");updateHelpPreview()}
+function updateHelpPreview(){helpPreviewTitle.innerText=helpTitle.value.trim()||"Help & Contact";helpPreviewText.innerText=helpText.value.trim()||"Your help information will appear here."}
+async function logout(){if(notificationChannel)notificationChannel.unsubscribe();await supabaseClient.auth.signOut();location.href="index.html"}
+function formatAdminDateTime(v){if(!v)return 'N/A';try{return new Date(v).toLocaleString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true,timeZone:'Asia/Dhaka'});}catch(e){return String(v)}}
+
+function escapeHtml(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
+function escapeAttr(v){return escapeHtml(v)}
+registerAdminServiceWorker();
+checkAdmin();
+</script>
+</div></body>
+</html>
