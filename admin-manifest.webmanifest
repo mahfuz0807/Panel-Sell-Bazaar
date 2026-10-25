@@ -1,0 +1,25 @@
+{
+  "id": "/Panel-Sell-Bazaar/admin.html",
+  "name": "Panel Sell Bazaar Admin Panel",
+  "short_name": "PSB Admin",
+  "description": "Panel Sell Bazaar Admin Panel",
+  "start_url": "/Panel-Sell-Bazaar/admin.html?source=admin-pwa",
+  "scope": "/Panel-Sell-Bazaar/",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "./psb-logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./psb-logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
