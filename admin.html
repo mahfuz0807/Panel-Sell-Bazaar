@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Sell Bazaar - Admin</title>
+<link rel="manifest" href="admin-manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="psb-logo-192.png">
+<link rel="apple-touch-icon" href="psb-logo-192.png">
+<meta name="theme-color" content="#111827">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#222}
+header{background:#fff;color:#222;padding:14px 18px;position:sticky;top:0;z-index:10;border-bottom:1px solid #ddd;box-shadow:0 2px 8px #0000000d}.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7c3aed,#ec4899,#06b6d4);font-weight:800;box-shadow:0 5px 18px #7c3aed66}.brand-name{font-size:21px;font-weight:bold}.small{font-size:13px;opacity:.8;margin-top:4px}
+.container{padding:15px;padding-bottom:95px}.section{background:#fff;padding:15px;border-radius:14px;margin-bottom:15px;box-shadow:0 2px 8px #0000000d}
+input,select,textarea,button{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd;border-radius:9px;font-size:15px}textarea{min-height:110px;resize:vertical}.pay-select{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:9px;background:#fff;font-size:15px}button{background:#111827;color:#fff;border:0;cursor:pointer}button.green{background:#16803c}button.blue{background:#2563eb}button.danger{background:#d93025}
+.card{border:1px solid #eee;padding:12px;border-radius:12px;margin:10px 0}.price{font-size:18px;font-weight:bold;color:#2563eb}.success{background:#e7f7ed;color:#16803c;padding:12px;border-radius:9px;margin-top:10px}.error{background:#fde8e7;color:#b42318;padding:12px;border-radius:9px;margin-top:10px}.hidden{display:none!important}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;overflow-x:auto;z-index:20}nav button{min-width:85px;margin:0;border-radius:0;background:#fff;color:#333;font-size:12px}nav button.active{background:#111827;color:#fff}
+nav button{min-width:105px;padding:15px 9px;font-size:15px;font-weight:700;background:linear-gradient(180deg,#fff,#f5f3ff);color:#475569}nav button:nth-child(1){color:#7c3aed}nav button:nth-child(2){color:#2563eb}nav button:nth-child(3){color:#ec4899}nav button:nth-child(4){color:#16a34a}nav button:nth-child(5){color:#0891b2}nav button:nth-child(6){color:#f59e0b}nav button:nth-child(7){color:#ef4444}nav button:nth-child(8){color:#7c3aed}nav button.active{background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;box-shadow:0 -3px 12px #7c3aed33}
+.dashboard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#f3f4f6;padding:15px;border-radius:12px;text-align:center}.stat b{display:block;font-size:25px;margin-top:5px}
+.help-box{background:linear-gradient(135deg,#7c3aed,#ec4899,#06b6d4);color:#fff;border-radius:18px;padding:18px;margin-bottom:15px;box-shadow:0 8px 25px #7c3aed44}.help-box h2{margin:0 0 8px}.help-icon{width:48px;height:48px;border-radius:14px;background:#ffffff33;display:flex;align-items:center;justify-content:center;font-size:25px}.help-preview{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;padding:12px;margin-top:12px}
+.package-admin-image{max-width:180px;max-height:120px;object-fit:contain;background:#f8fafc;border-radius:10px;display:block;margin:8px 0}.profile-head{display:flex;align-items:center;gap:12px;margin-bottom:15px}.profile-logo{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#ec4899,#06b6d4);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+@media(max-width:600px){.dashboard-grid{grid-template-columns:1fr}.brand-name{font-size:18px}}
+
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#f5f7fb}
+.login-card{width:100%;max-width:420px;background:#fff;padding:24px;border-radius:18px;box-shadow:0 8px 30px #00000018}
+.login-card h2{margin:0 0 8px}.login-card p{color:#666;font-size:14px}
+
+/* Panel Sell Bazaar brand styling only */
+.brand-logo{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,#7c3aed 0%,#ec4899 48%,#06b6d4 100%);
+  border:2px solid #ffffff55;
+  box-shadow:0 5px 18px #7c3aed66;
+}
+.brand-logo::after{
+  content:"";
+  position:absolute;
+  width:75px;height:10px;
+  background:#ffffff55;
+  transform:rotate(-35deg);
+  top:-18px;left:-18px;
+}
+.brand-name{
+  background:linear-gradient(90deg,#7c3aed,#ec4899,#06b6d4);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+
+.brand-logo{width:48px;height:48px;border-radius:50%;object-fit:contain;flex:0 0 48px}
+ .brand-logo{width:56px!important;height:56px!important;flex-basis:56px!important}.brand-name{font-size:24px!important}#adminNotificationBtn{padding:12px 15px!important;font-size:16px!important}@media(max-width:600px){.brand-logo{width:52px!important;height:52px!important;flex-basis:52px!important}.brand-name{font-size:20px!important}}
+</style>
+
+<style id="psb-admin-package-refresh">
+#packageList>.card{background:linear-gradient(145deg,#fff,#f5f3ff 60%,#eff6ff);border:1px solid #c4b5fd;box-shadow:0 4px 14px #7c3aed12;padding:15px}
+#packageList>.card> b:first-child{display:block;font-size:21px;font-weight:1000;color:#4c1d95;line-height:1.25;margin-bottom:5px}
+#packageList .po-row{background:linear-gradient(100deg,#eff6ff,#f5f3ff,#fdf2f8);border:1px solid #c4b5fd;border-radius:10px;padding:7px!important}
+#packageList .po-row input{padding:8px 9px!important;margin:2px 0!important;font-size:13px!important;min-width:0}
+#packageList .po-row button{font-size:11px!important;padding:7px 8px!important;margin:2px 0!important;white-space:nowrap}
+#packageList [id^="opts_"] h4{color:#6d28d9;margin:10px 0 6px;font-size:14px}
+#packageList [id^="opts_"]>button{width:auto!important;padding:7px 10px!important;font-size:12px!important;margin:4px 4px 4px 0!important}
+#packageList .package-stock-badge{font-weight:900}
+@media(max-width:520px){#packageList>.card> b:first-child{font-size:19px}#packageList .po-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto!important;gap:4px!important;padding:5px!important}#packageList .po-row input{font-size:12px!important;padding:7px 5px!important}#packageList .po-row button{font-size:10px!important;padding:6px 5px!important}}
+</style>
+
+
+<style id="psb-admin-single-row-icon-nav">
+.admin-bottom-nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;display:flex!important;flex-wrap:nowrap!important;overflow:hidden!important;justify-content:space-between!important;gap:0!important;padding:5px 2px calc(5px + env(safe-area-inset-bottom,0px))!important;background:rgba(255,255,255,.97)!important;backdrop-filter:blur(14px);border-top:1px solid #dbeafe!important;box-shadow:0 -7px 24px #312e8114!important;z-index:100!important}.admin-bottom-nav button{flex:1 1 0!important;min-width:0!important;width:12.5%!important;max-width:12.5%!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;margin:0!important;padding:5px 0!important;border:0!important;border-radius:9px!important;background:transparent!important;color:#64748b!important;font-size:clamp(8px,2.3vw,11px)!important;line-height:1.1!important;font-weight:800!important;white-space:nowrap!important;overflow:hidden!important}.admin-bottom-nav .admin-nav-icon{width:28px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#f1f5f9;color:#64748b}.admin-bottom-nav .admin-nav-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.admin-bottom-nav button:nth-child(1) .admin-nav-icon{background:#ede9fe;color:#7c3aed}.admin-bottom-nav button:nth-child(2) .admin-nav-icon{background:#dbeafe;color:#2563eb}.admin-bottom-nav button:nth-child(3) .admin-nav-icon{background:#fce7f3;color:#db2777}.admin-bottom-nav button:nth-child(4) .admin-nav-icon{background:#dcfce7;color:#16a34a}.admin-bottom-nav button:nth-child(5) .admin-nav-icon{background:#cffafe;color:#0891b2}.admin-bottom-nav button:nth-child(6) .admin-nav-icon{background:#fef3c7;color:#d97706}.admin-bottom-nav button:nth-child(7) .admin-nav-icon{background:#ffe4e6;color:#e11d48}.admin-bottom-nav button:nth-child(8) .admin-nav-icon{background:#e0e7ff;color:#4f46e5}.admin-bottom-nav button.active{background:linear-gradient(135deg,#7c3aed,#ec4899)!important;color:#fff!important;box-shadow:0 2px 8px #7c3aed33!important}.admin-bottom-nav button.active .admin-nav-icon{background:#ffffff30!important;color:#fff!important}@media(max-width:360px){.admin-bottom-nav .admin-nav-icon{width:24px;height:23px}.admin-bottom-nav .admin-nav-icon svg{width:17px;height:17px}.admin-bottom-nav button{font-size:8px!important}}
+</style>
+</head>
+<body>
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <h2>🔐 Admin Login</h2>
+    <p>Panel Sell Bazaar</p>
+    <input id="loginEmail" type="email" placeholder="Admin Email">
+    <input id="loginPassword" type="password" placeholder="Password">
+    <button class="blue" onclick="adminLogin()">Login</button>
+    <div id="loginMessage"></div>
+  </div>
+</div>
+<div id="adminApp" class="hidden">
+
+<header style="display:flex;align-items:center;justify-content:space-between;gap:10px"><div class="brand"><img id="adminSiteLogoPreview" class="brand-logo" src="" alt="PSB logo" style="object-fit:contain;display:none"><div id="adminSiteLogoFallback" class="brand-logo">PSB</div><div><div class="brand-name">Panel Sell Bazaar</div><div class="small">Admin Panel</div></div></div><div style="display:flex;gap:7px;align-items:center"><button id="adminInstallBtn" onclick="installAdminApp()" style="display:none;width:auto;background:#2563eb;color:#fff;padding:9px 11px;margin:0;white-space:nowrap">⬇ Install Admin</button><button id="adminNotificationBtn" onclick="toggleNotifications()" style="width:auto;position:relative;background:#fff;color:#111827;border:1px solid #ddd;padding:10px 13px;margin:0">🔔 <span id="adminNotificationBadge" style="display:none;background:#ef4444;color:#fff;border-radius:999px;padding:2px 6px;font-size:11px;position:absolute;top:-5px;right:-5px">0</span></button></div></header>
+<div class="container">
+<div id="home" class="page"><div class="section"><h3>Dashboard</h3><div id="adminMessage"></div><div class="dashboard-grid"><div class="stat">Total Packages<b id="packageCount">0</b></div><div class="stat">Total Orders<b id="orderCount">0</b></div><div class="stat">Total Accounts Opened<b id="buyerCount">0</b></div><div class="stat">Pending Orders<b id="pendingOrderCount">0</b></div></div></div><div class="section"><h3>⏳ Pending Orders <span id="pendingHeadingCount">(0)</span></h3><p class="small">শুধু Pending অর্ডার এখানে দেখাবে। Confirm বা Cancel করলে এখান থেকে চলে যাবে।</p><div id="dashboardPendingOrders">Loading...</div></div><div class="section"><h3>👥 All Customers / Buyer Profiles</h3><p class="small">সব Buyer-এর প্রোফাইল এখানে দেখা যাবে।</p><div id="dashboardBuyerProfiles">Loading...</div></div></div>
+
+<div id="packages" class="page hidden"><div class="section"><h3>Add Package</h3><input id="packageTitle" placeholder="Package name"><input id="packagePrice" type="number" placeholder="Price"><input id="packageDuration" placeholder="Duration"><input id="packageImage" placeholder="Image URL"><textarea id="packageDescription" placeholder="Package Details / Description (buyer View / Buy করলে দেখবে)"></textarea><input id="packageVideo" placeholder="Video Link (YouTube / TikTok / any video link)"><input id="packageLink" placeholder="Panel Link"><input id="packageLinkCaption" placeholder="Panel Link Caption (যেমন: Open Panel)"><button class="green" onclick="addPackage()">Add Package</button></div><div class="section"><h3>Package Options</h3><p class="small">প্রতিটি package-এর জন্য যত খুশি Duration + Price option যোগ করুন।</p><div id="optionPackageList">Package options loading...</div></div><div class="section"><h3>All Packages</h3><div id="packageList">Loading...</div></div></div>
+
+<div id="orders" class="page hidden"><div class="section"><h3>All Orders</h3><div id="orderList">Loading...</div></div></div>
+<div id="balance" class="page hidden"><div class="section"><h3>Buyer Balances</h3><div id="balanceList">Loading...</div></div></div>
+<div id="access" class="page hidden"><div class="section"><h3>Access / Panel Links</h3><div id="accessList">Loading...</div></div></div>
+
+<div id="payment" class="page hidden"><div class="section"><h3>💳 Payment Settings</h3><p class="small">bKash, Nagad এবং Rocket number পরিবর্তন করতে পারবেন।</p><label>bKash Number</label><input id="bkashNumber" placeholder="01XXXXXXXXX"><label>Nagad Number</label><input id="nagadNumber" placeholder="01XXXXXXXXX"><label>Rocket Number</label><input id="rocketNumber" placeholder="01XXXXXXXXX"><label>Payment Description</label><textarea id="paymentDescription" placeholder="Payment করার নিয়ম / Transaction ID সম্পর্কে লিখুন"></textarea><button class="blue" onclick="savePaymentSettings()">Save Payment Settings</button><div id="paymentMessage"></div></div></div>
+
+<div id="help" class="page hidden"><div class="section"><div class="help-box"><div class="help-icon">💬</div><h2>Contact / সাহায্য লাগবে?</h2><p>Buyer page-এর Contact / সাহায্য লাগবে এখান থেকে পরিবর্তন করুন।</p></div><div class="section"><h3>🖼️ Website & Install Logo</h3><p class="small">PNG logo-এর direct image URL দিন। একই লোগো দুটো জায়গায় দিতে চাইলে একই URL দিন।</p><label>Website Logo URL</label><input id="siteLogoUrl" placeholder="https://.../psb-web-192.png"><label>Install / App Logo URL</label><input id="installLogoUrl" placeholder="https://.../psb-install-192.png"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><img id="siteLogoPreview" alt="Website logo preview" style="width:64px;height:64px;object-fit:contain;border-radius:50%;background:#f3f4f6"><img id="installLogoPreview" alt="Install logo preview" style="width:64px;height:64px;object-fit:contain;border-radius:12px;background:#f3f4f6"></div><button class="blue" onclick="saveSiteLogos()">💾 Save Logos</button><div id="logoMessage"></div></div><div class="section" style="margin-bottom:18px"><h3>🔄 Panel Updating Status</h3><p class="small">Panel update/maintenance চললে এটি ON করুন। Buyer website-এ Panel Sell Bazaar নামের নিচে “PANEL UPDATING” দেখাবে। কাজ শেষ হলে OFF করে Save করুন।</p><label style="display:flex;align-items:center;gap:10px;padding:12px;background:#fff1f2;border:1px solid #fda4af;border-radius:12px;font-weight:800"><input id="panelUpdatingToggle" type="checkbox" style="width:22px;height:22px;margin:0;accent-color:#e11d48"> 🔴 Panel Updating ON</label><button class="blue" onclick="savePanelUpdatingStatus()">💾 Save Updating Status</button><div id="panelUpdatingMessage"></div></div><div class="section" style="margin-bottom:18px"><h3>🖼️ Home Banner</h3><p class="small">Homepage-এর Welcome-এর উপরের colorful banner ও বাংলা caption এখান থেকে পরিবর্তন করতে পারবেন। Image URL খালি রাখলে default banner দেখাবে।</p><label>Banner Image URL (Optional)</label><input id="homeBannerUrl" placeholder="https://example.com/banner.png"><label>Video Link (Optional)</label><input id="homeVideoUrl" placeholder="MP4 video URL or YouTube link"><p class="small">Banner 2 seconds দেখানোর পর Video চলবে। Autoplay-এর জন্য video শুরুতে muted থাকবে।</p><label>Banner Caption</label><textarea id="homeBannerCaption" placeholder="কিভাবে অর্ডার করবেন এবং কিভাবে টাকা Add করবেন..."></textarea><label>Homepage Notice Text (Optional)</label><textarea id="homeNoticeText" placeholder="যে নোটিশটি ওয়েবসাইটে ঢুকলেই দেখাতে চান লিখুন..."></textarea><label>Notice Image Upload (Optional)</label><input id="homeNoticeImageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif" style="background:#fff"><input id="homeNoticeImageUrl" type="hidden"><button type="button" class="blue" onclick="uploadNoticeImage()">⬆ Upload Notice Image</button><div id="noticeImageUploadMessage" class="small"></div><img id="noticeImagePreview" alt="Notice preview" style="display:none;max-width:100%;max-height:220px;object-fit:contain;border-radius:12px;margin-top:8px"><p class="small">এখানেই ছবি নির্বাচন করে Upload করুন। GitHub-এ আলাদা করে আপলোড বা লিংক বসাতে হবে না। Text, image, অথবা দুটোই দিতে পারবেন।</p><button class="blue" onclick="saveHomeBanner()">💾 Save Home Banner & Notice</button><div id="bannerMessage"></div></div>
+<label>Help Title</label><input id="helpTitle" placeholder="Contact / সাহায্য লাগবে?"><label>Help Text</label><textarea id="helpText" placeholder="Write your help information..."></textarea><label>Contact Number</label><input id="contactNumber" placeholder="01XXXXXXXXX"><label>WhatsApp Number</label><input id="whatsappNumber" placeholder="01XXXXXXXXX"><label>Telegram Username</label><input id="telegramUsername" placeholder="@username"><label>Telegram Channel Link</label><input id="telegramChannelLink" placeholder="https://t.me/yourchannel"><label>Help / Contact Link</label><input id="contactLink" placeholder="https://example.com"><button class="blue" onclick="saveHelpSettings()">💾 Save Contact Settings</button><div id="helpMessage"></div><div class="help-preview"><b>Preview</b><p id="helpPreviewTitle">Contact / সাহায্য লাগবে?</p><p id="helpPreviewText">Your help information will appear here.</p></div></div></div>
+
+<div id="profile" class="page hidden"><div class="section"><h3>Admin Profile</h3><div class="profile-head"><div id="profileLogo" class="profile-logo">A</div><div><strong id="adminName">Loading...</strong><div class="small">Administrator</div><div id="adminRole" class="small">Role: Admin</div></div></div><p id="adminPhone"></p><p id="adminEmail"></p><button class="danger" onclick="logout()">Logout</button></div></div>
+</div>
+<div id="notificationPanel" class="section hidden" style="position:fixed;right:12px;top:72px;z-index:50;width:min(380px,calc(100% - 24px));max-height:70vh;overflow:auto;box-shadow:0 10px 35px #0003"><div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">🔔 Notifications</h3><button style="width:auto;margin:0;padding:7px 10px" onclick="markAllNotificationsRead()">Mark all read</button></div><div id="notificationList" style="margin-top:10px">No notifications.</div></div>
+
+<nav class="admin-bottom-nav"><button class="active" onclick="showPage('home',this)" aria-label="Home"><span class="admin-nav-icon"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7M5 9v11h14V9M9 20v-6h6v6"/></svg></span><span>Home</span></button><button onclick="showPage('packages',this)" aria-label="Packages"><span class="admin-nav-icon"><svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z M4.5 7.7 12 12l7.5-4.3M12 12v9"/></svg></span><span>Packages</span></button><button onclick="showPage('orders',this)" aria-label="Orders"><span class="admin-nav-icon"><svg viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7zM15 3v5h4M10 12h6M10 16h6M4 7v14"/></svg></span><span>Orders</span></button><button onclick="showPage('balance',this)" aria-label="Balance"><span class="admin-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 9h18M7 15h4"/><circle cx="16.5" cy="14" r="1"/></svg></span><span>Balance</span></button><button onclick="showPage('access',this)" aria-label="Access"><span class="admin-nav-icon"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg></span><span>Access</span></button><button onclick="showPage('payment',this)" aria-label="Payment"><span class="admin-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg></span><span>Payment</span></button><button onclick="showPage('help',this)" aria-label="Help"><span class="admin-nav-icon"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.8 7.3L3 20l1.2-4.2A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8 10h8M8 14h5"/></svg></span><span>Help</span></button><button onclick="showPage('profile',this)" aria-label="Profile"><span class="admin-nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span>Profile</span></button></nav>
+
+<script>
+const SUPABASE_URL="https://wiztksrtzjmsxzolollf.supabase.co";
+const SUPABASE_KEY="sb_publishable_n64cu-NLfhsdEeJuntjWmw_mhbFhjBi";
+const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
+  auth: {
+    storage: window.localStorage,
+    storageKey: "panel-sell-bazaar-admin-auth-v1",
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});
+
+let adminInstallPrompt=null;
+window.addEventListener("beforeinstallprompt",(event)=>{event.preventDefault();adminInstallPrompt=event;const btn=document.getElementById("adminInstallBtn");if(btn)btn.style.display="block";});
+window.addEventListener("appinstalled",()=>{adminInstallPrompt=null;const btn=document.getElementById("adminInstallBtn");if(btn)btn.style.display="none";});
+async function installAdminApp(){if(adminInstallPrompt){adminInstallPrompt.prompt();await adminInstallPrompt.userChoice;adminInstallPrompt=null;const btn=document.getElementById("adminInstallBtn");if(btn)btn.style.display="none";}else{alert("Admin app আলাদাভাবে ইনস্টল করতে Chrome-এর ⋮ মেনু খুলে Install app / Add to Home screen চাপুন। Buyer app-এর বদলে Admin Panel পেজ থেকেই এটি করবেন।")}}
+
+function showMessage(id,text,type="info"){const b=document.getElementById(id);if(!b)return;b.className=type;b.innerText=text}
+function showPage(page,btn){document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));document.getElementById(page)?.classList.remove("hidden");document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));btn?.classList.add("active");if(page==="home")loadDashboard();if(page==="packages")loadPackages();if(page==="orders")loadOrders();if(page==="balance")loadBalances();if(page==="access")loadAccess();if(page==="payment")loadPaymentSettings();if(page==="help")loadHelpSettings()}
+
+let notificationChannel=null;
+let notificationUnread=0;
+function browserNotify(title,message){
+  try{
+    if('Notification' in window && Notification.permission==='granted') new Notification(title,{body:message});
+  }catch(e){}
+}
+async function requestBrowserNotifications(){
+  try{if('Notification' in window && Notification.permission==='default') await Notification.requestPermission();}catch(e){}
+}
+function toggleNotifications(){const p=document.getElementById('notificationPanel');if(!p)return;p.classList.toggle('hidden');if(!p.classList.contains('hidden')){loadNotifications();requestBrowserNotifications();}}
+async function loadNotifications(){
+  const box=document.getElementById('notificationList');if(!box)return;
+  const r=await supabaseClient.from('Notifications').select('id,title,message,type,is_read,created_at').order('id',{ascending:false}).limit(30);
+  if(r.error){box.innerHTML='<div class="error">'+escapeHtml(r.error.message)+'</div>';return;}
+  const rows=r.data||[];notificationUnread=rows.filter(x=>!x.is_read).length;updateNotificationBadge();
+  if(!rows.length){box.innerHTML='<div class="small">No notifications.</div>';return;}
+  box.innerHTML=rows.map(n=>`<div class="card" style="background:${n.is_read?'#fff':'#f5f3ff'}"><b>${escapeHtml(n.title)}</b><p style="margin:6px 0">${escapeHtml(n.message)}</p><div class="small">${escapeHtml(formatAdminDateTime(n.created_at))}</div>${!n.is_read?`<button style="width:auto;padding:7px 10px" onclick="markNotificationRead(${n.id})">Mark read</button>`:''}</div>`).join('');
+}
+function updateNotificationBadge(){const b=document.getElementById('adminNotificationBadge');if(!b)return;b.textContent=notificationUnread;b.style.display=notificationUnread?'inline-block':'none';}
+async function markNotificationRead(id){await supabaseClient.from('Notifications').update({is_read:true}).eq('id',id);loadNotifications();}
+async function markAllNotificationsRead(){const r=await supabaseClient.from('Notifications').update({is_read:true}).eq('is_read',false);if(r.error)alert(r.error.message);loadNotifications();}
+function subscribeAdminNotifications(){
+  if(notificationChannel)notificationChannel.unsubscribe();
+  notificationChannel=supabaseClient.channel('admin-notifications').on('postgres_changes',{event:'INSERT',schema:'public',table:'Notifications'},payload=>{
+    const n=payload.new||{};browserNotify(n.title||'Panel Sell Bazaar',n.message||'New notification');
+    notificationUnread++;updateNotificationBadge();loadNotifications();
+  }).subscribe();
+}
+
+async function checkAdmin(){
+  try{
+    const s=(await supabaseClient.auth.getSession()).data.session;
+    if(!s){
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("adminApp").classList.add("hidden");
+      return;
+    }
+
+    const r=await supabaseClient.from("Profiles")
+      .select("id,Name,Phone,Role")
+      .eq("id",s.user.id)
+      .maybeSingle();
+
+    if(r.error){
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("adminApp").classList.add("hidden");
+      showMessage("loginMessage","Profile error: "+r.error.message,"error");
+      return;
+    }
+
+    if(!r.data){
+      await supabaseClient.auth.signOut();
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("adminApp").classList.add("hidden");
+      showMessage("loginMessage","Your profile was not found.","error");
+      return;
+    }
+
+    if(String(r.data.Role||"").trim().toLowerCase()!=="admin"){
+      await supabaseClient.auth.signOut();
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("adminApp").classList.add("hidden");
+      showMessage("loginMessage","Admin access denied. Role found: ["+(r.data.Role||"")+"]","error");
+      return;
+    }
+
+    document.getElementById("adminName").innerText=r.data.Name||s.user.email||"Admin";
+    document.getElementById("adminPhone").innerText="Phone: "+(r.data.Phone||"Not set");
+    document.getElementById("adminEmail").innerText="Email: "+(s.user.email||"");
+    const roleEl=document.getElementById("adminRole");
+    if(roleEl) roleEl.innerText="Role: Admin";
+
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("adminApp").classList.remove("hidden");
+    showMessage("adminMessage","Admin login successful.","success");
+    loadDashboard();
+    loadNotifications();
+    subscribeAdminNotifications();
+    setupAdminBackgroundPush();
+  }catch(e){
+    document.getElementById("loginScreen").classList.remove("hidden");
+    document.getElementById("adminApp").classList.add("hidden");
+    showMessage("loginMessage","Error: "+(e.message||e),"error");
+  }
+}
+
+async function adminLogin(){
+  const email=document.getElementById("loginEmail").value.trim();
+  const password=document.getElementById("loginPassword").value;
+  if(!email||!password){
+    showMessage("loginMessage","Email and password দিন।","error");
+    return;
+  }
+  showMessage("loginMessage","Logging in...","info");
+  const r=await supabaseClient.auth.signInWithPassword({email,password});
+  if(r.error){
+    showMessage("loginMessage","Login failed: "+r.error.message,"error");
+    return;
+  }
+  await checkAdmin();
+}
+
+async function loadDashboard(){
+ const p=await supabaseClient.from("Package").select("id",{count:"exact",head:true});
+ const o=await supabaseClient.from("Orders").select("id",{count:"exact",head:true});
+ const b=await supabaseClient.from("Profiles").select("id",{count:"exact",head:true}).eq("Role","buyer");
+ document.getElementById("packageCount").innerText=p.count||0;
+ document.getElementById("orderCount").innerText=o.count||0;
+ document.getElementById("buyerCount").innerText=b.count||0;
+ const pendingBox=document.getElementById("dashboardPendingOrders");
+ const pending=await supabaseClient.from("Orders").select("*").eq("status","Pending").order("id",{ascending:false});
+ if(pending.error){pendingBox.innerHTML='<div class="error">'+escapeHtml(pending.error.message)+'</div>';document.getElementById("pendingOrderCount").innerText="—";document.getElementById("pendingHeadingCount").innerText="(—)";}
+ else {
+   const rows=pending.data||[];
+   document.getElementById("pendingOrderCount").innerText=rows.length;
+   document.getElementById("pendingHeadingCount").innerText="("+rows.length+")";
+   if(!rows.length) pendingBox.innerHTML='<p>কোনো Pending Order নেই।</p>';
+   else {
+     const buyerIds=[...new Set(rows.map(x=>x.buyer_id).filter(Boolean))];
+     const packageIds=[...new Set(rows.map(x=>x.package_id).filter(Boolean))];
+     let buyers={},packs={};
+     if(buyerIds.length){const br=await supabaseClient.from("Profiles").select("id,Name,Phone").in("id",buyerIds);(br.data||[]).forEach(x=>buyers[x.id]=x)}
+     if(packageIds.length){const pr=await supabaseClient.from("Package").select("id,title").in("id",packageIds);(pr.data||[]).forEach(x=>packs[x.id]=x)}
+     pendingBox.innerHTML="";
+     rows.forEach(x=>{const buyer=buyers[x.buyer_id]||{},pack=packs[x.package_id]||{};const d=document.createElement("div");d.className="card";d.innerHTML=`<b>Order #${escapeHtml(x.id)} — ${escapeHtml(pack.title||"Package")}</b><p>Buyer: <b>${escapeHtml(buyer.Name||"Buyer")}</b></p><p>Phone: ${escapeHtml(buyer.Phone||"Not set")}</p><p>Amount: <b>৳${escapeHtml(x.amount??x.price??0)}</b> · Duration: ${escapeHtml(x.package_duration||"")}</p><p>Date: ${escapeHtml(formatAdminDateTime(x.created_at))}</p><button class="blue" onclick="showPage('orders',document.querySelector('nav button:nth-child(3)'))">Open Order to Confirm</button>`;pendingBox.appendChild(d)})
+   }
+ }
+ const buyerBox=document.getElementById("dashboardBuyerProfiles");
+ const profiles=await supabaseClient.from("Profiles").select("id,Name,Phone,balance,Role").eq("Role","buyer").order("Name",{ascending:true});
+ if(profiles.error){buyerBox.innerHTML='<div class="error">'+escapeHtml(profiles.error.message)+'</div>';return}
+ if(!profiles.data?.length){buyerBox.innerHTML='<p>এখনও কোনো Buyer Profile নেই।</p>';return}
+ buyerBox.innerHTML="";
+ profiles.data.forEach(x=>{const d=document.createElement("div");d.className="card";d.innerHTML=`<b>${escapeHtml(x.Name||"Buyer")}</b><p>Phone: ${escapeHtml(x.Phone||"Not set")}</p><p>User ID: <span class="user-id">${escapeHtml(x.id||"")}</span></p><p>Balance: <b>৳${escapeHtml(x.balance||0)}</b></p>`;buyerBox.appendChild(d)})
+}
+
+async function addPackage(){const title=packageTitle.value.trim(),price=Number(packagePrice.value),duration=packageDuration.value.trim(),image_url=packageImage.value.trim(),description=packageDescription.value.trim(),video_link=packageVideo.value.trim(),panel_link=packageLink.value.trim(),panel_link_caption=packageLinkCaption.value.trim();if(!title||!price||!duration){alert("Package name, price and duration are required.");return}const mx=await supabaseClient.from("Package").select("sort_order").order("sort_order",{ascending:false}).limit(1);const nextOrder=Number(mx.data?.[0]?.sort_order||0)+1;const r=await supabaseClient.from("Package").insert([{title,price,duration,image_url,description,video_link,panel_link,panel_link_caption,sort_order:nextOrder}]);if(r.error){alert(r.error.message);return}alert("Package added successfully.");["packageTitle","packagePrice","packageDuration","packageImage","packageDescription","packageVideo","packageLink","packageLinkCaption"].forEach(x=>document.getElementById(x).value="");loadPackages();loadDashboard()}
+
+async function loadPackages(){const box=document.getElementById("packageList");box.innerHTML="Loading...";const r=await supabaseClient.from("Package").select("*").order("sort_order",{ascending:true}).order("id",{ascending:false});if(r.error && String(r.error.message||"").includes("sort_order")){alert("Package sorting needs the SQL migration supplied with these files. Run it once in Supabase SQL Editor.");}if(r.data)r.data.sort((x,y)=>(String(x.stock_status||"In Stock")==="Out of Stock")-(String(y.stock_status||"In Stock")==="Out of Stock"));if(r.error){box.innerHTML='<div class="error">'+escapeHtml(r.error.message)+'</div>';return}if(!r.data?.length){box.innerHTML="No packages found.";return}box.innerHTML="";r.data.forEach(p=>{const d=document.createElement("div");d.className="card";d.innerHTML=`<b>${escapeHtml(p.title)}</b><div style="display:flex;gap:6px;margin:6px 0"><button class="blue" style="width:auto;padding:7px 10px" onclick="movePackage(${p.id},-1)">⬆ Move Up</button><button class="blue" style="width:auto;padding:7px 10px" onclick="movePackage(${p.id},1)">⬇ Move Down</button></div><p class="price">৳${escapeHtml(p.price)}</p><p>Duration: ${escapeHtml(p.duration)}</p><p>Stock: <b style="color:${String(p.stock_status||"In Stock")==="Out of Stock"?"#dc2626":"#16a34a"}">${escapeHtml(p.stock_status||"In Stock")}</b></p>${p.image_url?`<img class="package-admin-image" src="${escapeAttr(p.image_url)}" onerror="this.outerHTML='<div class=\\"error\\">Image URL could not be loaded.</div>'">`:''}<input id="title_${p.id}" value="${escapeAttr(p.title)}"><input id="price_${p.id}" type="number" value="${escapeAttr(p.price)}"><input id="duration_${p.id}" value="${escapeAttr(p.duration)}"><input id="image_${p.id}" value="${escapeAttr(p.image_url||"")}" placeholder="Image URL"><textarea id="description_${p.id}" placeholder="Package Details / Description">${escapeHtml(p.description||"")}</textarea><input id="video_${p.id}" value="${escapeAttr(p.video_link||"")}" placeholder="Video Link (YouTube / TikTok / any video link)"><input id="link_${p.id}" value="${escapeAttr(p.panel_link||"")}" placeholder="Panel Link"><input id="caption_${p.id}" value="${escapeAttr(p.panel_link_caption||"")}" placeholder="Panel Link Caption"><button class="blue" onclick="updatePackage(${p.id})">Update</button><button class="green" style="width:auto;padding:9px 12px" onclick="setPackageStock(${p.id},'In Stock')">Stock In</button><button class="danger" style="width:auto;padding:9px 12px" onclick="setPackageStock(${p.id},'Out of Stock')">Stock Out</button><button class="danger" onclick="deletePackage(${p.id})">Delete</button><div id="opts_${p.id}" style="margin-top:10px">Options loading...</div>`;box.appendChild(d);loadPackageOptionsAdmin(p.id)})}
+
+async function movePackage(id, direction){
+ const r=await supabaseClient.from("Package").select("id,sort_order").order("sort_order",{ascending:true}).order("id",{ascending:false});
+ if(r.error){alert("আগে package sorting-এর SQL migration চালান। "+r.error.message);return;}
+ const rows=r.data||[];const i=rows.findIndex(x=>String(x.id)===String(id));const j=i+direction;if(i<0||j<0||j>=rows.length)return;
+ [rows[i],rows[j]]=[rows[j],rows[i]];
+ for(let n=0;n<rows.length;n++){const u=await supabaseClient.from("Package").update({sort_order:n+1}).eq("id",rows[n].id);if(u.error){alert(u.error.message);return;}}
+ loadPackages();
+}
+async function updatePackage(id){const title=document.getElementById("title_"+id).value.trim(),price=Number(document.getElementById("price_"+id).value),duration=document.getElementById("duration_"+id).value.trim(),image_url=document.getElementById("image_"+id).value.trim(),description=document.getElementById("description_"+id).value.trim(),video_link=document.getElementById("video_"+id).value.trim(),panel_link=document.getElementById("link_"+id).value.trim(),panel_link_caption=document.getElementById("caption_"+id).value.trim();const r=await supabaseClient.from("Package").update({title,price,duration,image_url,description,video_link,panel_link,panel_link_caption}).eq("id",id);if(r.error){alert(r.error.message);return}alert("Package updated.");loadPackages()}
+async function deletePackage(id){if(!confirm("Delete this package?"))return;const r=await supabaseClient.from("Package").delete().eq("id",id);if(r.error){alert(r.error.message);return}alert("Package deleted.");loadPackages();loadDashboard()}
+async function setPackageStock(id,status){const r=await supabaseClient.from("Package").update({stock_status:status}).eq("id",id);if(r.error){alert(r.error.message);return}alert(status==='Out of Stock'?'Package marked Stock Out.':'Package marked Stock In.');loadPackages()}
+
+async function loadPackageOptionsAdmin(packageId){
+  const box=document.getElementById("opts_"+packageId);if(!box)return;
+  const r=await supabaseClient.from("Package Options").select("*").eq("package_id",packageId).order("id",{ascending:true});
+  if(r.error){box.innerHTML='<div class="error">Options error: '+escapeHtml(r.error.message)+'</div>';return}
+  const rows=r.data||[];
+  let html='<h4>Package Options (Unlimited)</h4><div id="optionRows_'+packageId+'">';
+  rows.forEach(o=>{html+=packageOptionRowHtml(packageId,o.duration,o.price,o.id,o.stock_status||'In Stock')});
+  html+='</div><button type="button" class="blue" onclick="addPackageOptionRow('+packageId+')">+ Add Option</button><button type="button" class="green" onclick="savePackageOptions('+packageId+')">Save Options</button>';
+  box.innerHTML=html;
+}
+function packageOptionRowHtml(packageId,duration='',price='',optionId='new',stockStatus='In Stock'){
+  return `<div class="po-row" data-option-id="${escapeAttr(optionId)}" style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin:6px 0;align-items:center"><input class="po-duration" placeholder="Duration (e.g. 1 Hour)" value="${escapeAttr(duration)}"><input class="po-price" type="number" min="0" placeholder="Price" value="${escapeAttr(price)}"><select class="po-stock" title="Option stock" style="grid-column:1/3;padding:7px 9px;margin:0;font-size:12px;background:${stockStatus==='Out of Stock'?'#fee2e2':'#dcfce7'};color:${stockStatus==='Out of Stock'?'#b91c1c':'#166534'}"><option value="In Stock" ${stockStatus!=='Out of Stock'?'selected':''}>✅ Stock In</option><option value="Out of Stock" ${stockStatus==='Out of Stock'?'selected':''}>❌ Stock Out</option></select><button type="button" class="danger" style="width:auto;padding:7px 8px;margin:0;font-size:11px" onclick="this.parentElement.remove()">Remove</button></div>`;
+}
+function addPackageOptionRow(packageId){const box=document.getElementById('optionRows_'+packageId);if(box)box.insertAdjacentHTML('beforeend',packageOptionRowHtml(packageId));}
+async function savePackageOptions(packageId){
+  const container=document.getElementById('optionRows_'+packageId);if(!container)return;
+  const rows=[];for(const row of container.querySelectorAll('.po-row')){const duration=row.querySelector('.po-duration')?.value.trim(),price=Number(row.querySelector('.po-price')?.value||0);if(duration&&price>0)rows.push({package_id:packageId,duration,price,stock_status:row.querySelector('.po-stock')?.value||'In Stock'});}
+  const old=await supabaseClient.from('Package Options').select('id').eq('package_id',packageId);
+  if(old.error){alert(old.error.message);return}
+  for(const item of old.data||[]){const d=await supabaseClient.from('Package Options').delete().eq('id',item.id);if(d.error){alert(d.error.message);return}}
+  if(rows.length){const ins=await supabaseClient.from('Package Options').insert(rows);if(ins.error){alert(ins.error.message);return}}
+  alert('Package options saved.');loadPackageOptionsAdmin(packageId);
+}
+async function loadOrders(){
+  const box=document.getElementById("orderList");box.innerHTML="Loading...";
+  const r=await supabaseClient.from("Orders").select("*").order("id",{ascending:false});
+  if(r.error){box.innerHTML='<div class="error">'+escapeHtml(r.error.message)+'</div>';return}
+  if(!r.data?.length){box.innerHTML="No orders found.";return}
+  const buyerIds=[...new Set(r.data.map(o=>o.buyer_id).filter(Boolean))];
+  const packageIds=[...new Set(r.data.map(o=>o.package_id).filter(Boolean))];
+  let buyers={},packs={};
+  if(buyerIds.length){const br=await supabaseClient.from("Profiles").select("id,Name,Phone").in("id",buyerIds);(br.data||[]).forEach(b=>buyers[b.id]=b)}
+  if(packageIds.length){const pr=await supabaseClient.from("Package").select("id,title,panel_link,panel_link_caption").in("id",packageIds);(pr.data||[]).forEach(p=>packs[p.id]=p)}
+  box.innerHTML="";
+  r.data.forEach(o=>{
+    const d=document.createElement("div");d.className="card";
+    const buyer=buyers[o.buyer_id]||{},pack=packs[o.package_id]||{};
+    d.innerHTML=`<b>Order #${escapeHtml(o.id)}</b>
+      <p>Buyer Name: <b>${escapeHtml(buyer.Name||"Buyer")}</b></p>
+      <p>Phone: ${escapeHtml(buyer.Phone||"Not set")}</p>
+      <p>User ID: <span class="user-id"><b>${escapeHtml(o.buyer_id||"")}</b></span> <button type="button" style="width:auto;padding:7px 10px" onclick="copyAdminText('${escapeAttr(o.buyer_id||'').replace(/'/g,"\\'")}')">Copy ID</button></p>
+      <p>Package: <b>${escapeHtml(pack.title||"Package")}</b></p>
+      <p>Order Date & Time: <b>${escapeHtml(formatAdminDateTime(o.created_at))}</b></p>
+      <p>Amount: <b>৳${escapeHtml(o.amount??o.price??0)}</b></p>
+      <p>Duration: <b>${escapeHtml(o.package_duration||"")}</b></p>
+      <p>Payment Method: <b>${escapeHtml(o.payment_method||"Not provided")}</b></p>
+      ${o.transaction_id?`<p>Transaction ID: <b>${escapeHtml(o.transaction_id)}</b></p>`:""}
+      <p>Status: <b>${escapeHtml(o.status||"Pending")}</b></p>
+      ${o.cancellation_reason?`<p>Cancellation Reason: <b>${escapeHtml(o.cancellation_reason)}</b></p>`:""}
+      <label>Cancellation Reason</label>
+      <input id="cancel_reason_${o.id}" value="${escapeAttr(o.cancellation_reason||"")}" placeholder="যেমন: Transaction ID ভুল">
+      <label>Access Key</label>
+      <div style="display:flex;gap:6px;align-items:center">
+        <input id="key_${o.id}" value="${escapeAttr(o.access_key||"")}" placeholder="Paste Access Key here" style="flex:1">
+        <button type="button" style="width:auto;padding:10px 12px;margin:6px 0;background:#2563eb" onclick="pasteAdminField('key_${o.id}')">Paste</button>
+      </div>
+      <select id="status_${o.id}">
+        <option value="Pending" ${o.status==="Pending"?"selected":""}>Pending</option>
+        <option value="Confirmed" ${o.status==="Confirmed"?"selected":""}>Confirmed</option>
+        <option value="Cancelled" ${o.status==="Cancelled"?"selected":""}>Cancelled</option>
+      </select>
+      <button class="green" onclick="updateOrder(${o.id})">Save Order</button>
+      ${pack.panel_link?`<p><a target="_blank" rel="noopener" href="${escapeAttr(pack.panel_link)}">🔗 ${escapeHtml(pack.panel_link_caption||"Open Panel Link")}</a></p>`:""}`;
+    box.appendChild(d);
+  });
+}
+async function updateOrder(id){
+  const status=document.getElementById("status_"+id).value;
+  const access_key=document.getElementById("key_"+id).value.trim();
+  const cancellation_reason=document.getElementById("cancel_reason_"+id)?.value.trim()||"";
+  if(status==="Cancelled" && !cancellation_reason){
+    alert("Cancelled করলে Cancellation Reason লিখুন।");
+    return;
+  }
+  const r=await supabaseClient.from("Orders").update({status,access_key,cancellation_reason}).eq("id",id);
+  if(r.error){alert(r.error.message);return}
+  alert("Order updated successfully.");loadOrders();loadAccess();loadDashboard();
+}
+async function copyAdminField(id){const el=document.getElementById(id);if(!el)return;try{await navigator.clipboard.writeText(el.value);alert("Access Key copied.")}catch(e){el.select();document.execCommand("copy");alert("Access Key copied.")}}
+async function pasteAdminField(id){const el=document.getElementById(id);if(!el)return;try{const text=await navigator.clipboard.readText();el.value=text;el.focus()}catch(e){alert("Paste permission পাওয়া যায়নি। Input-এ long-press করে Paste করুন।")}}
+
+async function loadAccess(){const box=document.getElementById("accessList");box.innerHTML="Loading...";const r=await supabaseClient.from("Orders").select("*").eq("status","Confirmed").order("id",{ascending:false});if(r.error){box.innerHTML='<div class="error">'+escapeHtml(r.error.message)+'</div>';return}const data=(r.data||[]).filter(o=>(o.order_type||"").toLowerCase()!=="balance top up");if(!data.length){box.innerHTML="No confirmed access found.";return}const pids=[...new Set(data.map(o=>o.package_id).filter(Boolean))];let packs={};if(pids.length){const pr=await supabaseClient.from("Package").select("id,title,panel_link,panel_link_caption").in("id",pids);if(pr.error){box.innerHTML='<div class="error">'+escapeHtml(pr.error.message)+'</div>';return}(pr.data||[]).forEach(p=>packs[p.id]=p)}box.innerHTML="";data.forEach(o=>{const d=document.createElement("div");d.className="card";const p=packs[o.package_id]||{};d.innerHTML=`<b>${escapeHtml(p.title||"Package")}</b><p>Duration: ${escapeHtml(o.package_duration||"")}</p><p>Buyer: ${escapeHtml(o.buyer_id||"")}</p><p>Access Key: <b>${escapeHtml(o.access_key||"Not set")}</b>${o.access_key?` <button style="width:auto;padding:7px 10px" onclick="copyAdminText('${escapeAttr(o.access_key).replace(/'/g,"\\'")}')">Copy</button>`:''}</p>${p.panel_link?`<p><a target="_blank" href="${escapeAttr(p.panel_link)}">🔗 ${escapeHtml(p.panel_link_caption||"Open Panel Link")}</a></p>`:''}`;box.appendChild(d)})}
+async function loadBalances(){const box=document.getElementById("balanceList");box.innerHTML="Loading...";const r=await supabaseClient.from("Profiles").select("id,Name,Phone,balance,Role").eq("Role","buyer").order("Name");if(r.error){box.innerHTML='<div class="error">'+escapeHtml(r.error.message)+'</div>';return}if(!r.data?.length){box.innerHTML="No buyers found.";return}box.innerHTML="";r.data.forEach(p=>{const d=document.createElement("div");d.className="card";d.innerHTML=`<b>${escapeHtml(p.Name||"Buyer")}</b><p>User ID: <span class="user-id"><b>${escapeHtml(p.id||"")}</b></span></p><label>Name</label><input id="buyer_name_${p.id}" value="${escapeAttr(p.Name||"")}"><label>Phone</label><input id="buyer_phone_${p.id}" value="${escapeAttr(p.Phone||"")}"><button class="blue" onclick="updateBuyerProfile('${p.id}')">Save Buyer Name & Phone</button><p>Current Balance: <b>৳${escapeHtml(p.balance||0)}</b></p><input id="balance_${p.id}" type="number" value="${escapeAttr(p.balance||0)}"><button onclick="changeBalance('${p.id}')">Update Balance</button>`;box.appendChild(d)})}
+async function updateBuyerProfile(id){const Name=document.getElementById('buyer_name_'+id)?.value.trim(),Phone=document.getElementById('buyer_phone_'+id)?.value.trim();if(!Name||!Phone){alert('Name এবং Phone number দিন।');return}const r=await supabaseClient.from('Profiles').update({Name,Phone}).eq('id',id);if(r.error){alert(r.error.message);return}alert('Buyer profile updated.');loadBalances()}
+async function changeBalance(id){const amount=Number(document.getElementById("balance_"+id).value);if(amount<0){alert("Balance cannot be negative.");return}const r=await supabaseClient.from("Profiles").update({balance:amount}).eq("id",id);if(r.error){alert(r.error.message);return}alert("Balance updated.");loadBalances()}
+async function copyAdminText(t){try{await navigator.clipboard.writeText(t);alert("Copied")}catch(e){prompt("Copy:",t)}}
+
+
+async function loadPaymentSettings(){const r=await supabaseClient.from("Payment Settings").select("id,bkash_number,nagad_number,rocket_number,payment_description").eq("id",1).maybeSingle();if(r.error){showMessage("paymentMessage","Load error: "+r.error.message,"error");return}const d=r.data||{};bkashNumber.value=d.bkash_number||"";nagadNumber.value=d.nagad_number||"";rocketNumber.value=d.rocket_number||"";paymentDescription.value=d.payment_description||""}
+async function savePaymentSettings(){const values={bkash_number:bkashNumber.value.trim(),nagad_number:nagadNumber.value.trim(),rocket_number:rocketNumber.value.trim(),payment_description:paymentDescription.value.trim()};if(!values.bkash_number&&!values.nagad_number&&!values.rocket_number){showMessage("paymentMessage","কমপক্ষে একটি payment number দিন।","error");return}const u=await supabaseClient.from("Payment Settings").update(values).eq("id",1).select("id").maybeSingle();if(u.error){showMessage("paymentMessage","Update error: "+u.error.message,"error");return}if(!u.data){const ins=await supabaseClient.from("Payment Settings").insert([{id:1,...values}]).select("id").single();if(ins.error){showMessage("paymentMessage","Save error: "+ins.error.message,"error");return}}showMessage("paymentMessage","Payment settings saved successfully.","success");await loadPaymentSettings()}
+
+async function loadHelpSettings(){const r=await supabaseClient.from("Site Settings").select("*").eq("id",1).maybeSingle();if(r.error){showMessage("helpMessage","Load error: "+r.error.message,"error");return}const d=r.data||{};helpTitle.value=d.help_title||"";helpText.value=d.help_text||"";contactNumber.value=d.contact_number||"";whatsappNumber.value=d.whatsapp_number||"";telegramUsername.value=d.telegram_username||"";telegramChannelLink.value=d.telegram_channel_link||"";contactLink.value=d.contact_link||"";homeBannerUrl.value=d.home_banner_url||"";homeBannerCaption.value=d.home_banner_caption||"";homeVideoUrl.value=d.home_video_url||"";homeNoticeText.value=d.home_notice_text||"";homeNoticeImageUrl.value=d.home_notice_image_url||"";const noticePreview=document.getElementById("noticeImagePreview");if(noticePreview&&d.home_notice_image_url){noticePreview.src=d.home_notice_image_url;noticePreview.style.display="block"}siteLogoUrl.value=d.site_logo_url||"";installLogoUrl.value=d.install_logo_url||"";const updatingToggle=document.getElementById("panelUpdatingToggle");if(updatingToggle)updatingToggle.checked=d.panel_updating===true;updateLogoPreviews();updateHelpPreview()}
+function updateLogoPreviews(){const s=siteLogoUrl.value.trim(),i=installLogoUrl.value.trim();document.getElementById("siteLogoPreview").src=s;document.getElementById("installLogoPreview").src=i;const ap=document.getElementById("adminSiteLogoPreview"),fb=document.getElementById("adminSiteLogoFallback");if(s){ap.src=s;ap.style.display="block";fb.style.display="none"}else{ap.style.display="none";fb.style.display="flex"}}
+async function saveSiteLogos(){const values={site_logo_url:siteLogoUrl.value.trim(),install_logo_url:installLogoUrl.value.trim()};const u=await supabaseClient.from("Site Settings").update(values).eq("id",1).select("id").maybeSingle();if(u.error){showMessage("logoMessage","Save error: "+u.error.message+" — Supabase-এ site_logo_url ও install_logo_url কলাম যোগ করা আছে কি না দেখুন।","error");return}if(!u.data){const ins=await supabaseClient.from("Site Settings").insert([{id:1,...values}]).select("id").single();if(ins.error){showMessage("logoMessage","Save error: "+ins.error.message,"error");return}}updateLogoPreviews();showMessage("logoMessage","Logo settings saved.","success")}
+async function uploadNoticeImage(){
+ const input=document.getElementById("homeNoticeImageFile");const file=input?.files?.[0];const msg=document.getElementById("noticeImageUploadMessage");
+ if(!file){showMessage("noticeImageUploadMessage","আগে একটি notice image নির্বাচন করুন।","error");return}
+ if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type)){showMessage("noticeImageUploadMessage","PNG, JPG, WEBP বা GIF ছবি দিন।","error");return}
+ if(file.size>5*1024*1024){showMessage("noticeImageUploadMessage","ছবির সাইজ 5 MB-এর মধ্যে রাখুন।","error");return}
+ showMessage("noticeImageUploadMessage","ছবি আপলোড হচ্ছে...","info");
+ const ext=(file.name.split(".").pop()||"png").toLowerCase().replace(/[^a-z0-9]/g,"")||"png";
+ const objectPath="notices/"+Date.now()+"-"+Math.random().toString(36).slice(2,9)+"."+ext;
+ const result=await supabaseClient.storage.from("psb-notices").upload(objectPath,file,{upsert:false,contentType:file.type,cacheControl:"3600"});
+ if(result.error){showMessage("noticeImageUploadMessage","Upload failed: "+result.error.message+". Supabase-এ psb-notices bucket ও policy SQL চালাতে হবে।","error");return}
+ const pub=supabaseClient.storage.from("psb-notices").getPublicUrl(objectPath);
+ const url=pub?.data?.publicUrl||"";if(!url){showMessage("noticeImageUploadMessage","Public image URL পাওয়া যায়নি।","error");return}
+ document.getElementById("homeNoticeImageUrl").value=url;const preview=document.getElementById("noticeImagePreview");if(preview){preview.src=url;preview.style.display="block"}
+ showMessage("noticeImageUploadMessage","ছবি আপলোড হয়েছে। এখন Save Home Banner & Notice চাপুন।","success");
+}
+async function saveHomeBanner(){const values={home_banner_url:homeBannerUrl.value.trim(),home_banner_caption:homeBannerCaption.value.trim(),home_video_url:homeVideoUrl.value.trim(),home_notice_text:homeNoticeText.value.trim(),home_notice_image_url:homeNoticeImageUrl.value.trim()};const u=await supabaseClient.from("Site Settings").update(values).eq("id",1).select("id").maybeSingle();if(u.error){showMessage("bannerMessage","Save error: "+u.error.message,"error");return}if(!u.data){const ins=await supabaseClient.from("Site Settings").insert([{id:1,...values}]).select("id").single();if(ins.error){showMessage("bannerMessage","Save error: "+ins.error.message,"error");return}}showMessage("bannerMessage","Home banner saved successfully.","success")}
+
+async function savePanelUpdatingStatus(){const enabled=!!document.getElementById("panelUpdatingToggle")?.checked;const values={panel_updating:enabled};const u=await supabaseClient.from("Site Settings").update(values).eq("id",1).select("id").maybeSingle();if(u.error){showMessage("panelUpdatingMessage","Save error: "+u.error.message+" — আগে panel_updating কলাম যোগ করতে SQL চালান।","error");return}if(!u.data){const ins=await supabaseClient.from("Site Settings").insert([{id:1,...values}]).select("id").single();if(ins.error){showMessage("panelUpdatingMessage","Save error: "+ins.error.message,"error");return}}showMessage("panelUpdatingMessage",enabled?"Panel Updating is ON. Buyer page-এ status দেখাবে।":"Panel Updating is OFF. Buyer page-এ status লুকানো থাকবে।","success")}
+async function saveHelpSettings(){const values={help_title:helpTitle.value.trim(),help_text:helpText.value.trim(),contact_number:contactNumber.value.trim(),whatsapp_number:whatsappNumber.value.trim(),telegram_username:telegramUsername.value.trim(),telegram_channel_link:telegramChannelLink.value.trim(),contact_link:contactLink.value.trim(),home_banner_url:homeBannerUrl.value.trim(),home_banner_caption:homeBannerCaption.value.trim()};const u=await supabaseClient.from("Site Settings").update(values).eq("id",1).select("id").maybeSingle();if(u.error){showMessage("helpMessage","Save error: "+u.error.message,"error");return}if(!u.data){const ins=await supabaseClient.from("Site Settings").insert([{id:1,...values}]).select("id").single();if(ins.error){showMessage("helpMessage","Save error: "+ins.error.message,"error");return}}showMessage("helpMessage","Help & Contact saved successfully.","success");updateHelpPreview()}
+function updateHelpPreview(){helpPreviewTitle.innerText=helpTitle.value.trim()||"Help & Contact";helpPreviewText.innerText=helpText.value.trim()||"Your help information will appear here."}
+async function logout(){if(notificationChannel)notificationChannel.unsubscribe();await supabaseClient.auth.signOut();location.href="index.html"}
+function formatAdminDateTime(v){if(!v)return 'N/A';try{return new Date(v).toLocaleString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true,timeZone:'Asia/Dhaka'});}catch(e){return String(v)}}
+
+function escapeHtml(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
+function escapeAttr(v){return escapeHtml(v)}
+
+/* ===== Admin Background Push Notifications ===== */
+const ADMIN_PUSH_SW = "psb-admin-sw.js";
+
+function urlBase64ToUint8Array(base64String){
+  const padding = "=".repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = atob(base64);
+  return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+}
+
+async function getAdminPushPublicKey(){
+  const sessionResult = await supabaseClient.auth.getSession();
+  const accessToken = sessionResult?.data?.session?.access_token;
+  if(!accessToken) throw new Error("Admin session not found.");
+
+  const response = await fetch(
+    SUPABASE_URL + "/functions/v1/send-admin-push",
+    {
+      method: "GET",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + accessToken
+      }
+    }
+  );
+
+  const data = await response.json();
+  if(!response.ok || !data.publicKey){
+    throw new Error(data?.error || "Could not get push public key.");
+  }
+  return data.publicKey;
+}
+
+async function setupAdminBackgroundPush(){
+  try{
+    if(!("serviceWorker" in navigator) || !("PushManager" in window)){
+      console.log("Web Push is not supported in this browser.");
+      return;
+    }
+
+    if(!window.isSecureContext){
+      console.log("Push notifications require HTTPS.");
+      return;
+    }
+
+    const registration = await navigator.serviceWorker.register(ADMIN_PUSH_SW, {
+      scope: "./"
+    });
+
+    if("Notification" in window && Notification.permission === "default"){
+      const permission = await Notification.requestPermission();
+      if(permission !== "granted"){
+        console.log("Notification permission was not granted.");
+        return;
+      }
+    }
+
+    if("Notification" in window && Notification.permission !== "granted"){
+      return;
+    }
+
+    const publicKey = await getAdminPushPublicKey();
+    let subscription = await registration.pushManager.getSubscription();
+
+    if(!subscription){
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicKey)
+      });
+    }
+
+    const json = subscription.toJSON();
+    const p256dh = json?.keys?.p256dh;
+    const auth = json?.keys?.auth;
+    if(!subscription.endpoint || !p256dh || !auth){
+      throw new Error("Push subscription data is incomplete.");
+    }
+
+    const { data: sessionData } = await supabaseClient.auth.getSession();
+    const userId = sessionData?.session?.user?.id;
+    if(!userId) throw new Error("Admin user ID not found.");
+
+    const { error } = await supabaseClient
+      .from("Admin Push Subscriptions")
+      .upsert(
+        [{
+          user_id: userId,
+          endpoint: subscription.endpoint,
+          p256dh,
+          auth
+        }],
+        { onConflict: "endpoint" }
+      );
+
+    if(error) throw error;
+
+    console.log("Admin background push is ready.");
+  }catch(error){
+    console.warn("Admin background push setup failed:", error?.message || error);
+  }
+}
+/* ===== End Admin Background Push Notifications ===== */
+checkAdmin();
+</script>
+</div></body>
+</html>
