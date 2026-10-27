@@ -44,7 +44,7 @@ app.post("/api/admin/update-email", async (req, res) => {
   try {
     const uid = "aaf8d698-3d4f-4cb2-bc57-a94bdf4bcff1";
     const oldEmail = "mahfuzhasan0807@gmail.com";
-    const newEmail = "panelsellbazzr0807@gmail.com";
+    const newEmail = "panelsellbazaar0807@gmail.com";
 
     const check = await fetch(
       `${supabaseUrl}/auth/v1/admin/users/${uid}`,
