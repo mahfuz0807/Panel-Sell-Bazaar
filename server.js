@@ -4,7 +4,7 @@ self.addEventListener('install', event => {
 event.waitUntil((async () => {
 const cache = await caches.open(CACHE_NAME);
 await Promise.all(APP_SHELL.map(async path => {
-try { const response = await fetch(path, { cache: 'reload' }); if (response.ok) await cache.put(path, response); } catch (error) {}
+try { const response = await fetch(path, { cache: 'reload' }); if (response.ok) await cache.put(path, response); } catch (error) {
 }));
 await self.skipWaiting();
 })());
